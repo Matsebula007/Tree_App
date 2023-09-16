@@ -1,0 +1,61 @@
+{
+    "sheets": [
+        {
+            "name": "todo_list",
+            "description": "store client todo list",
+            "displayColumn": "id",
+            "guid": "c5e3454e-f94e-45c7-9e00-03fbb1e51147",
+            "columns": [
+                {
+                    "typeStr": "text",
+                    "guid": "e5555812-bec7-4647-8794-f1ce0e099b82",
+                    "name": "title",
+                    "description": "note header",
+                    "defaultValue": "",
+                    "iconName": "newText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "text"
+                    }
+                },
+                {
+                    "typeStr": "longtext",
+                    "guid": "54ad5177-da65-43fd-94c1-629ba96dcaf2",
+                    "name": "note_descr",
+                    "description": "store note description",
+                    "defaultValue": "",
+                    "iconName": "newLongText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "longtext"
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    "guid": "073c828d-a9dc-4ac8-8f88-fb0f01b7d979",
+                    "id": "note0",
+                    "title": "",
+                    "note_descr": ""
+                }
+            ],
+            "hidden": false,
+            "isProps": false,
+            "configurable": {
+                "name": "text",
+                "description": "text",
+                "displayColumn": "columnSelect@name",
+                "columnSelect@name@displayColumn": {
+                    "allowedTypes": [
+                        "int",
+                        "float",
+                        "text",
+                        "longtext"
+                    ]
+                }
+            }
+        }
+    ]
+}

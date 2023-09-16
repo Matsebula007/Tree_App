@@ -1,0 +1,58 @@
+MDScreen:
+    name:"main"
+    MDFloatLayout:
+        md_bg_color: 1,1,1,1
+        Image: 
+            source: "assets/logoB.png"
+            pos_hint: {"center_x": .5, "center_y": .8}
+        MDLabel:
+            text: "Hello!"
+            font_name: "assets/fonts/Sono_Monospace-Bold.ttf"
+            font_size: "23dp"
+            halign: "center"
+            pos_hint: {"center_y": .50}
+            color: rgba(0,0,59,255)
+        MDLabel:
+            text: "Tracking progress makes progress, and progress makes winners."
+            font_name: "assets/fonts/Sono_Monospace-Regular.ttf"
+            font_size: "23dp"
+            halign: "center"
+            pos_hint: {"center_x":.5,"center_y": .35}
+            size_hint_x: .85
+            color: rgba(127,127,127,255)
+        Button:
+            text: "LOGIN"
+            size_hint: .66,.065
+            pos_hint: {"center_x":.5,"center_y": .18}
+            background_color: 0,0,0,0
+            font_name: "assets/fonts/Sono_Monospace-Medium.ttf"
+            on_press: 
+                root.manager.transition.direction = "left"
+                root.manager.current = "Login"
+            canvas.before:
+                Color:
+                    rgba:rgba(52,0,231,255)
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [5]
+        Button:
+            text: "SIGN UP"
+            size_hint: .66,.065
+            pos_hint: {"center_x":.5,"center_y": .09}
+            color: rgba(52,0,231,255)
+            background_color: 0,0,0,0
+            font_name: "assets/fonts/Sono_Monospace-Medium.ttf"
+            on_press: 
+                root.manager.transition.direction = "left"
+                root.manager.current = "SignUp"
+            canvas.before:
+                Color:
+                #m-bug to fix later color of rect line not on screen 
+                #m-bug fixed indentation issue of line
+                    rgba:rgba(52,0,231,255)
+                Line: 
+                    width: 1.2
+                    rounded_rectangle:self.x,self.y,self.width,self.height,5,5,5,5,100
+
+            

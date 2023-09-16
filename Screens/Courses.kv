@@ -1,0 +1,137 @@
+<CoursesCard>
+    elevation: 0
+    md_bg_color:0,1,.898
+    radius:[8]
+    size_hint:1,None
+    height:dp(160)
+    #width: dp(140)
+    MDFloatLayout:
+        id:bar
+        size_hint:.9,.01
+        pos_hint:{"center_x":.5, "center_y":.02}
+        md_bg_color: 1, 170/255,23/255,1
+    
+    MDLabel:
+        text:root.title
+        markup: True
+        font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
+        font_size:"20sp"
+        size_hint_x:.8
+        size_hint_y:.8
+        pos_hint:{"center_x":.5,"center_y": .8}
+    
+    MDLabel:
+        #reead data from json database
+        id:description
+        text:root.description
+        font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
+        markup:True
+        size_hint_x:.9
+        size_hint_y:.9
+        pos_hint:{"center_x": .5,"center_y":.4}
+    MDCheckbox:
+        size_hint:None,None
+        size:"48dp","48dp"
+        unselected_color: 1,170/255,23/255,1
+        selected_color: 0,179/255,0,1
+        pos_hint:{"center_x":.9,"center_y": .8}
+        on_active: app.on_complete(*args, description,bar)
+
+
+
+MDScreen:
+    name: "CoursesScreen"
+    course_list:course_list     
+       
+   #Course view
+    MDFloatLayout:
+        size_hint:.98,.89
+        pos_hint:{"center_x":.5,"center_y": .48}    
+        ScrollView:
+            do_scroll_y:True
+            do_scroll_x:False
+            size_hint_y:.85
+            pos_hint:{"center_x":.5,"center_y": .5}
+            bar_width:0
+            GridLayout:
+                #orientation: "lr-bt"
+                md_bg_color: 1,1,1,1
+                id: course_list
+                cols: 2
+                height:self.minimum_height
+                row_default_height:80
+                size_hint_y:None
+                padding:15,10
+                spacing:15,10
+
+    #add Course button
+    MDFloatLayout:
+        size_hint:.5,.08
+        pos_hint: {"center_x": .75,"center_y": .9}
+        Button:
+            text: "Add Course"
+            size_hint:1,1
+            pos_hint: {"center_x":.5,"center_y": .5}
+            background_color:0,0,0,0
+            font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
+            font_size: "18dp"
+            color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "left"
+                root.manager.current = "CoursesScreen"
+            canvas.before:
+                Color:
+                    rgba:(20/255,252/255,140/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+        
+
+    #navigation menu                    
+    MDFloatLayout:
+        size_hint:.98,.1
+        pos_hint: {"center_x": .5,"center_y": .06}
+        canvas:
+            Color:
+                rgba:(0/255,0/255,0/255,1)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+                
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"center_x":.2 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "right"
+                root.manager.current = "Home"
+
+        MDIconButton:
+            icon: "view-agenda"
+            pos_hint: {"center_x":.4 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "right"
+                root.manager.current = "todoScreen" 
+        
+        MDIconButton:
+            icon: "library"
+            pos_hint: {"center_x":.6 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "left"
+                root.manager.current = "CoursesScreen"
+        
+        MDIconButton:
+            icon: "folder"
+            pos_hint: {"center_x":.8 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "left"
+                root.manager.current = "Home"

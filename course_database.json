@@ -1,0 +1,360 @@
+{
+    "sheets": [
+        {
+            "name": "course",
+            "description": "sheet stores courses",
+            "displayColumn": "id",
+            "guid": "e7e55d50-0b0b-4aa6-af58-b49805d3dc56",
+            "columns": [
+                {
+                    "typeStr": "float",
+                    "guid": "7698a4a8-ff1c-481b-8e86-8d0e6da84d81",
+                    "description": "stores course final mark",
+                    "name": "crse_mark",
+                    "min": 0,
+                    "max": 100,
+                    "defaultValue": 52,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "list",
+                    "guid": "7b2b7a8d-fbe7-4db1-a032-3666f8db69cc",
+                    "name": "course_ass",
+                    "description": "course assessements",
+                    "sheet": "cb71b9aa-c5eb-4388-aa75-9817257814e5",
+                    "defaultValue": [],
+                    "iconName": "newList",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text"
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    "guid": "f4893907-c892-4372-ba52-2d504b5b4b45",
+                    "id": "crse_code",
+                    "course_ass": [
+                        {
+                            "guid": "ead38a34-667a-4366-aa3f-18640ad60fdb",
+                            "id": "TEST ",
+                            "ass_contrib": 0,
+                            "ass_weight": 0.5,
+                            "Ass_mark": 56,
+                            "ass_number": [
+                                {
+                                    "guid": "a2d7ab4a-c891-454b-bc23-742f7c8124cf",
+                                    "id": "TEST 1",
+                                    "Mark": 89.0
+                                },
+                                {
+                                    "guid": "af4e869d-abb3-4e01-9a06-00e03c4618c4",
+                                    "id": "TEST 2",
+                                    "Mark": 56
+                                },
+                                {
+                                    "guid": "ab72fa81-8011-4005-885d-85c904df2d3e",
+                                    "id": "TEST 3",
+                                    "Mark": 56
+                                },
+                                {
+                                    "guid": "e80af243-4984-4844-988e-113f75f9265a",
+                                    "id": "TEST 4",
+                                    "Mark": 56
+                                },
+                                {
+                                    "guid": "fe923de6-afef-4e71-adc6-18353ed99467",
+                                    "id": "TEST 5",
+                                    "Mark": 56
+                                }
+                            ]
+                        },
+                        {
+                            "guid": "9c7bd773-fd35-4f83-b0e4-81bc9e3a515e",
+                            "Ass_mark": 52,
+                            "ass_weight": 0.5,
+                            "ass_contrib": 0,
+                            "id": "QUIZ ",
+                            "ass_number": [
+                                {
+                                    "guid": "e143b391-3064-40dd-91a3-0b5d3bc9c72b",
+                                    "Mark": 56,
+                                    "id": "QUIZ 1"
+                                },
+                                {
+                                    "guid": "cdc689d0-06cd-456a-9594-3870ccc50f8d",
+                                    "Mark": 56,
+                                    "id": "QUIZ 2"
+                                },
+                                {
+                                    "guid": "97802c66-0310-4323-a8f1-6cd009faf3a6",
+                                    "Mark": 56,
+                                    "id": "QUIZ 3"
+                                },
+                                {
+                                    "guid": "c8bdead5-d962-4925-a380-8b48b7d7ab9d",
+                                    "Mark": 56,
+                                    "id": "QUIZ 4"
+                                },
+                                {
+                                    "guid": "1f81bd4c-b7e9-4e64-a7d2-1b22429893ac",
+                                    "Mark": 56,
+                                    "id": "QUIZ 5"
+                                }
+                            ]
+                        },
+                        {
+                            "guid": "f10c7675-4ed9-4200-850b-6d3991ea74a2",
+                            "Ass_mark": 52,
+                            "ass_weight": 0.5,
+                            "ass_contrib": 0,
+                            "id": "ASSIGNMENT",
+                            "ass_number": [
+                                {
+                                    "guid": "56cc389c-b87c-4cfc-a256-387e0b490ba8",
+                                    "Mark": 56,
+                                    "id": "ASSIGNMENT 1"
+                                },
+                                {
+                                    "guid": "19838176-48c3-4a8d-b2bf-ca655291ed2b",
+                                    "Mark": 56,
+                                    "id": "ASSIGNMENT 2"
+                                },
+                                {
+                                    "guid": "a62038c9-bc82-4388-99aa-39cb653e1feb",
+                                    "Mark": 56,
+                                    "id": "ASSIGNMENT 3"
+                                },
+                                {
+                                    "guid": "819cf54a-2811-439c-a8e3-21ca926d54f2",
+                                    "Mark": 56,
+                                    "id": "ASSIGNMENT 4"
+                                },
+                                {
+                                    "guid": "dec7fdd4-5e28-4078-a144-a8a647393c54",
+                                    "Mark": 56,
+                                    "id": "ASSIGNMENT 5"
+                                }
+                            ]
+                        },
+                        {
+                            "guid": "48428fc4-99d5-4c36-a0f9-5786f071b71c",
+                            "Ass_mark": 52,
+                            "ass_weight": 0.5,
+                            "ass_contrib": 0,
+                            "id": "LAB",
+                            "ass_number": [
+                                {
+                                    "guid": "45845fff-6c64-4773-905f-59435df16349",
+                                    "Mark": 56,
+                                    "id": "LAB 1"
+                                },
+                                {
+                                    "guid": "596cb6ad-8d91-4d71-b587-0363f131ce85",
+                                    "Mark": 56,
+                                    "id": "LAB 2"
+                                },
+                                {
+                                    "guid": "5477d2e9-f698-44ee-9f0e-d65d57225f3b",
+                                    "Mark": 56,
+                                    "id": "LAB 3"
+                                },
+                                {
+                                    "guid": "10d0a5e3-5a84-4cec-93ad-444987a7f5ac",
+                                    "Mark": 56,
+                                    "id": "LAB 4"
+                                },
+                                {
+                                    "guid": "aeef8769-bcec-452c-8c70-d9bd5541d309",
+                                    "Mark": 56,
+                                    "id": "LAB 5"
+                                },
+                                {
+                                    "guid": "2a90882d-b1e9-47ee-bd3b-cc473cc63c13",
+                                    "Mark": 56,
+                                    "id": "LAB 6"
+                                },
+                                {
+                                    "guid": "691aa452-cd18-4da0-989f-147ee2749deb",
+                                    "Mark": 56,
+                                    "id": "LAB 7"
+                                },
+                                {
+                                    "guid": "459e3fad-b05d-47bd-b7d1-966fb728666b",
+                                    "Mark": 56,
+                                    "id": "LAB 8"
+                                },
+                                {
+                                    "guid": "0466bed0-6d5b-44a2-8470-4084f9dad2dc",
+                                    "Mark": 56,
+                                    "id": "LAB 9"
+                                },
+                                {
+                                    "guid": "61fa5bb1-01e0-4c40-a7ee-3443eb2c46f3",
+                                    "Mark": 56,
+                                    "id": "LAB 10"
+                                }
+                            ]
+                        },
+                        {
+                            "guid": "55fb27a7-8adf-47eb-a37f-da3d999cde31",
+                            "Ass_mark": 52,
+                            "ass_weight": 0.5,
+                            "ass_contrib": 0,
+                            "id": "OTHER",
+                            "ass_number": [
+                                {
+                                    "guid": "bd8b1379-a693-4663-8e63-4e9dfb0f7e67",
+                                    "Mark": 56,
+                                    "id": "OTHER 1"
+                                }
+                            ]
+                        }
+                    ],
+                    "crse_mark": 78
+                }
+            ],
+            "hidden": false,
+            "isProps": false,
+            "configurable": {
+                "name": "text",
+                "description": "text",
+                "displayColumn": "columnSelect@name",
+                "columnSelect@name@displayColumn": {
+                    "allowedTypes": [
+                        "int",
+                        "float",
+                        "text",
+                        "longtext"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "course_ass",
+            "description": "list@e7e55d50-0b0b-4aa6-af58-b49805d3dc56",
+            "displayColumn": "id",
+            "guid": "cb71b9aa-c5eb-4388-aa75-9817257814e5",
+            "columns": [
+                {
+                    "typeStr": "float",
+                    "guid": "a5775840-48b6-4adc-a550-e2c493018676",
+                    "description": "srores course final mark",
+                    "name": "Ass_mark",
+                    "min": 0,
+                    "max": 100,
+                    "defaultValue": 52,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "987235ae-1d48-4b14-bf06-393bc6158239",
+                    "description": "stores asseement weight",
+                    "name": "ass_weight",
+                    "min": 0,
+                    "max": 100,
+                    "defaultValue": 0.5,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "7ddc4c7b-a8af-41ee-9a53-12f08e8f0b15",
+                    "description": "stores course total contribution",
+                    "name": "ass_contrib",
+                    "min": 0,
+                    "max": 100,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "list",
+                    "guid": "31bd8ed0-3ce4-4b5a-9cc7-c60fc7be0c2d",
+                    "name": "ass_number",
+                    "description": "number of assessment types",
+                    "sheet": "6ada4fb9-9987-4a32-bfe6-fd7f68da50dc",
+                    "defaultValue": [],
+                    "iconName": "newList",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text"
+                    }
+                }
+            ],
+            "lines": [],
+            "hidden": true,
+            "isProps": false,
+            "parentSheetGUID": "e7e55d50-0b0b-4aa6-af58-b49805d3dc56",
+            "columnGUID": "7b2b7a8d-fbe7-4db1-a032-3666f8db69cc"
+        },
+        {
+            "name": "ass_assNumber",
+            "description": "props@cb71b9aa-c5eb-4388-aa75-9817257814e5",
+            "displayColumn": "id",
+            "guid": "728a30a0-8def-4ccb-b78c-5717e2254058",
+            "columns": [],
+            "lines": [],
+            "hidden": true,
+            "isProps": true,
+            "parentSheetGUID": "cb71b9aa-c5eb-4388-aa75-9817257814e5",
+            "columnGUID": "b3ebe097-40f8-48ca-88b4-e965336071bb"
+        },
+        {
+            "name": "ass_number",
+            "description": "list@cb71b9aa-c5eb-4388-aa75-9817257814e5",
+            "displayColumn": "id",
+            "guid": "6ada4fb9-9987-4a32-bfe6-fd7f68da50dc",
+            "columns": [
+                {
+                    "typeStr": "float",
+                    "guid": "7a05c465-2748-47a5-86cc-f2193459af3a",
+                    "description": "assessment mark",
+                    "name": "Mark",
+                    "min": 0,
+                    "max": 100,
+                    "defaultValue": 56,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                }
+            ],
+            "lines": [],
+            "hidden": true,
+            "isProps": false,
+            "parentSheetGUID": "cb71b9aa-c5eb-4388-aa75-9817257814e5",
+            "columnGUID": "31bd8ed0-3ce4-4b5a-9cc7-c60fc7be0c2d"
+        }
+    ]
+}

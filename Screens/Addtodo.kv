@@ -1,0 +1,244 @@
+MDScreen: 
+    name:"add_todo"
+    description: description
+    task_date:task_date
+    task_time:task_time
+    task_time2:task_time2
+    
+    MDFloatLayout:
+        md_bg_color: 1,1,1,1
+        MDIconButton:
+            icon:"chevron-left"
+            user_font: "40dp"
+            pos_hint:{"center_y":.95}
+            theme_text_color:'Custom'
+            text_color: 1,170/255,23/255,1
+            on_release:
+                root.manager.transition.direction = "right"
+                root.manager.current = "todoScreen"
+        MDLabel:
+            text: "Add Task"
+            pos_hint: {"center_x": .6,"center_y": .9}
+            font_name: 'assets/fonts/Sono_Monospace-Bold.ttf'
+            font_size: "35dp"
+
+    #title input
+        MDFloatLayout:
+            size_hint:.85,.08
+            pos_hint: {"center_x": .5,"center_y": .82}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id: title
+                hint_text:"Title"
+                size_hint: 1,1
+                pos_hint: {"center_x": .5,"center_y": .5}
+                multiline:False
+                cursor_width: "2dp"
+                foreground_color: 1,170/255,23/255,1
+                background_color: 0,0,0,0
+                padding:10
+                font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
+                font_size:"18dp"
+
+    #description input
+        MDFloatLayout:
+            size_hint:.85,.22
+            pos_hint: {"center_x": .5,"center_y": .66}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id: description
+                hint_text:"Description"
+                size_hint: 1,1
+                pos_hint: {"center_x": .5,"center_y": .5}
+                multiline:True
+                cursor_width: "2dp"
+                foreground_color: 1,170/255,23/255,1
+                background_color: 0,0,0,0
+                padding:15
+                font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
+                font_size:"18dp"
+        
+        #date_time input
+        MDFloatLayout:
+            size_hint:.85,.1
+            pos_hint: {"center_x": .5,"center_y": .488}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id:task_date
+                hint_text:"Date"
+                size_hint: 1,1
+                pos_hint: {"center_x": .5,"center_y": .5}
+                multiline:True
+                cursor_width: "2dp"
+                foreground_color: 1,170/255,23/255,1
+                background_color: 0,0,0,0
+                padding:8
+                font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
+                font_size:"18dp"
+            MDIconButton:
+                icon: 'calendar'
+                pos_hint:{"center_x":.9,"center_y": .5}
+                on_release: app.show_date_picker()
+                padding: '10dp'
+
+        #time picker settings 
+        #From
+        MDFloatLayout:
+            size_hint:.4,.1
+            pos_hint: {"center_x": .28,"center_y": .37}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id:task_time
+                hint_text:"From"
+                size_hint: 1,None
+                pos_hint: {"center_x": .5,"center_y": .6}
+                height: self.minimum_height
+                multiline:False
+                cursor_width: "2dp"
+                foreground_color: 1,170/255,23/255,1
+                background_color: 0,0,0,0
+                padding:15
+                font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
+                font_size:"18dp"
+            MDIconButton:
+                icon: 'clock'
+                pos_hint:{"center_x":.8,"center_y": .3}
+                on_release: app.show_time_picker()
+                padding: '10dp'
+        #To
+        MDFloatLayout:
+            size_hint:.4,.1
+            pos_hint: {"center_x": .72,"center_y": .37}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id:task_time2
+                hint_text:"To"
+                size_hint: 1,1
+                pos_hint: {"center_x": .5,"center_y": .6}
+                height: self.minimum_height
+                multiline:False
+                cursor_width: "2dp"
+                foreground_color: 1,170/255,23/255,1
+                background_color: 0,0,0,0
+                padding:15
+                font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
+                font_size:"18dp"
+            MDIconButton:
+                icon: 'clock'
+                pos_hint:{"center_x":.8,"center_y": .3}
+                on_release: app.show_time_picker2()
+                padding: '10dp'
+        
+
+
+        #add task button
+        Button:
+            text: "ADD TASK"
+            size_hint: .45,.08
+            pos_hint: {"center_x": .5,"center_y": .25}
+            background_color:0,0,0,0
+            font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
+            font_size: "18dp"
+            color: 1,1,1,1
+            on_release:
+                app.add_todo(title.text, description.text,task_date.text,task_time.text,task_time2.text)
+                app.update_task(title.text)
+
+                #bug clears everything on error prompt
+                description.text=""
+                
+            canvas.before:
+                Color:
+                    rgba:(1,170/255,23/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+
+#navigation menu
+    MDFloatLayout:
+        size_hint:.98,.1
+        pos_hint: {"center_x": .5,"center_y": .06}
+        canvas:
+            Color:
+                rgba:(0/255,0/255,0/255,1)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+                
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"center_x":.2 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "right"
+                root.manager.current = "Home"
+
+        MDIconButton:
+            icon: "view-agenda"
+            pos_hint: {"center_x":.4 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "left"
+                root.manager.current = "todoScreen" 
+        
+        MDIconButton:
+            icon: "library"
+            pos_hint: {"center_x":.6 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "left"
+                root.manager.current = "CoursesScreen"
+        
+        MDIconButton:
+            icon: "folder"
+            pos_hint: {"center_x":.8 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "left"
+                root.manager.current = "Home"
+
+        
+        
+
+
+
+
+
+                    
+                    

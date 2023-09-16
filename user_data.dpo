@@ -1,0 +1,75 @@
+{
+    "sheets": [
+        {
+            "name": "user_database",
+            "description": "description of what the sheet is",
+            "displayColumn": "id",
+            "guid": "96ce44e1-f5e3-475a-bd9c-b91a2195e0d6",
+            "columns": [
+                {
+                    "typeStr": "text",
+                    "guid": "8361b2d2-8c7d-4955-a05a-d9521c285e48",
+                    "name": "usr_name",
+                    "description": "store client user name",
+                    "defaultValue": "",
+                    "iconName": "newText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "text"
+                    }
+                },
+                {
+                    "typeStr": "text",
+                    "guid": "95ff4a94-dbe0-49f1-bef6-6b51cf96fb48",
+                    "name": "usr_email",
+                    "description": "store client email",
+                    "defaultValue": "",
+                    "iconName": "newText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "text"
+                    }
+                },
+                {
+                    "typeStr": "longtext",
+                    "guid": "17297423-35e6-42fa-bf00-6e12ce468fd0",
+                    "name": "usr_password",
+                    "description": "store client login password",
+                    "defaultValue": "",
+                    "iconName": "newLongText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "longtext"
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    "guid": "f1c0ea51-1188-4989-b419-2b9de5ebdd26",
+                    "id": "UserID",
+                    "usr_name": "",
+                    "usr_email": "",
+                    "usr_password": ""
+                }
+            ],
+            "hidden": false,
+            "isProps": false,
+            "configurable": {
+                "name": "text",
+                "description": "text",
+                "displayColumn": "columnSelect@name",
+                "columnSelect@name@displayColumn": {
+                    "allowedTypes": [
+                        "int",
+                        "float",
+                        "text",
+                        "longtext"
+                    ]
+                }
+            }
+        }
+    ]
+}
