@@ -41,6 +41,7 @@
 
 MDScreen:
     name: "CoursesScreen"
+    md_bg_color: 244/255,249/255,253/255,.2
     course_list:course_list     
        
    #Course view
@@ -118,6 +119,16 @@ MDScreen:
                 root.manager.transition.direction = "right"
                 root.manager.current = "todoScreen" 
         
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .6,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(12/255,12/255,13/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
         MDIconButton:
             icon: "library"
             pos_hint: {"center_x":.6 ,"center_y":.5}
@@ -134,4 +145,4 @@ MDScreen:
             text_color: 1,1,1,1
             on_press:
                 root.manager.transition.direction = "left"
-                root.manager.current = "Home"
+                root.manager.current = "FileManager"

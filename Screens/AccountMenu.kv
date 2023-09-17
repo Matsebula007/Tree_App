@@ -1,0 +1,158 @@
+MDScreen:
+    name:"AccountMenu"
+    md_bg_color: 244/255,249/255,253/255,1
+   
+    #close button
+    MDIconButton:
+        icon:"close"
+        user_font: "60dp"
+        pos_hint:{"center_x": .9,"center_y":.95}
+        theme_text_color:'Custom'
+        text_color: 12/255,12/255,13/255,1
+        on_press:
+            root.manager.transition.direction = "left"
+            root.manager.current = "Home"
+
+    MDFloatLayout:
+        size_hint:.8,.85
+        pos_hint: {"center_x": .5,"center_y": .5}
+        canvas:
+            Color:
+                rgba:(109/255,207/255,251/255,.8)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+        
+        #image holder
+        MDFloatLayout:
+            size_hint:None,None
+            width: dp(150)
+            height: dp(150)
+            pos_hint: {"center_x": .5,"center_y": .8}
+            canvas:
+                Color:
+                    rgba:(1,1,1,1)
+                Rectangle:
+                    size:self.size
+                    pos:self.pos
+                   
+            # holds image from image picker
+            Image: 
+                source: "assets/profile.jpg"
+                pos_hint: {"center_x": .5, "center_y": .5}
+
+        #Name Display
+        MDFloatLayout:
+            size_hint:.5,.2
+            pos_hint: {"center_x": .5,"center_y": .6}
+            MDLabel:
+                id:Name
+                text: "John Doe"
+                font_name: "assets/fonts/JosefinSans-Bold.ttf"
+                font_size: "23dp"
+                halign: "center"
+                pos_hint: {"center_x": .5,"center_y": .5}
+                color: rgba(0,0,59,255)
+        
+        #Department display
+        MDFloatLayout:
+            size_hint:.9,.2
+            pos_hint: {"center_x": .5,"center_y": .52}
+            MDLabel:
+                id: Dept
+                text: "Science And Engineering Department"
+                font_name: "assets/fonts/JosefinSans-SemiBold.ttf"
+                font_size: "16dp"
+                halign: "center"
+                pos_hint: {"center_x": .5,"center_y": .5}
+                color: rgba(0,0,59,255)
+
+        #Profile settings
+        MDFloatLayout:
+            size_hint:.98,.1
+            pos_hint: {"center_x": .5,"center_y": .4}
+            canvas:
+                Color:
+                    rgba:(109/255,207/255,251/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            MDLabel:
+                text: "Profile settings"
+                font_name: "assets/fonts/JosefinSans-Regular.ttf"
+                font_size: "23dp"
+                #halign: "center"
+                pos_hint:  {"center_x": .52,"center_y": .5}
+                color: rgba(0,0,59,255)
+            MDIconButton:
+                icon:"chevron-right"
+                user_font: "40dp"
+                pos_hint:  {"center_x": .9,"center_y": .5}
+                theme_text_color:'Custom'
+                text_color: 12/255,12/255,13/255,1
+                on_release:
+                    root.manager.transition.direction = "right"
+                    root.manager.current = "CoursesScreen"
+
+
+        #Account settings
+        MDFloatLayout:
+            size_hint:.98,.1
+            pos_hint: {"center_x": .5,"center_y": .25}
+            canvas:
+                Color:
+                    rgba:(109/255,207/255,251/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            MDLabel:
+                text: "Account settings"
+                font_name: "assets/fonts/JosefinSans-Regular.ttf"
+                font_size: "23dp"
+                #halign: "center"
+                pos_hint:  {"center_x": .52,"center_y": .5}
+                color: rgba(0,0,59,255)
+            MDIconButton:
+                icon:"chevron-right"
+                user_font: "40dp"
+                pos_hint:  {"center_x": .9,"center_y": .5}
+                theme_text_color:'Custom'
+                text_color: 12/255,12/255,13/255,1
+                on_release:
+                    root.manager.transition.direction = "right"
+                    root.manager.current = "CoursesScreen"
+
+        
+        #Course settings
+        MDFloatLayout:
+            size_hint:.98,.1
+            pos_hint: {"center_x": .5,"center_y": .1}
+            canvas:
+                Color:
+                    rgba:(109/255,207/255,251/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            MDLabel:
+                text: "Course settings"
+                font_name: "assets/fonts/JosefinSans-Regular.ttf"
+                font_size: "23dp"
+                #halign: "center"
+                pos_hint:  {"center_x": .52,"center_y": .5}
+                color: rgba(0,0,59,255)
+            MDIconButton:
+                icon:"chevron-right"
+                user_font: "40dp"
+                pos_hint:  {"center_x": .9,"center_y": .5}
+                theme_text_color:'Custom'
+                text_color: 12/255,12/255,13/255,1
+                on_release:
+                    root.manager.transition.direction = "right"
+                    root.manager.current = "CoursesScreen"
+
+
+   

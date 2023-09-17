@@ -52,13 +52,21 @@ class TaskCard(FakeRectangularElevationBehavior,MDFloatLayout):
     title = StringProperty()
     description = StringProperty()
     date_time= StringProperty()
-class CourseCard(FakeRectangularElevationBehavior,MDFloatLayout):
+class CourseDisplayCard(FakeRectangularElevationBehavior,MDFloatLayout):
     title = StringProperty()
     description = StringProperty()
+class CoursesCard(FakeRectangularElevationBehavior,MDFloatLayout):
+    title = StringProperty()
+    description = StringProperty()
+class AccountMenu(MDScreen):
+    name = StringProperty()
+    Department = StringProperty()
 
-
-
-class MainApp(MDApp):
+class datab:
+    con = sqlite3.connect('User_Database.db')
+    cursor = con.cursor()
+    
+class MainApp(MDApp):    
       
 #Screen manager build
     def build(self):
@@ -66,21 +74,24 @@ class MainApp(MDApp):
         #self.title ="Ä Goals"
         screen_manager = ScreenManager()
         """ screen_manager.add_widget(Builder.load_file("Screens/Main.kv"))
-        screen_manager.add_widget(Builder.load_file("Screens/Login.kv")) 
+        screen_manager.add_widget(Builder.load_file("Screens/Login.kv"))  
         screen_manager.add_widget(Builder.load_file("Screens/SignUp.kv")) """
         screen_manager.add_widget(Builder.load_file('Screens/homeScreen.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/AccountMenu.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/Addtodo.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/todo.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/Courses.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/addcourse.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/filemanager.kv'))
+
 
         Window.size = [300, 600]
         return screen_manager
-
+    
     def get_tasks(self):
-        con= sqlite3.connect('User_Database.db')
-        cursor = con.cursor()
-        uncomplete_tasks = cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
-        completed_tasks = cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
+        
+        uncomplete_tasks = datab.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
+        completed_tasks = datab.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
 
         return completed_tasks, uncomplete_tasks
     
@@ -131,25 +142,22 @@ class MainApp(MDApp):
 
 #update table
     def update_task(self,title):
-        con= sqlite3.connect('User_Database.db')
-        cursor = con.cursor()
-        cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Title=?",(title,))
-        arr =cursor.fetchall()
+        datab.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Title=?",(title,))
+        arr =datab.cursor.fetchall()
         for i in arr:
             screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],title=title, description=i[1],task_date=i[2],task_time=i[3],task_time2=i[4]))
 
 # add task settings
     def add_todo(self,title,description,date_time,task_time,task_time2):
-        con= sqlite3.connect('User_Database.db')
-        cursor=con.cursor()
        
         if title !="" and description !="" and len(title)<21 and len(description)<61:
             # adding task to database
             data= title,description,date_time,task_time,task_time2,0
-            cursor.execute("INSERT INTO TASK(Title,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
-            con.commit()
+            datab.cursor.execute("INSERT INTO TASK(Title,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
+            datab.con.commit()
             screen_manager.transition.direction = "right"
             screen_manager.current = "todoScreen"
+            screen_manager.get_screen("Home").tasks_home.add_widget(TaskCard(title=title, description=description))
 
         elif title =="":
             Snackbar(text="Title is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
@@ -168,12 +176,10 @@ class MainApp(MDApp):
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
                     font_size ="19dp").open()
 
-#display fromdatabse
+#display from databse
     def display_task_complete(self):
-        con= sqlite3.connect('User_Database.db')
-        cursor = con.cursor()
-        cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
-        arr =cursor.fetchall()
+        datab.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
+        arr =datab.cursor.fetchall()
         for i in arr:
             add_task =(TodoCard(pk=i[0],title=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5]))                                                             
             add_task.ids.check.active = True
@@ -183,10 +189,8 @@ class MainApp(MDApp):
             #prevent double display of items on list    
             # move reading database from button trigger to read to display when app starts                                                     
     def display_task_incomplete(self):
-        con= sqlite3.connect('User_Database.db')
-        cursor = con.cursor()
-        cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=0")
-        arr =cursor.fetchall()
+        datab.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=0")
+        arr =datab.cursor.fetchall()
         for i in arr:
             screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],title=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5]))
         
@@ -197,17 +201,10 @@ class MainApp(MDApp):
         user_email = screen_manager.get_screen("SignUp").usr_email.text
         user_password = screen_manager.get_screen("SignUp").usr_pass.text
 
-        #connecting to database
-        con= sqlite3.connect('User_Database.db')
-        cursor=con.cursor()
-        """ with con:
-            cursor=con.cursor()
-        cursor.execute('CREATE TABLE LOGIN(Name TEXT,Email TEXT,Password TEXT)') """
-    
         if user_name !="" and user_email !="" and user_password !="" and len(user_name)<21 and len(user_password)<60:
             data = (user_name,user_email,user_password)
-            cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
-            con.commit()
+            datab.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
+            datab.con.commit()
             screen_manager.transition.direction = "right"
             screen_manager.current = "Home"
 
@@ -234,14 +231,12 @@ class MainApp(MDApp):
 
 # user login settings
     def userlogin(self,user_name,user_password):
-        con= sqlite3.connect('User_Database.db')
-        cursor=con.cursor()
             
         user_name = screen_manager.get_screen("Login").usr_Username.text
         user_password = screen_manager.get_screen("Login").usr_password.text
         
-        cursor.execute("SELECT Name,Password FROM LOGIN")
-        arr =cursor.fetchall()
+        datab.cursor.execute("SELECT Name,Password FROM LOGIN")
+        arr =datab.cursor.fetchall()
         for i in arr:
             usname = i[0]
             uspassword = i[1]
@@ -301,23 +296,7 @@ class MainApp(MDApp):
         time_dialog.bind(time=self.get_time2)#type: ignore
         time_dialog.open()#type: ignore
 
-
-
-
-
-if __name__ == "__main__":
+if __name__ == "__main__":   
+    
     MainApp().run()
-    
-   
-""" 
-    con= sqlite3.connect('User_Database.db')
-    cursor = con.cursor()
-
-    cursor.execute("DELETE FROM LOGIN WHERE Name =='mukrlo'") 
-    con.commit()
- """
-#screen_manager.get_screen("Home").tasks_home.add_widget(TaskCard(title=title, description=description))
-            #screen_manager.get_screen("Home").course_home.add_widget(CourseCard(title=title, description=description))
-    
-
 

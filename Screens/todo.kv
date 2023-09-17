@@ -16,7 +16,7 @@
         pos_hint: {"center_x": .61,"center_y": .5}
         canvas:
             Color:
-                rgba:(0,1,.898,1)
+                rgba:(0,1,245/255,1)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
@@ -26,7 +26,7 @@
         MDLabel:
             text:root.title
             markup: True
-            font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
+            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size:"18sp"
             size_hint_x:.8
             size_hint_y:.8
@@ -36,12 +36,12 @@
         MDLabel:
             id:description
             text:root.description
-            font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
-            font_size:"12sp"
+            font_name:'assets/fonts/JosefinSans-Regular.ttf'
+            font_size:"14sp"
             markup:True
             size_hint_x:.8
             size_hint_y:.7
-            pos_hint:{"center_x": .48,"center_y":.55}
+            pos_hint:{"center_x": .48,"center_y":.54}
         
         #checkbox settings
         MDCheckbox:
@@ -67,7 +67,7 @@
             id:task_date
             text:root.task_date
             markup: True
-            font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
+            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size:"16sp"
             size_hint_x:.8
             size_hint_y:.2
@@ -113,19 +113,20 @@
 
 MDScreen:
     name: "todoScreen"
+    md_bg_color: 244/255,249/255,253/255,.2
     date_text: date_text
     todo_list:todo_list     
     MDFloatLayout:
         md_bg_color:1,1,1,1
         MDLabel:
             text:"Today"
-            pos_hint: {"center_x":.55,"center_y": .9}
-            font_name: 'assets/fonts/Sono_Monospace-Bold.ttf'
+            pos_hint: {"center_x":.55,"center_y": .95}
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"30dp"
         MDLabel:
             id: date_text
-            pos_hint: {"center_x":.55,"center_y": .95}
-            font_name: 'assets/fonts/Sono_Monospace-Regular.ttf'
+            pos_hint: {"center_x":.55,"center_y": .9}
+            font_name: 'assets/fonts/JosefinSans-Regular.ttf'
             font_size:"14sp"
     
     #task view
@@ -161,7 +162,7 @@ MDScreen:
             size_hint:1,1
             pos_hint: {"center_x":.5,"center_y": .5}
             background_color:0,0,0,0
-            font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "18dp"
             color: 1,1,1,1
             on_press:
@@ -203,7 +204,17 @@ MDScreen:
             on_press:
                 root.manager.transition.direction = "right"
                 root.manager.current = "Home"
-
+        
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .4,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(12/255,12/255,13/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
         MDIconButton:
             icon: "view-agenda"
             pos_hint: {"center_x":.4 ,"center_y":.5}
@@ -229,4 +240,4 @@ MDScreen:
             text_color: 1,1,1,1
             on_press:
                 root.manager.transition.direction = "left"
-                root.manager.current = "Home"
+                root.manager.current = "FileManager"

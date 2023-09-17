@@ -1,6 +1,6 @@
 <TaskCard>
     elevation: 0
-    md_bg_color:0,1,.898
+    md_bg_color:0,1,.898,1
     radius:[8]
     size_hint:None,.99
     #height:dp(160)
@@ -24,7 +24,7 @@
         size_hint_x:.9
         size_hint_y:.9
         pos_hint:{"center_x": .5,"center_y":.4}
-<CourseCard>
+<CourseDisplayCard>
     elevation: 0
     md_bg_color:17/255,162/255,235/255
     radius:[8]
@@ -55,24 +55,25 @@ MDScreen:
     name:"Home"
     tasks_home:tasks_home
     course_home: course_home
+    md_bg_color: 244/255,249/255,253/255,.2
 
     #home header bar
     MDFloatLayout:
-        md_bg_color: 1,1,1,1
-        
+    
         MDIconButton:
-            icon: "account"
+            icon: "menu"
+            user_font: "60dp"
             pos_hint: {"center_x":.1,"center_y":.95}
-            theme_text_color:"Custom"
-            text_color:rgba(26,24,58,255)
+            theme_text_color:'Custom'
+            text_color: 12/255,12/255,13/255,1
             on_press:
                 root.manager.transition.direction = "right"
-                root.manager.current = "todoScreen"
+                root.manager.current = "AccountMenu"
     
     #schedule label
     MDLabel:
         text:"Your schedule"
-        font_name:'assets/fonts/Sono_Monospace-Bold.ttf'
+        font_name:"assets/fonts/JosefinSans-SemiBold.ttf"
         font_size:"20dp"
         pos_hint: {"center_x":.56,"center_y": .9}
 
@@ -81,8 +82,7 @@ MDScreen:
         size_hint:1,.2
         pos_hint: {"center_x": .5,"center_y": .76}
         canvas:
-            Color:
-                rgba:(1,1,1,1)
+            
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
@@ -96,7 +96,6 @@ MDScreen:
             bar_width: 0
             MDGridLayout:
                 orientation:"rl-tb"
-                md_bg_color: 1,1,1,1
                 id: tasks_home
                 rows: 1
                 row_force_default: False
@@ -109,9 +108,10 @@ MDScreen:
     #courses label
     MDLabel:
         text:"Courses"
-        font_name:'assets/fonts/Sono_Monospace-Bold.ttf'
+        font_name:"assets/fonts/JosefinSans-SemiBold.ttf"
         font_size:"22dp"
         pos_hint: {"center_x":.56,"center_y": .64}
+        text_color: 0,0,.59,1
    
     #course view_home
     MDFloatLayout:
@@ -145,6 +145,16 @@ MDScreen:
                 size:self.size
                 pos:self.pos
                 radius:[15]
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .2,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(12/255,12/255,13/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
 
         MDIconButton:
             icon: "home"
@@ -180,4 +190,4 @@ MDScreen:
             text_color: 1,1,1,1
             on_press:
                 root.manager.transition.direction = "left"
-                root.manager.current = "Home"
+                root.manager.current = "FileManager"

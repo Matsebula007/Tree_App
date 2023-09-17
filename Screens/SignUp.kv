@@ -107,61 +107,22 @@ MDScreen:
                     pos: self.pos
                     radius: [5]
 
-        MDLabel:
-            text:"or"
-            font_name:"assets/fonts/Sono_Monospace-Medium.ttf"
-            font_size:"13dp"
-            color:rgba(52,0,231,255)
-            pos_hint: {"center_y":.22}
-            halign:"center"
-        MDFloatLayout:
-            md_bg_color: rgba(178,178,255)
-            size_hint:.3,.002
-            pos_hint: {"center_x":.3, "center_y": .218}    
-        MDFloatLayout:
-            md_bg_color: rgba(178,178,255)
-            size_hint:.3,.002
-            pos_hint: {"center_x":.7, "center_y":.218} 
-        MDLabel:
-            text:"Social Media Sign Up"
-            font_name:"assets/fonts/Sono_Monospace-Medium.ttf"
-            font_size:"13dp"
-            color:rgba(52,0,231,255)
-            pos_hint: {"center_y":.16}
-            halign:"center"
+       
            
         MDFloatLayout:
-            MDIconButton:
-                icon: "google"
-                pos_hint: {"center_x":.4,"center_y":.1}
-                user_font_size:"30dp"
-                theme_text_color:"Custom"
-                text_color:rgba(26,24,58,255)
-                on_press:
-                    root.manager.transition.direction = "right"
-                    root.manager.current = "main"  
-            MDIconButton:
-                icon: "account"
-                pos_hint: {"center_x":.6,"center_y":.1}
-                user_font_size:"30dp"
-                theme_text_color:"Custom"
-                text_color:rgba(26,24,58,255)
-                on_press:
-                    root.manager.transition.direction = "right"
-                    root.manager.current = "main"   
             MDLabel:
                 text:"Already have an account?"
                 font_name:"assets/fonts/Sono_Monospace-Medium.ttf"
                 font_size:"12dp"
                 color:rgba(135,133,193,255)
-                pos_hint: {"center_x":.40,"center_y":.04}
+                pos_hint: {"center_x":.40,"center_y":.2}
                 halign:"center"
             MDTextButton:
                 text:"Sign In"
                 font_name:"assets/fonts/Sono_Monospace-Medium.ttf"
                 font_size:"12dp"
                 color:rgba(52,0,231,255)
-                pos_hint: {"center_x":.80,"center_y":.04}
+                pos_hint: {"center_x":.80,"center_y":.2}
                 on_press:
                     root.manager.transition.direction = "right"
                     root.manager.current = "Login" 
