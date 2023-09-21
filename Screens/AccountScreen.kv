@@ -2,20 +2,10 @@ MDScreen:
     name:"AccountMenu"
     md_bg_color: 244/255,249/255,253/255,1
    
-    #close button
-    MDIconButton:
-        icon:"close"
-        user_font: "60dp"
-        pos_hint:{"center_x": .9,"center_y":.95}
-        theme_text_color:'Custom'
-        text_color: 12/255,12/255,13/255,1
-        on_press:
-            root.manager.transition.direction = "left"
-            root.manager.current = "Home"
 
     MDFloatLayout:
         size_hint:.8,.85
-        pos_hint: {"center_x": .5,"center_y": .5}
+        pos_hint: {"center_x": .5,"center_y": .55}
         canvas:
             Color:
                 rgba:(109/255,207/255,251/255,.8)
@@ -38,7 +28,7 @@ MDScreen:
                     pos:self.pos
                    
             # holds image from image picker
-            Image: 
+            FitImage: 
                 source: "assets/profile.jpg"
                 pos_hint: {"center_x": .5, "center_y": .5}
 
@@ -154,5 +144,61 @@ MDScreen:
                     root.manager.transition.direction = "right"
                     root.manager.current = "CoursesScreen"
 
+    #navigation menu
+    MDFloatLayout:
+        size_hint:.98,.1
+        pos_hint: {"center_x": .5,"center_y": .06}
+        canvas:
+            Color:
+                rgba:(0/255,0/255,0/255,1)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+                
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"center_x":.2 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "right"
+                root.manager.current = "Home"
 
+        MDIconButton:
+            icon: "view-agenda"
+            pos_hint: {"center_x":.4 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "right"
+                root.manager.current = "todoScreen" 
+        
+        MDIconButton:
+            icon: "library"
+            pos_hint: {"center_x":.6 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "right"
+                root.manager.current = "CoursesScreen"
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .8,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(12/255,12/255,13/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
+        
+        MDIconButton:
+            icon: "account"
+            pos_hint: {"center_x":.8 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition.direction = "left"
+                root.manager.current = "AccountMenu"
    

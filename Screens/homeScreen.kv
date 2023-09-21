@@ -134,7 +134,7 @@ MDScreen:
                 padding:10,10
                 spacing:10,10
                 
-    #navigation menu
+#navigation menu
     MDFloatLayout:
         size_hint:.98,.1
         pos_hint: {"center_x": .5,"center_y": .06}
@@ -184,10 +184,10 @@ MDScreen:
                 root.manager.current = "CoursesScreen"
         
         MDIconButton:
-            icon: "folder"
+            icon: "account"
             pos_hint: {"center_x":.8 ,"center_y":.5}
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
                 root.manager.transition.direction = "left"
-                root.manager.current = "FileManager"
+                root.manager.current = "AccountMenu"

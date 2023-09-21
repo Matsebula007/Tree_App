@@ -1,7 +1,7 @@
 <TodoCard>
     id: task_card
     elevation: 0
-    md_bg_color:1,1,1
+    md_bg_color:244/255,249/255,253/255,.4
     radius:[8]
     size_hint:1,None
     height:dp(160)
@@ -16,7 +16,7 @@
         pos_hint: {"center_x": .61,"center_y": .5}
         canvas:
             Color:
-                rgba:(0,1,245/255,1)
+                rgba:app.Noteschooser()
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
@@ -79,35 +79,37 @@
         pos_hint: {"center_x": .09,"center_y": .5}
         canvas:
             Color:
-                rgba:(238/255,238/255,238/255,.2)
+                rgba:(74/255,222/255,222/255,.01)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[15]
+                radius:[10]
         #task status bar settungs
         MDFloatLayout:
             id:bar
-            size_hint:.03,.98
-            pos_hint:{"center_x":.95, "center_y":.5}
-            md_bg_color: 1, 170/255,23/255,1
+            size_hint:.03,1
+            pos_hint:{"center_x":.92, "center_y":.5}
+            md_bg_color:30/255,47/255,151/255,1
           
         MDLabel:
             id:task_time
             text:root.task_time
-            color: 1,170/255,23/255,1
-            font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
-            font_size:"18sp"
-            size_hint_x:.8
+            color: 1/255,1/255,1/255,1
+            font_name: 'assets/fonts/JosefinSans-SemiBoldItalic.ttf'
+            font_size:"26sp"
+            padding:1,0
+            size_hint_x:.7
             size_hint_y:.8
             pos_hint:{"center_x":.5,"center_y": .8}
 
         MDLabel:
             id:task_time2
             text:root.task_time2
-            color:0,179/255,0,1
-            font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
-            font_size:"18sp"
-            size_hint_x:.8
+            color:12/255,12/255,13/255,.5
+            font_name: 'assets/fonts/JosefinSans-SemiBoldItalic.ttf'
+            font_size:"26sp"
+            padding:1,0
+            size_hint_x:.7
             size_hint_y:.8
             pos_hint:{"center_x":.5,"center_y": .2}
 
@@ -117,7 +119,7 @@ MDScreen:
     date_text: date_text
     todo_list:todo_list     
     MDFloatLayout:
-        md_bg_color:1,1,1,1
+        md_bg_color: 244/255,249/255,253/255,.2
         MDLabel:
             text:"Today"
             pos_hint: {"center_x":.55,"center_y": .95}
@@ -140,6 +142,7 @@ MDScreen:
             pos_hint:{"center_x":.5,"center_y": .5}
             bar_width:0
             MDList:
+                orientation:"lr-bt"
                 id: todo_list
                 cols: 1
                 padding:15,10
@@ -149,14 +152,6 @@ MDScreen:
     MDFloatLayout:
         size_hint:.46,.06
         pos_hint: {"center_x": .75,"center_y": .90}
-        canvas:
-            Color:
-                rgba:(238/255,238/255,238/255,0)
-            RoundedRectangle:
-                size:self.size
-                pos:self.pos
-                radius:[15]
-
         Button:
             text: "Add Task"
             size_hint:1,1
@@ -234,10 +229,10 @@ MDScreen:
                 root.manager.current = "CoursesScreen"
         
         MDIconButton:
-            icon: "folder"
+            icon: "account"
             pos_hint: {"center_x":.8 ,"center_y":.5}
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
                 root.manager.transition.direction = "left"
-                root.manager.current = "FileManager"
+                root.manager.current = "AccountMenu"

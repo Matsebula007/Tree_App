@@ -12,10 +12,13 @@ from kivymd.uix.behaviors import FakeRectangularElevationBehavior
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.snackbar import Snackbar
 from kivy.metrics import dp
-import json
+import random
 import sqlite3
 
 
+class database:
+    con = sqlite3.connect('User_Database.db')
+    cursor = con.cursor()
 
 class HomePage(MDScreen):
     pass
@@ -26,22 +29,17 @@ class TodoCard(FakeRectangularElevationBehavior,MDFloatLayout):
         self.pk = pk
 
     def mark_task_as_complete(self, taskid):
-        con= sqlite3.connect('User_Database.db')
-        cursor = con.cursor()
-        cursor.execute("UPDATE TASK SET completed=1 WHERE id=?", (taskid,))
-        con.commit()
+        database.cursor.execute("UPDATE TASK SET completed=1 WHERE id=?", (taskid,))
+        database.con.commit()
     def mark_task_as_incomplete(self, taskid):
-        con= sqlite3.connect('User_Database.db')
-        cursor = con.cursor()
-        cursor.execute("UPDATE TASK SET completed=0 WHERE id=?", (taskid,))
-        con.commit()
-        task_text = cursor.execute("SELECT Description FROM TASK WHERE Id=?", (taskid,)).fetchall()
+    
+        database.cursor.execute("UPDATE TASK SET completed=0 WHERE id=?", (taskid,))
+        database.con.commit()
+        task_text = database.cursor.execute("SELECT Description FROM TASK WHERE Id=?", (taskid,)).fetchall()
         return task_text[0][0]
     def delete_task(self, taskid):
-        con= sqlite3.connect('User_Database.db')
-        cursor = con.cursor()
-        cursor.execute("DELETE FROM TASK WHERE Id=?", (taskid,))
-        con.commit()
+        database.cursor.execute("DELETE FROM TASK WHERE Id=?", (taskid,))
+        database.con.commit()
 
     title = StringProperty()
     description = StringProperty()
@@ -62,10 +60,7 @@ class AccountMenu(MDScreen):
     name = StringProperty()
     Department = StringProperty()
 
-class datab:
-    con = sqlite3.connect('User_Database.db')
-    cursor = con.cursor()
-    
+
 class MainApp(MDApp):    
       
 #Screen manager build
@@ -76,23 +71,19 @@ class MainApp(MDApp):
         """ screen_manager.add_widget(Builder.load_file("Screens/Main.kv"))
         screen_manager.add_widget(Builder.load_file("Screens/Login.kv"))  
         screen_manager.add_widget(Builder.load_file("Screens/SignUp.kv")) """
-        screen_manager.add_widget(Builder.load_file('Screens/homeScreen.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/AccountMenu.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/Addtodo.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/todo.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/Courses.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/addcourse.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/filemanager.kv'))
-
+        screen_manager.add_widget(Builder.load_file('Screens/HomeScreen.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/TaskView.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/AddTask.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/CoursesView.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/Addcourse.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/AccountScreen.kv'))
 
         Window.size = [300, 600]
         return screen_manager
     
     def get_tasks(self):
-        
-        uncomplete_tasks = datab.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
-        completed_tasks = datab.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
-
+        uncomplete_tasks = database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
+        completed_tasks = database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
         return completed_tasks, uncomplete_tasks
     
     def on_start(self):
@@ -107,16 +98,16 @@ class MainApp(MDApp):
         try:
             completed_tasks, uncomplete_tasks = self.get_tasks()
 
-            if uncomplete_tasks != []:
-                for i in uncomplete_tasks:
-                    add_task = (TodoCard(pk=i[0],title=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5]))
-                    screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
-
             if completed_tasks != []:
                 for i in completed_tasks:
                     add_task =(TodoCard(pk=i[0],title=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5]))
                     add_task.ids.check.active = True
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
+            if uncomplete_tasks != []:
+                for i in uncomplete_tasks:
+                    add_task = (TodoCard(pk=i[0],title=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5]))
+                    screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
+
         except Exception as e:
             print(e)
             pass
@@ -126,24 +117,25 @@ class MainApp(MDApp):
 
         if value.active == True:
             description.text = f"[s]{description.text}[/s]"
-            bar.md_bg_color =0,179/255,0,1
+            bar.md_bg_color =28/255, 167/255,236/255,1
             TodoCard.mark_task_as_complete(task_card,task_card.pk)
        
         else:
             remove = ["[s]", "[/s]"]
             for i in remove:
                 description.text = description.text.replace(i,"")
-                bar.md_bg_color =1,170/255,23/255,1
+                bar.md_bg_color =30/255,47/255,151/255,1 
                 TodoCard.mark_task_as_incomplete(task_card,task_card.pk)
 
+#delete widget from view and info from database
     def delete_item(self, task_card):
         screen_manager.get_screen("todoScreen").todo_list.remove_widget(task_card)
         TodoCard.delete_task(task_card,task_card.pk)
 
 #update table
     def update_task(self,title):
-        datab.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Title=?",(title,))
-        arr =datab.cursor.fetchall()
+        database.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Title=?",(title,))
+        arr =database.cursor.fetchall()
         for i in arr:
             screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],title=title, description=i[1],task_date=i[2],task_time=i[3],task_time2=i[4]))
 
@@ -153,11 +145,11 @@ class MainApp(MDApp):
         if title !="" and description !="" and len(title)<21 and len(description)<61:
             # adding task to database
             data= title,description,date_time,task_time,task_time2,0
-            datab.cursor.execute("INSERT INTO TASK(Title,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
-            datab.con.commit()
+            database.cursor.execute("INSERT INTO TASK(Title,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
+            database.con.commit()
             screen_manager.transition.direction = "right"
             screen_manager.current = "todoScreen"
-            screen_manager.get_screen("Home").tasks_home.add_widget(TaskCard(title=title, description=description))
+            #screen_manager.get_screen("Home").tasks_home.add_widget(TaskCard(title=title, description=description))
 
         elif title =="":
             Snackbar(text="Title is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
@@ -178,8 +170,8 @@ class MainApp(MDApp):
 
 #display from databse
     def display_task_complete(self):
-        datab.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
-        arr =datab.cursor.fetchall()
+        database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
+        arr =database.cursor.fetchall()
         for i in arr:
             add_task =(TodoCard(pk=i[0],title=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5]))                                                             
             add_task.ids.check.active = True
@@ -189,8 +181,8 @@ class MainApp(MDApp):
             #prevent double display of items on list    
             # move reading database from button trigger to read to display when app starts                                                     
     def display_task_incomplete(self):
-        datab.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=0")
-        arr =datab.cursor.fetchall()
+        database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=0")
+        arr =database.cursor.fetchall()
         for i in arr:
             screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],title=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5]))
         
@@ -203,8 +195,8 @@ class MainApp(MDApp):
 
         if user_name !="" and user_email !="" and user_password !="" and len(user_name)<21 and len(user_password)<60:
             data = (user_name,user_email,user_password)
-            datab.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
-            datab.con.commit()
+            database.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
+            database.con.commit()
             screen_manager.transition.direction = "right"
             screen_manager.current = "Home"
 
@@ -235,8 +227,8 @@ class MainApp(MDApp):
         user_name = screen_manager.get_screen("Login").usr_Username.text
         user_password = screen_manager.get_screen("Login").usr_password.text
         
-        datab.cursor.execute("SELECT Name,Password FROM LOGIN")
-        arr =datab.cursor.fetchall()
+        database.cursor.execute("SELECT Name,Password FROM LOGIN")
+        arr =database.cursor.fetchall()
         for i in arr:
             usname = i[0]
             uspassword = i[1]
@@ -295,6 +287,12 @@ class MainApp(MDApp):
         time_dialog = MDTimePicker()
         time_dialog.bind(time=self.get_time2)#type: ignore
         time_dialog.open()#type: ignore
+
+    def Noteschooser(self):
+        colors = [(85/255,204/255,96/255,1),(43/255,175/255,252/255,1),
+                  (158/255,245/255,1,1),(186/255,232/255,172/255,1)]
+        d = random.choice(colors)
+        return d
 
 if __name__ == "__main__":   
     
