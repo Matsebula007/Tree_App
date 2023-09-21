@@ -65,10 +65,9 @@ MDScreen:
             canvas:
                 Color:
                     rgba:(109/255,207/255,251/255,1)
-                RoundedRectangle:
+                Rectangle:
                     size:self.size
                     pos:self.pos
-                    radius:[15]
             MDLabel:
                 text: "Profile settings"
                 font_name: "assets/fonts/JosefinSans-Regular.ttf"
@@ -94,10 +93,9 @@ MDScreen:
             canvas:
                 Color:
                     rgba:(109/255,207/255,251/255,1)
-                RoundedRectangle:
+                Rectangle:
                     size:self.size
                     pos:self.pos
-                    radius:[15]
             MDLabel:
                 text: "Account settings"
                 font_name: "assets/fonts/JosefinSans-Regular.ttf"
@@ -115,7 +113,6 @@ MDScreen:
                     root.manager.transition.direction = "right"
                     root.manager.current = "CoursesScreen"
 
-        
         #Course settings
         MDFloatLayout:
             size_hint:.98,.1
@@ -123,10 +120,9 @@ MDScreen:
             canvas:
                 Color:
                     rgba:(109/255,207/255,251/255,1)
-                RoundedRectangle:
+                Rectangle:
                     size:self.size
-                    pos:self.pos
-                    radius:[15]
+                    pos:self.pos      
             MDLabel:
                 text: "Course settings"
                 font_name: "assets/fonts/JosefinSans-Regular.ttf"

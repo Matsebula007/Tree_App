@@ -16,7 +16,7 @@ import random
 import sqlite3
 
 
-class database:
+class database():
     con = sqlite3.connect('User_Database.db')
     cursor = con.cursor()
 
@@ -46,20 +46,21 @@ class TodoCard(FakeRectangularElevationBehavior,MDFloatLayout):
     task_date= StringProperty()
     task_time = StringProperty()
     task_time2 = StringProperty()
-class TaskCard(FakeRectangularElevationBehavior,MDFloatLayout):
-    title = StringProperty()
-    description = StringProperty()
-    date_time= StringProperty()
-class CourseDisplayCard(FakeRectangularElevationBehavior,MDFloatLayout):
-    title = StringProperty()
-    description = StringProperty()
-class CoursesCard(FakeRectangularElevationBehavior,MDFloatLayout):
-    title = StringProperty()
-    description = StringProperty()
-class AccountMenu(MDScreen):
+class CourseCard(FakeRectangularElevationBehavior,MDFloatLayout):
+    def __init__(self, course_key=None, **kwargs):
+        super().__init__(**kwargs)
+        # state a course_key which we shall use link the list items with the database primary keys
+        self.course_key = course_key
+    
+    CourseID = StringProperty()
+    C_Credit = StringProperty()
+    C_CA=StringProperty()
+    C_Basis=StringProperty()
+    CA_ratio=StringProperty()
+    Ex_ratio=StringProperty()
+class Account(MDScreen):
     name = StringProperty()
     Department = StringProperty()
-
 
 class MainApp(MDApp):    
       
@@ -117,7 +118,7 @@ class MainApp(MDApp):
 
         if value.active == True:
             description.text = f"[s]{description.text}[/s]"
-            bar.md_bg_color =28/255, 167/255,236/255,1
+            bar.md_bg_color =12/255,12/255,13/255,.5
             TodoCard.mark_task_as_complete(task_card,task_card.pk)
        
         else:
@@ -137,7 +138,8 @@ class MainApp(MDApp):
         database.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Title=?",(title,))
         arr =database.cursor.fetchall()
         for i in arr:
-            screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],title=title, description=i[1],task_date=i[2],task_time=i[3],task_time2=i[4]))
+            screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],title=title, description=i[1],
+                                                                                  task_date=i[2],task_time=i[3],task_time2=i[4]))
 
 # add task settings
     def add_todo(self,title,description,date_time,task_time,task_time2):
@@ -167,13 +169,17 @@ class MainApp(MDApp):
             Snackbar(text="Description too long! must<60",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
                     font_size ="19dp").open()
-
+# add course settings
+    def add_course(self,CourseID,C_Credit,CA_ratio,Ex_ratio):
+        screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
+         
 #display from databse
     def display_task_complete(self):
         database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
         arr =database.cursor.fetchall()
         for i in arr:
-            add_task =(TodoCard(pk=i[0],title=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5]))                                                             
+            add_task =(TodoCard(pk=i[0],title=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],
+                                task_time2=i[5]))                                                             
             add_task.ids.check.active = True
             if add_task.ids.pk !=i[0]:
                 screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
@@ -184,7 +190,8 @@ class MainApp(MDApp):
         database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=0")
         arr =database.cursor.fetchall()
         for i in arr:
-            screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],title=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5]))
+            screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],title=i[1], description=i[2],
+                                                                                  task_date=i[3],task_time=i[4],task_time2=i[5]))
         
 
 # User sign up settings
@@ -293,6 +300,12 @@ class MainApp(MDApp):
                   (158/255,245/255,1,1),(186/255,232/255,172/255,1)]
         d = random.choice(colors)
         return d
+    def Courseschooser(self):
+        pigments =[(121/255,126/255,246/255,1),(74/255,222/255,222/255,1),
+                  (26/255,167/255,236/255,1),(123/255,213/255,245/255,1),
+                  (111/255,255/255,238/255,1),(242/255,181/255,212/255,1)]
+        p =random.choice(pigments)
+        return p
 
 if __name__ == "__main__":   
     

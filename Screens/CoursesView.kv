@@ -1,57 +1,177 @@
-<CoursesCard>
+<CourseCard>
+    id: course_card
     elevation: 0
-    md_bg_color:0,1,.898
+    md_bg_color:244/255,249/255,253/255,.4
     radius:[8]
     size_hint:1,None
-    height:dp(160)
-    #width: dp(140)
-    MDFloatLayout:
-        id:bar
-        size_hint:.9,.01
-        pos_hint:{"center_x":.5, "center_y":.02}
-        md_bg_color: 1, 170/255,23/255,1
-    
+    height:dp(180)
+    #card primary key holder
     MDLabel:
-        text:root.title
-        markup: True
-        font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
-        font_size:"20sp"
-        size_hint_x:.8
-        size_hint_y:.8
-        pos_hint:{"center_x":.5,"center_y": .8}
-    
-    MDLabel:
-        #reead data from json database
-        id:description
-        text:root.description
-        font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
+        id:course_key
         markup:True
-        size_hint_x:.9
-        size_hint_y:.9
-        pos_hint:{"center_x": .5,"center_y":.4}
-    MDCheckbox:
-        size_hint:None,None
-        size:"48dp","48dp"
-        unselected_color: 1,170/255,23/255,1
-        selected_color: 0,179/255,0,1
-        pos_hint:{"center_x":.9,"center_y": .8}
-        on_active: app.on_complete(*args, description,bar)
+
+    #task note settings
+    MDFloatLayout:
+        size_hint:.8,1
+        pos_hint: {"center_x": .61,"center_y": .5}
+        canvas:
+            Color:
+                rgba:app.Courseschooser()
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+        
+        #Course identity
+        MDLabel:
+            text:root.CourseID
+            #text:"PHY 411"
+            markup: True
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"24sp"
+            size_hint_x:.8
+            size_hint_y:.5
+            pos_hint:{"center_x":.48,"center_y": .8}
+
+        #course credit
+        MDLabel:
+            text:root.C_Credit
+            #text:"3.4"
+            markup: True
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"22sp"
+            size_hint_x:.8
+            size_hint_y:.5
+            pos_hint:{"center_x":.7,"center_y": .8}
+        
+
+        #CA settings 
+        MDFloatLayout:
+            size_hint:.5,.5
+            pos_hint: {"center_x": .48,"center_y": .4}
+            canvas:
+                Color:
+                    rgba:(74/255,222/255,222/255,.01)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[10]
+            
+            MDLabel:
+                text:"CA"
+                color: 1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"26sp"
+                padding:1,0
+                size_hint_x:.7
+                size_hint_y:.8
+                pos_hint:{"center_x":.5,"center_y": .8}
+
+        #Basis settings 
+        MDFloatLayout:
+            size_hint:.5,.5
+            pos_hint: {"center_x": .75,"center_y": .4}
+            canvas:
+                Color:
+                    rgba:(74/255,222/255,222/255,.01)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[10]
+            MDLabel:
+                text:"Basis"
+                color:1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"26sp"
+                padding:1,0
+                size_hint_x:.7
+                size_hint_y:.8
+                pos_hint:{"center_x":.5,"center_y": .8}
+
+        #CE Ratio
+        MDFloatLayout:
+            size_hint:.98,.3
+            pos_hint: {"center_x": .5,"center_y": .2}
+            canvas:
+                Color:
+                    rgba:(74/255,222/255,222/255,.01)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[10]
+            MDLabel:
+                text:"CA : Exam Ratio"
+                color:1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"26sp"
+                padding:1,0
+                size_hint_x:.7
+                size_hint_y:.8
+                pos_hint:{"center_x":.4,"center_y": .5}
+
+            MDLabel:
+                text:root.CA_ratio
+                color:1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"26sp"
+                padding:1,0
+                size_hint_x:.7
+                size_hint_y:.8
+                pos_hint:{"center_x":.6,"center_y": .5}
+            MDLabel:
+                text:":"
+                color:1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"26sp"
+                padding:1,0
+                size_hint_x:.7
+                size_hint_y:.8
+                pos_hint:{"center_x":.7,"center_y": .5}
+
+            MDLabel:
+                text:root.Ex_ratio
+                color:1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"26sp"
+                padding:1,0
+                size_hint_x:.7
+                size_hint_y:.8
+                pos_hint:{"center_x":.8,"center_y": .5}
 
 
 
 MDScreen:
     name: "CoursesScreen"
     md_bg_color: 244/255,249/255,253/255,.2
-    course_list:course_list     
+    course_list:course_list  
+
+    #your courses
+    MDFloatLayout:
+        md_bg_color: 244/255,249/255,253/255,.2
+        MDLabel:
+            text:"Your courses"
+            pos_hint: {"center_x":.54,"center_y": .94}
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"28dp"  
+
+    #add Course button
+    MDIconButton:
+        icon: "plus-circle"
+        pos_hint: {"center_x":.9 ,"center_y":.94}
+        theme_text_color:"Custom"
+        text_color: (0/255,0/255,0/255,.5)
+        on_release:
+            root.manager.transition.direction = "left"
+            root.manager.current = "addCourse"
        
    #Course view
     MDFloatLayout:
-        size_hint:.98,.89
-        pos_hint:{"center_x":.5,"center_y": .48}    
+        size_hint:.92,.89
+        pos_hint:{"center_x":.5,"center_y": .46}    
         ScrollView:
             do_scroll_y:True
             do_scroll_x:False
-            size_hint_y:.85
+            size_hint_y:1
             pos_hint:{"center_x":.5,"center_y": .5}
             bar_width:0
             GridLayout:
@@ -65,28 +185,7 @@ MDScreen:
                 padding:15,10
                 spacing:15,10
 
-    #add Course button
-    MDFloatLayout:
-        size_hint:.5,.08
-        pos_hint: {"center_x": .75,"center_y": .9}
-        Button:
-            text: "Add Course"
-            size_hint:1,1
-            pos_hint: {"center_x":.5,"center_y": .5}
-            background_color:0,0,0,0
-            font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
-            font_size: "18dp"
-            color: 1,1,1,1
-            on_press:
-                root.manager.transition.direction = "left"
-                root.manager.current = "add_Assessment"
-            canvas.before:
-                Color:
-                    rgba:(20/255,252/255,140/255,1)
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[15]
+    
         
 
 #navigation menu                    
