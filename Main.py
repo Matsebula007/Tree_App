@@ -4,6 +4,7 @@ from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from kivy.uix.screenmanager import ScreenManager
 from kivy.properties import StringProperty
+from kivy.properties import NumericProperty
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.pickers import MDTimePicker
 import datetime
@@ -86,6 +87,9 @@ class MainApp(MDApp):
         uncomplete_tasks = database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
         completed_tasks = database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
         return completed_tasks, uncomplete_tasks
+    def get_courses(self):
+        taken_courses = database.cursor.execute("SELECT ID, COURSE_ID,CREDIT,CA_R,EX_R FROM COURSES").fetchall()
+        return taken_courses
     
     def on_start(self):
         today = date.today()
@@ -98,6 +102,7 @@ class MainApp(MDApp):
 
         try:
             completed_tasks, uncomplete_tasks = self.get_tasks()
+            taken_courses =self.get_courses()
 
             if completed_tasks != []:
                 for i in completed_tasks:
@@ -106,8 +111,15 @@ class MainApp(MDApp):
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
             if uncomplete_tasks != []:
                 for i in uncomplete_tasks:
-                    add_task = (TodoCard(pk=i[0],title=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5]))
+                    add_task = TodoCard(pk=i[0],title=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5])
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
+            if taken_courses !=[]:
+                for c in taken_courses:
+                    cr= str (c[2])
+                    ca = str (c[3])
+                    ex = str (c[4])
+                    add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex)
+                    screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
 
         except Exception as e:
             print(e)
@@ -133,7 +145,7 @@ class MainApp(MDApp):
         screen_manager.get_screen("todoScreen").todo_list.remove_widget(task_card)
         TodoCard.delete_task(task_card,task_card.pk)
 
-#update table
+#update TASK view table
     def update_task(self,title):
         database.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Title=?",(title,))
         arr =database.cursor.fetchall()
@@ -169,10 +181,46 @@ class MainApp(MDApp):
             Snackbar(text="Description too long! must<60",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
                     font_size ="19dp").open()
+
+#adding new course to course view
+    def update_Course(self,CourseID):
+        #database.cursor.execute("DELETE FROM COURSES WHERE COURSE_ID=?",("MUK",))
+        
+        database.con.commit()
+        database.cursor.execute("SELECT ID,CREDIT,CA_R,EX_R FROM COURSES WHERE COURSE_ID=?",(CourseID,))
+        arr =database.cursor.fetchall()
+        for c in arr:
+            cr= str (c[1])
+            ca = str (c[2])
+            ex = str (c[3])
+            crse= CourseCard(course_key = c[0],CourseID=CourseID, C_Credit=cr,CA_ratio=ca,Ex_ratio=ex)
+            screen_manager.get_screen("CoursesScreen").course_list.add_widget(crse)
+
 # add course settings
     def add_course(self,CourseID,C_Credit,CA_ratio,Ex_ratio):
-        screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
-         
+        #database.cursor.execute("DROP TABLE COURSES")
+        #database.cursor.execute("CREATE TABLE COURSES(ID INTEGER PRIMARY KEY AUTOINCREMENT,COURSE_ID TEXT NOT NULL UNIQUE,CREDIT DECIMAL,CA_R INTERGER NOT NULL,EX_R INTERGER NOT NULL,CA DECIMAL,BASIS DECIMAL ) ")
+        if CourseID !="" and CA_ratio !="" and Ex_ratio !="":
+            # adding COURSE to database
+            data= CourseID,C_Credit,CA_ratio,Ex_ratio
+            database.cursor.execute("INSERT INTO COURSES(COURSE_ID,CREDIT,CA_R,EX_R) VALUES(?,?,?,?)",data)
+            database.con.commit()
+            screen_manager.transition.direction = "right"
+            screen_manager.current = "CoursesScreen"
+            #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
+ 
+        elif CourseID =="":
+            Snackbar(text="Course ID cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                    font_size ="19dp").open() # type: ignore
+        elif CA_ratio =="":
+            Snackbar(text="CA Weight cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                    font_size ="19dp").open() # type: ignore
+        elif Ex_ratio =="":
+            Snackbar(text="Exam Weight cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                    font_size ="19dp").open() # type: ignore
 #display from databse
     def display_task_complete(self):
         database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")

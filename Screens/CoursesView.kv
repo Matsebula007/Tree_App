@@ -10,10 +10,10 @@
         id:course_key
         markup:True
 
-    #task note settings
+    #course CARD settings
     MDFloatLayout:
-        size_hint:.8,1
-        pos_hint: {"center_x": .61,"center_y": .5}
+        size_hint:1,1
+        pos_hint: {"center_x": .5,"center_y": .5}
         canvas:
             Color:
                 rgba:app.Courseschooser()
@@ -25,30 +25,28 @@
         #Course identity
         MDLabel:
             text:root.CourseID
-            #text:"PHY 411"
             markup: True
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
-            font_size:"24sp"
+            font_size:"26sp"
             size_hint_x:.8
             size_hint_y:.5
-            pos_hint:{"center_x":.48,"center_y": .8}
+            pos_hint:{"center_x":.48,"center_y": .85}
 
         #course credit
         MDLabel:
             text:root.C_Credit
-            #text:"3.4"
             markup: True
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"22sp"
             size_hint_x:.8
             size_hint_y:.5
-            pos_hint:{"center_x":.7,"center_y": .8}
+            pos_hint:{"center_x":.48,"center_y": .7}
         
 
         #CA settings 
         MDFloatLayout:
             size_hint:.5,.5
-            pos_hint: {"center_x": .48,"center_y": .4}
+            pos_hint: {"center_x": .48,"center_y": .2}
             canvas:
                 Color:
                     rgba:(74/255,222/255,222/255,.01)
@@ -70,7 +68,7 @@
         #Basis settings 
         MDFloatLayout:
             size_hint:.5,.5
-            pos_hint: {"center_x": .75,"center_y": .4}
+            pos_hint: {"center_x": .75,"center_y": .2}
             canvas:
                 Color:
                     rgba:(74/255,222/255,222/255,.01)
@@ -88,56 +86,54 @@
                 size_hint_y:.8
                 pos_hint:{"center_x":.5,"center_y": .8}
 
-        #CE Ratio
-        MDFloatLayout:
-            size_hint:.98,.3
-            pos_hint: {"center_x": .5,"center_y": .2}
-            canvas:
-                Color:
-                    rgba:(74/255,222/255,222/255,.01)
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[10]
-            MDLabel:
-                text:"CA : Exam Ratio"
-                color:1/255,1/255,1/255,1
-                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
-                font_size:"26sp"
-                padding:1,0
-                size_hint_x:.7
-                size_hint_y:.8
-                pos_hint:{"center_x":.4,"center_y": .5}
+    #CA Ratio
+    MDFloatLayout:
+        size_hint:.2,.3
+        pos_hint: {"center_x": .64,"center_y": .8}
+        canvas:
+            Color:
+                rgba:(30/255,47/255,151/255,1)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[10] 
+        MDLabel:
+            text:"CA"
+            color:244/255,249/255,253/255,1
+            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+            font_size:"18sp"
+            pos_hint:{"center_x":.78,"center_y": .78}
+        MDLabel:
+            text:root.CA_ratio
+            color:244/255,249/255,253/255,1
+            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+            font_size:"20sp"
+            pos_hint:{"center_x":.78,"center_y": .38}
 
-            MDLabel:
-                text:root.CA_ratio
-                color:1/255,1/255,1/255,1
-                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
-                font_size:"26sp"
-                padding:1,0
-                size_hint_x:.7
-                size_hint_y:.8
-                pos_hint:{"center_x":.6,"center_y": .5}
-            MDLabel:
-                text:":"
-                color:1/255,1/255,1/255,1
-                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
-                font_size:"26sp"
-                padding:1,0
-                size_hint_x:.7
-                size_hint_y:.8
-                pos_hint:{"center_x":.7,"center_y": .5}
+    #Ex Ratio
+    MDFloatLayout:
+        size_hint:.2,.3
+        pos_hint: {"center_x":.86,"center_y": .8}
+        canvas:
+            Color:
+                rgba:(30/255,47/255,151/255,1)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[10]
+        MDLabel:
+            text:"Exam"
+            color:244/255,249/255,253/255,1
+            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+            font_size:"16sp"
+            pos_hint:{"center_x":.6,"center_y": .78}
 
-            MDLabel:
-                text:root.Ex_ratio
-                color:1/255,1/255,1/255,1
-                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
-                font_size:"26sp"
-                padding:1,0
-                size_hint_x:.7
-                size_hint_y:.8
-                pos_hint:{"center_x":.8,"center_y": .5}
-
+        MDLabel:
+            text:root.Ex_ratio
+            color:244/255,249/255,253/255,1
+            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+            font_size:"20sp"
+            pos_hint:{"center_x":.8,"center_y": .38}
 
 
 MDScreen:
@@ -166,7 +162,7 @@ MDScreen:
        
    #Course view
     MDFloatLayout:
-        size_hint:.92,.89
+        size_hint:.96,.89
         pos_hint:{"center_x":.5,"center_y": .46}    
         ScrollView:
             do_scroll_y:True
@@ -178,16 +174,13 @@ MDScreen:
                 #orientation: "lr-bt"
                 md_bg_color: 1,1,1,1
                 id: course_list
-                cols: 2
+                cols: 1
                 height:self.minimum_height
                 row_default_height:80
                 size_hint_y:None
-                padding:15,10
-                spacing:15,10
-
-    
-        
-
+                padding:10,10
+                spacing:10,10
+  
 #navigation menu                    
     MDFloatLayout:
         size_hint:.98,.1

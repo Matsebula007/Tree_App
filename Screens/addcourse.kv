@@ -121,7 +121,7 @@ MDScreen:
         
 
 
-        #add task button
+        #add course button
         Button:
             text: "Add Course"
             size_hint: .82,.08
@@ -132,8 +132,7 @@ MDScreen:
             color: 1,1,1,1
             on_release:
                 app.add_course(CourseID.text,C_Credit.text,CA_ratio.text,Ex_ratio.text)
-                root.manager.transition.direction = "right"
-                root.manager.current = "CoursesScreen"
+                app.update_Course(CourseID.text)
     
                 #bug clears everything on error prompt
                 #description.text=""
