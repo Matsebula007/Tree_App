@@ -201,14 +201,17 @@ class MainApp(MDApp):
             Snackbar(text="Description is missing!",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
                     font_size ="19dp").open()
+            
         elif len(title)>21:
             Snackbar(text="Title too long!must<20",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
                     font_size ="19dp").open()
+            screen_manager.get_screen("add_todo").title.text=""
         elif len(description)>61:
             Snackbar(text="Description too long! must<60",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
                     font_size ="19dp").open()
+            screen_manager.get_screen("add_todo").description.text=""
 
 #adding new course to course view
     def update_Course(self,CourseID):
