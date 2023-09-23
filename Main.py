@@ -3,14 +3,15 @@ from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from kivy.uix.screenmanager import ScreenManager
-from kivy.properties import StringProperty
-from kivy.properties import NumericProperty
+from kivy.properties import StringProperty,ListProperty,NumericProperty
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.pickers import MDTimePicker
+from kivy.clock import Clock
 import datetime
 from datetime import date
 from kivymd.uix.behaviors import FakeRectangularElevationBehavior
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivy.uix.anchorlayout import AnchorLayout
 from kivymd.uix.snackbar import Snackbar
 from kivy.metrics import dp
 import random
@@ -21,8 +22,28 @@ class database():
     con = sqlite3.connect('User_Database.db')
     cursor = con.cursor()
 
-class HomePage(MDScreen):
-    pass
+class CircularProgressBar(AnchorLayout):
+    set_value = NumericProperty(0)
+    bar_color = ListProperty([244/255,249/255,253/255])
+    text =StringProperty("0%")
+    counter =0
+    value =NumericProperty(0)
+    duration=NumericProperty(1.5)
+    
+    def __init__(self,**kwargs):
+        super(CircularProgressBar,self).__init__(**kwargs)
+        Clock.schedule_once(self.animate,0)
+    def animate(self,*args):
+        Clock.schedule_interval(self.percent_counter,self.duration/self.value)
+    def percent_counter(self,*args):
+        if self.counter < self.value:
+            self.counter += 1
+            self.text =f"{self.counter}%"
+            self.set_value =self.counter
+        else:
+            Clock.unschedule(self.percent_counter)
+
+
 class TodoCard(FakeRectangularElevationBehavior,MDFloatLayout):
     def __init__(self, pk=None, **kwargs):
         super().__init__(**kwargs)
@@ -90,7 +111,6 @@ class MainApp(MDApp):
     def get_courses(self):
         taken_courses = database.cursor.execute("SELECT ID, COURSE_ID,CREDIT,CA_R,EX_R FROM COURSES").fetchall()
         return taken_courses
-    
     def on_start(self):
         today = date.today()
         wd = date.weekday(today)
@@ -124,7 +144,15 @@ class MainApp(MDApp):
         except Exception as e:
             print(e)
             pass
-
+    def creditscal(self):
+        database.cursor.execute("SELECT CREDIT FROM COURSES")
+        creds = database.cursor.fetchall()
+        total_cre =0
+        for cre in creds:
+            for i in cre:
+                total_cre =total_cre + i
+        cred_format ="{:.1f}".format(total_cre)
+        return cred_format
 #checkbox seetings
     def on_complete(self,task_card,value,description,bar):
 
@@ -345,13 +373,12 @@ class MainApp(MDApp):
 
     def Noteschooser(self):
         colors = [(85/255,204/255,96/255,1),(43/255,175/255,252/255,1),
-                  (158/255,245/255,1,1),(186/255,232/255,172/255,1)]
+                  (158/255,245/255,1,1),(186/255,232/255,172/255,1),(120/255,127/255,246/255,1)]
         d = random.choice(colors)
         return d
     def Courseschooser(self):
         pigments =[(121/255,126/255,246/255,1),(74/255,222/255,222/255,1),
-                  (26/255,167/255,236/255,1),(123/255,213/255,245/255,1),
-                  (111/255,255/255,238/255,1),(242/255,181/255,212/255,1)]
+                  (26/255,167/255,236/255,1),(130/255,215/255,255/255,1)]
         p =random.choice(pigments)
         return p
 

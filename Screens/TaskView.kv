@@ -26,18 +26,18 @@
         MDLabel:
             text:root.title
             markup: True
-            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
-            font_size:"18sp"
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"20sp"
             size_hint_x:.8
             size_hint_y:.8
-            pos_hint:{"center_x":.48,"center_y": .8}
+            pos_hint:{"center_x":.48,"center_y": .82}
         
         #task description settings
         MDLabel:
             id:description
             text:root.description
-            font_name:'assets/fonts/JosefinSans-Regular.ttf'
-            font_size:"14sp"
+            font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
+            font_size:"16sp"
             markup:True
             size_hint_x:.8
             size_hint_y:.7
@@ -48,8 +48,7 @@
             id:check
             size_hint:None,None
             size:"48dp","48dp"
-            unselected_color: 1,170/255,23/255,1
-            selected_color: 0,179/255,0,1
+            
             pos_hint:{"center_x":.9,"center_y": .8}
             on_active: app.on_complete(task_card,check,description,bar)
         
@@ -67,7 +66,7 @@
             id:task_date
             text:root.task_date
             markup: True
-            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"16sp"
             size_hint_x:.8
             size_hint_y:.2
@@ -75,7 +74,7 @@
 
     #task time settings 
     MDFloatLayout:
-        size_hint:.2,1
+        size_hint:.25,1
         pos_hint: {"center_x": .09,"center_y": .5}
         canvas:
             Color:
@@ -83,12 +82,12 @@
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[10]
+                radius:[15]
         #task status bar settungs
         MDFloatLayout:
             id:bar
-            size_hint:.03,1
-            pos_hint:{"center_x":.92, "center_y":.5}
+            size_hint:.04,.9
+            pos_hint:{"center_x":.9, "center_y":.5}
             md_bg_color:30/255,47/255,151/255,1
           
         MDLabel:
@@ -96,10 +95,10 @@
             text:root.task_time
             color: 1/255,1/255,1/255,1
             font_name: 'assets/fonts/JosefinSans-SemiBoldItalic.ttf'
-            font_size:"26sp"
+            font_size:"24sp"
             padding:1,0
-            size_hint_x:.7
-            size_hint_y:.8
+            size_hint_x:.51
+            size_hint_y:.51
             pos_hint:{"center_x":.5,"center_y": .8}
 
         MDLabel:
@@ -107,10 +106,10 @@
             text:root.task_time2
             color:12/255,12/255,13/255,.5
             font_name: 'assets/fonts/JosefinSans-SemiBoldItalic.ttf'
-            font_size:"26sp"
+            font_size:"24sp"
             padding:1,0
-            size_hint_x:.7
-            size_hint_y:.8
+            size_hint_x:.51
+            size_hint_y:.51
             pos_hint:{"center_x":.5,"center_y": .2}
 
 MDScreen:
@@ -141,12 +140,17 @@ MDScreen:
             size_hint_y:.85
             pos_hint:{"center_x":.5,"center_y": .5}
             bar_width:0
-            MDList:
-                orientation:"lr-bt"
+            
+            GridLayout:
+                orientation: "lr-bt"
+                md_bg_color: 1,1,1,1
                 id: todo_list
                 cols: 1
-                padding:15,10
-                spacing:15,10
+                height:self.minimum_height
+                row_default_height:80
+                size_hint_y:None
+                padding:10,10
+                spacing:10,10
                 
     #top add task button
     MDFloatLayout:
