@@ -64,9 +64,15 @@
             size_hint_x:.8
             size_hint_y:.5
             pos_hint:{"center_x":.48,"center_y": .7}
-        
 
-        #CA settings 
+        #to more on course button
+        MDIconButton:
+            icon:"chevron-right"
+            pos_hint:{"center_x":.9,"center_y": .1}
+            on_press:
+                root.navigate()
+
+        #CA CircularProgressBar settings 
         MDFloatLayout:
             size_hint:.5,.5
             pos_hint: {"center_x": .22,"center_y": .32}

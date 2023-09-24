@@ -1,0 +1,266 @@
+MDScreen:
+    name: "addAssesment"
+    md_bg_color: 244/255,249/255,253/255,.4
+    
+    
+    MDFloatLayout:
+        md_bg_color: 1,1,1,1
+        MDIconButton:
+            icon:"chevron-left"
+            user_font: "40dp"
+            pos_hint:{"center_y":.95}
+            theme_text_color:'Custom'
+            text_color:  12/255,12/255,13/255,1
+            on_release:
+                root.manager.transition.direction = "right"
+                root.manager.current = "CoursesScreen"
+        MDLabel:
+            text: "Add Assessment"
+            pos_hint: {"center_x": .7,"center_y": .95}
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size: "28dp"
+
+    #Course ID for Assessment
+        MDFloatLayout:
+            size_hint:.8,.08
+            pos_hint: {"center_x": .5,"center_y": .84}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id: Ass_CourseID
+                hint_text:"PHY 411 *"
+                size_hint: 1,1
+                pos_hint: {"center_x": .5,"center_y": .48}
+                multiline:False
+                cursor_width: "2dp"
+                foreground_color: 1/255,1/255,1/255,1
+                background_color: 0,0,0,0
+                padding:10
+                font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                font_size:"18dp"
+
+    #Mark settings
+        MDFloatLayout:
+            size_hint:.28,.08
+            pos_hint: {"center_x": .76,"center_y": .69}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id: Ass_mark
+                hint_text:"Mark*"
+                size_hint: 1,1
+                pos_hint: {"center_x": .5,"center_y": .5}
+                multiline:True
+                cursor_width: "2dp"
+                foreground_color: 1/255,1/255,1/255,1
+                background_color: 0,0,0,0
+                padding:15
+                font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                font_size:"18dp"
+        
+
+    #Assessment title
+        MDFloatLayout:
+            size_hint:.5,.08
+            pos_hint: {"center_x": .34,"center_y": .74}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id:Ass_title
+                hint_text:"Title *"
+                size_hint: 1,None
+                pos_hint: {"center_x": .5,"center_y": .5}
+                height: self.minimum_height
+                multiline:False
+                cursor_width: "2dp"
+                foreground_color: 12/255,12/255,13/255,1
+                background_color: 0,0,0,0
+                padding:15
+                font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                font_size:"18dp"
+            
+    #Assessment Weight
+        MDFloatLayout:
+            size_hint:.5,.08
+            pos_hint: {"center_x": .34,"center_y": .64}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id:Ass_weight
+                hint_text:"Contribution *"
+                size_hint: 1,1
+                pos_hint: {"center_x": .5,"center_y": .5}
+                height: self.minimum_height
+                multiline:False
+                cursor_width: "2dp"
+                foreground_color: 12/255,12/255,13/255,1
+                background_color: 0,0,0,0
+                padding:15
+                font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                font_size:"18dp"
+
+    #Assessment Category text
+        MDFloatLayout:
+            size_hint:.8,.08
+            pos_hint: {"center_x": .5,"center_y": .22}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id:Ass_Category
+                hint_text:"Long press above *"
+                size_hint: 1,1
+                pos_hint: {"center_x": .5,"center_y": .5}
+                height: self.minimum_height
+                multiline:False
+                cursor_width: "2dp"
+                foreground_color: 12/255,12/255,13/255,1
+                background_color: 0,0,0,0
+                padding:15
+                font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                font_size:"18dp"
+
+    #Assessment Category filter
+        MDFloatLayout:
+            size_hint:.9,.27
+            pos_hint: {"center_x": .5,"center_y": .42}
+            canvas:
+                Color:
+                    rgba:(244/255,249/255,253/255,.6)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+          
+            MDChip:
+                id: TEST
+                radius: [dp(6),dp(6),dp(6),dp(6)]
+                text: "Test"
+                text_color:(12/255,12/255,13/255,.5)
+                icon_check_color:"#1F2F98"
+                check: True
+                md_bg_color:74/255,222/255,222/255,1
+                #on_release:app.on_release(TEST)
+                pos_hint:{"center_x":.2,"center_y":.86}
+
+            MDChip:
+                id: Assignment
+                radius: [dp(6),dp(6),dp(6),dp(6)]
+                text: "Assignment"
+                text_color:(12/255,12/255,13/255,.5)
+                icon_check_color:"#1F2F98"
+                check: True
+                md_bg_color:74/255,222/255,222/255,1
+                #on_release:app.on_release(Assignment)
+                pos_hint:{"center_x":.66,"center_y":.86}
+            MDChip:
+                id: Homework
+                radius: [dp(6),dp(6),dp(6),dp(6)]
+                text: "Homework"
+                text_color:(12/255,12/255,13/255,.5)
+                icon_check_color:"#1F2F98"
+                pos_hint:{"center_x":.3,"center_y":.63}
+                check: True
+                md_bg_color:74/255,222/255,222/255,1
+                #on_release:app.on_release(TEST)
+            MDChip:
+                id: LAB
+                radius: [dp(6),dp(6),dp(6),dp(6)]
+                text: "Lab"
+                text_color:(12/255,12/255,13/255,.5)
+                icon_check_color:"#1F2F98"
+                pos_hint:{"center_x":.74,"center_y":.63}
+                check: True
+                md_bg_color:74/255,222/255,222/255,1
+                #on_release:app.on_release(TEST)
+
+            MDChip:
+                id: Classwork
+                radius: [dp(6),dp(6),dp(6),dp(6)]
+                text: "Classwork"
+                text_color:(12/255,12/255,13/255,.5)
+                icon_check_color:"#1F2F98"
+                pos_hint:{"center_x":.72,"center_y":.41}
+                check: True
+                md_bg_color:74/255,222/255,222/255,1
+                #on_release:app.on_release(TEST)
+            MDChip:
+                id: Group
+                radius: [dp(6),dp(6),dp(6),dp(6)]
+                text: "Group"
+                text_color:(12/255,12/255,13/255,.5)
+                icon_check_color:"#1F2F98"
+                pos_hint:{"center_x":.26,"center_y":.41}
+                check: True
+                md_bg_color:74/255,222/255,222/255,1
+                #on_release:app.on_release(Groupwork)
+            MDChip:
+                id: Presentation
+                radius: [dp(6),dp(6),dp(6),dp(6)]
+                icon_check_color:"#1F2F98"
+                text: "Presentation"
+                text_color:(12/255,12/255,13/255,.5)
+                pos_hint:{"center_x":.28,"center_y":.16}
+                check: True
+                md_bg_color:74/255,222/255,222/255,1
+                #on_release:app.on_release(TEST)
+            MDChip:
+                id: Other
+                radius: [dp(6),dp(6),dp(6),dp(6)]
+                text: "Other"
+                text_color:(12/255,12/255,13/255,.5)
+                icon_check_color:"#1F2F98"
+                pos_hint:{"center_x":.76,"center_y":.16}
+                check: True
+                #line_color:"grey"
+                md_bg_color:74/255,222/255,222/255,1
+                #on_release:app.on_release(Groupwork)
+
+
+    #add course button
+        Button:
+            text: "Add Assessment"
+            size_hint: .82,.08
+            pos_hint: {"center_x": .5,"center_y": .12}
+            background_color:0,0,0,0
+            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+            font_size: "18dp"
+            color: 1,1,1,1
+            on_release:
+                app.add_course(CourseID.text,C_Credit.text,CA_ratio.text,Ex_ratio.text)
+                app.update_Course(CourseID.text)
+    
+                #bug clears everything on error prompt
+                #description.text=""
+                
+            canvas.before:
+                Color:
+                    rgba:(30/255,47/255,151/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]

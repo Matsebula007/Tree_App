@@ -9,7 +9,7 @@ from kivymd.uix.pickers import MDTimePicker
 from kivy.clock import Clock
 import datetime
 from datetime import date
-from kivymd.uix.behaviors import FakeRectangularElevationBehavior
+from kivymd.uix.behaviors import CommonElevationBehavior
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivymd.uix.snackbar import Snackbar
@@ -44,7 +44,7 @@ class CircularProgressBar(AnchorLayout):
             Clock.unschedule(self.percent_counter)
 
 
-class TodoCard(FakeRectangularElevationBehavior,MDFloatLayout):
+class TodoCard(CommonElevationBehavior,MDFloatLayout):
     def __init__(self, pk=None, **kwargs):
         super().__init__(**kwargs)
         # state a pk which we shall use link the list items with the database primary keys
@@ -68,12 +68,16 @@ class TodoCard(FakeRectangularElevationBehavior,MDFloatLayout):
     task_date= StringProperty()
     task_time = StringProperty()
     task_time2 = StringProperty()
-class CourseCard(FakeRectangularElevationBehavior,MDFloatLayout):
+class CourseCard(CommonElevationBehavior,MDFloatLayout):
     def __init__(self, course_key=None, **kwargs):
         super().__init__(**kwargs)
         # state a course_key which we shall use link the list items with the database primary keys
         self.course_key = course_key
     
+    def navigate(self):
+        screen_manager.transition.direction = "left"
+        screen_manager.current = "addAssesment"
+        pass
     CourseID = StringProperty()
     C_Credit = StringProperty()
     C_CA=StringProperty()
@@ -99,11 +103,13 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('Screens/AddTask.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/CoursesView.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/Addcourse.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/AddAssessment.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/AccountScreen.kv'))
 
         Window.size = [300, 600]
         return screen_manager
     
+
     def get_tasks(self):
         uncomplete_tasks = database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
         completed_tasks = database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
@@ -195,21 +201,21 @@ class MainApp(MDApp):
 
         elif title =="":
             Snackbar(text="Title is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1), # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                     font_size ="19dp").open() # type: ignore
         elif description =="":
             Snackbar(text="Description is missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open()
             
         elif len(title)>21:
             Snackbar(text="Title too long!must<20",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open()
             screen_manager.get_screen("add_todo").title.text=""
         elif len(description)>61:
             Snackbar(text="Description too long! must<60",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open()
             screen_manager.get_screen("add_todo").description.text=""
 
@@ -288,23 +294,23 @@ class MainApp(MDApp):
 
         elif user_name =="":
             Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open()
         elif user_email =="":
             Snackbar(text="Email  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open()
         elif user_password =="":
             Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open() # type: ignore
         elif len(user_name)>21:
             Snackbar(text="Username must<21",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open()
         elif len(user_password)>61 :
             Snackbar(text="Password must<61",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open() # type: ignore
 
 # user login settings
@@ -325,19 +331,19 @@ class MainApp(MDApp):
 
             elif user_name =="":
                 Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                         font_size ="19dp").open() # type: ignore
             elif user_password =="":
                 Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                         font_size ="19dp").open()
             elif user_name != usname:
                 Snackbar(text="Invalid username",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                         font_size ="19dp").open()
             elif user_password != uspassword:
                 Snackbar(text="Invalid password",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(1,170/255,23/255,1),
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                         font_size ="19dp").open()
 
 # date picker
