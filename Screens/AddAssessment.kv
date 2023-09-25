@@ -1,8 +1,6 @@
 MDScreen:
     name: "addAssesment"
     md_bg_color: 244/255,249/255,253/255,.4
-    
-    
     MDFloatLayout:
         md_bg_color: 1,1,1,1
         MDIconButton:
@@ -20,7 +18,7 @@ MDScreen:
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "28dp"
 
-    #Course ID for Assessment
+        #Course ID for Assessment
         MDFloatLayout:
             size_hint:.8,.08
             pos_hint: {"center_x": .5,"center_y": .84}
@@ -44,7 +42,7 @@ MDScreen:
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
 
-    #Mark settings
+        #Mark settings
         MDFloatLayout:
             size_hint:.28,.08
             pos_hint: {"center_x": .76,"center_y": .69}
@@ -69,7 +67,7 @@ MDScreen:
                 font_size:"18dp"
         
 
-    #Assessment title
+        #Assessment title
         MDFloatLayout:
             size_hint:.5,.08
             pos_hint: {"center_x": .34,"center_y": .74}
@@ -94,7 +92,7 @@ MDScreen:
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
             
-    #Assessment Weight
+        #Assessment Weight
         MDFloatLayout:
             size_hint:.5,.08
             pos_hint: {"center_x": .34,"center_y": .64}
@@ -119,7 +117,8 @@ MDScreen:
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
 
-    #Assessment Category text
+    
+        #Assessment Category text
         MDFloatLayout:
             size_hint:.8,.08
             pos_hint: {"center_x": .5,"center_y": .22}
@@ -131,7 +130,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id:Ass_Category
+                id:Category
                 hint_text:"Long press above *"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
@@ -144,7 +143,7 @@ MDScreen:
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
 
-    #Assessment Category filter
+        #Assessment Category filter
         MDFloatLayout:
             size_hint:.9,.27
             pos_hint: {"center_x": .5,"center_y": .42}
@@ -164,7 +163,8 @@ MDScreen:
                 icon_check_color:"#1F2F98"
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                #on_release:app.on_release(TEST)
+                on_release:
+                    app.on_Test(TEST)
                 pos_hint:{"center_x":.2,"center_y":.86}
 
             MDChip:
@@ -224,7 +224,7 @@ MDScreen:
                 icon_check_color:"#1F2F98"
                 text: "Presentation"
                 text_color:(12/255,12/255,13/255,.5)
-                pos_hint:{"center_x":.28,"center_y":.16}
+                pos_hint:{"center_x":.3,"center_y":.16}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
                 #on_release:app.on_release(TEST)
@@ -234,14 +234,14 @@ MDScreen:
                 text: "Other"
                 text_color:(12/255,12/255,13/255,.5)
                 icon_check_color:"#1F2F98"
-                pos_hint:{"center_x":.76,"center_y":.16}
+                pos_hint:{"center_x":.78,"center_y":.16}
                 check: True
                 #line_color:"grey"
                 md_bg_color:74/255,222/255,222/255,1
                 #on_release:app.on_release(Groupwork)
 
 
-    #add course button
+        #add course button
         Button:
             text: "Add Assessment"
             size_hint: .82,.08
