@@ -1,5 +1,6 @@
 MDScreen:
     name: "addAssesment"
+    ass_category:ass_category
     md_bg_color: 244/255,249/255,253/255,.4
     MDFloatLayout:
         md_bg_color: 1,1,1,1
@@ -30,7 +31,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id: Ass_CourseID
+                id: ass_CourseID
                 hint_text:"PHY 411 *"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .48}
@@ -54,7 +55,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id: Ass_mark
+                id: ass_mark
                 hint_text:"Mark*"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
@@ -79,7 +80,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id:Ass_title
+                id:ass_title
                 hint_text:"Title *"
                 size_hint: 1,None
                 pos_hint: {"center_x": .5,"center_y": .5}
@@ -104,7 +105,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id:Ass_weight
+                id:ass_weight
                 hint_text:"Contribution *"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
@@ -130,7 +131,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id:Category
+                id:ass_category
                 hint_text:"Long press above *"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
@@ -156,7 +157,7 @@ MDScreen:
                     radius:[15]
           
             MDChip:
-                id: TEST
+                id: test
                 radius: [dp(6),dp(6),dp(6),dp(6)]
                 text: "Test"
                 text_color:(12/255,12/255,13/255,.5)
@@ -164,21 +165,21 @@ MDScreen:
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
                 on_release:
-                    app.on_Test(TEST)
+                    app.on_Test(test)
                 pos_hint:{"center_x":.2,"center_y":.86}
 
             MDChip:
-                id: Assignment
+                id: assignment
                 radius: [dp(6),dp(6),dp(6),dp(6)]
                 text: "Assignment"
                 text_color:(12/255,12/255,13/255,.5)
                 icon_check_color:"#1F2F98"
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                #on_release:app.on_release(Assignment)
+                on_release:app.on_Assignment(assignment)
                 pos_hint:{"center_x":.66,"center_y":.86}
             MDChip:
-                id: Homework
+                id: homework
                 radius: [dp(6),dp(6),dp(6),dp(6)]
                 text: "Homework"
                 text_color:(12/255,12/255,13/255,.5)
@@ -186,9 +187,9 @@ MDScreen:
                 pos_hint:{"center_x":.3,"center_y":.63}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                #on_release:app.on_release(TEST)
+                on_release:app.on_Homework(homework)
             MDChip:
-                id: LAB
+                id: lab
                 radius: [dp(6),dp(6),dp(6),dp(6)]
                 text: "Lab"
                 text_color:(12/255,12/255,13/255,.5)
@@ -196,10 +197,10 @@ MDScreen:
                 pos_hint:{"center_x":.74,"center_y":.63}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                #on_release:app.on_release(TEST)
+                on_release:app.on_Lab(lab)
 
             MDChip:
-                id: Classwork
+                id: classwork
                 radius: [dp(6),dp(6),dp(6),dp(6)]
                 text: "Classwork"
                 text_color:(12/255,12/255,13/255,.5)
@@ -207,9 +208,9 @@ MDScreen:
                 pos_hint:{"center_x":.72,"center_y":.41}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                #on_release:app.on_release(TEST)
+                on_release:app.on_Classwork(classwork)
             MDChip:
-                id: Group
+                id: group
                 radius: [dp(6),dp(6),dp(6),dp(6)]
                 text: "Group"
                 text_color:(12/255,12/255,13/255,.5)
@@ -217,9 +218,9 @@ MDScreen:
                 pos_hint:{"center_x":.26,"center_y":.41}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                #on_release:app.on_release(Groupwork)
+                on_release:app.on_Groupwork(group)
             MDChip:
-                id: Presentation
+                id: presentation
                 radius: [dp(6),dp(6),dp(6),dp(6)]
                 icon_check_color:"#1F2F98"
                 text: "Presentation"
@@ -227,9 +228,9 @@ MDScreen:
                 pos_hint:{"center_x":.3,"center_y":.16}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                #on_release:app.on_release(TEST)
+                on_release:app.on_Presentation(presentation)
             MDChip:
-                id: Other
+                id: other
                 radius: [dp(6),dp(6),dp(6),dp(6)]
                 text: "Other"
                 text_color:(12/255,12/255,13/255,.5)
@@ -238,7 +239,7 @@ MDScreen:
                 check: True
                 #line_color:"grey"
                 md_bg_color:74/255,222/255,222/255,1
-                #on_release:app.on_release(Groupwork)
+                on_release:app.on_Other(other)
 
 
         #add course button
