@@ -96,9 +96,9 @@ class MainApp(MDApp):
         global screen_manager
         #self.title ="Ä Goals"
         screen_manager = ScreenManager()
-        """ screen_manager.add_widget(Builder.load_file("Screens/Main.kv"))
+        screen_manager.add_widget(Builder.load_file("Screens/Main.kv"))
         screen_manager.add_widget(Builder.load_file("Screens/Login.kv"))  
-        screen_manager.add_widget(Builder.load_file("Screens/SignUp.kv")) """
+        screen_manager.add_widget(Builder.load_file("Screens/SignUp.kv"))
         screen_manager.add_widget(Builder.load_file('Screens/HomeScreen.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/TaskView.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/AddTask.kv'))
@@ -286,13 +286,24 @@ class MainApp(MDApp):
         user_email = screen_manager.get_screen("SignUp").usr_email.text
         user_password = screen_manager.get_screen("SignUp").usr_pass.text
 
+
         if user_name !="" and user_email !="" and user_password !="" and len(user_name)<21 and len(user_password)<60:
             data = (user_name,user_email,user_password)
-            database.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
-            database.con.commit()
-            screen_manager.transition.direction = "right"
-            screen_manager.current = "Home"
+            #prevent more user sign up if one user alredy signed up
+            database.cursor.execute("SELECT UserName,Password FROM LOGIN")
+            arr =database.cursor.fetchall()
+            for i in arr:
+                if i[0] =="" and i[1] =="":
 
+                    database.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
+                    database.con.commit()
+                    screen_manager.transition.direction = "right"
+                    screen_manager.current = "Home"
+                
+                elif i[0] !="" and i[1] !="":
+                    Snackbar(text="Illegal Sign up!",snackbar_x ="10dp",snackbar_y ="10dp",
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                            font_size ="19dp").open()
         elif user_name =="":
             Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
@@ -320,7 +331,7 @@ class MainApp(MDApp):
         user_name = screen_manager.get_screen("Login").usr_Username.text
         user_password = screen_manager.get_screen("Login").usr_password.text
         
-        database.cursor.execute("SELECT Name,Password FROM LOGIN")
+        database.cursor.execute("SELECT UserName,Password FROM LOGIN")
         arr =database.cursor.fetchall()
         for i in arr:
             usname = i[0]
