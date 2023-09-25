@@ -7,6 +7,7 @@ from kivy.properties import StringProperty,ListProperty,NumericProperty
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.pickers import MDTimePicker
 from kivy.clock import Clock
+from kivymd.toast import toast
 import datetime
 from datetime import date
 from kivymd.uix.behaviors import CommonElevationBehavior
@@ -87,7 +88,50 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
 class Account(MDScreen):
     name = StringProperty()
     Department = StringProperty()
-
+class addAssesment(MDScreen):
+    Category = StringProperty()
+    #screen_manager.get_screen("addAssesment").Ass_Category.text = str(date)
+    def on_Test(self,Categ):
+        if Categ.active ==True:
+            catText=print("TEST")
+            screen_manager.get_screen("addAssesment").Category.text =catText
+        elif Categ.active ==False:
+            pass
+    def on_Lab(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="LAB"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Homework(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Homework"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Classwork(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Classwork"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Assignment(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Assignment"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Groupwork(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Groupwork"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Presentation(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Presentation"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Other(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Other"
+        elif Categ.active ==False:
+            toast("Long press")
 class MainApp(MDApp):    
       
 #Screen manager build
@@ -391,6 +435,48 @@ class MainApp(MDApp):
         p =random.choice(pigments)
         return p
 
+#filter for assessment category
+    def on_Test(self,Categ):
+        if Categ.active ==True:
+            
+            screen_manager.get_screen("addAssesment").Category ="TEST"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Lab(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Category.text ="LAB"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Homework(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Homework"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Classwork(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Classwork"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Assignment(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Assignment"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Groupwork(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Groupwork"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Presentation(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Presentation"
+        elif Categ.active ==False:
+            toast("Long press")
+    def on_Other(self,Categ):
+        if Categ.active ==True:
+            screen_manager.get_screen("addAssesment").Ass_Category.text ="Other"
+        elif Categ.active ==False:
+            toast("Long press")
 if __name__ == "__main__":   
     
     MainApp().run()
