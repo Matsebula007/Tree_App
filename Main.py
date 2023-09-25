@@ -8,8 +8,8 @@ from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.pickers import MDTimePicker
 from kivy.clock import Clock
 from kivymd.toast import toast
-import datetime
-from datetime import date
+#import datetime
+from datetime import date ,datetime
 from kivymd.uix.behaviors import CommonElevationBehavior
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivy.uix.anchorlayout import AnchorLayout
@@ -94,11 +94,11 @@ class MainApp(MDApp):
 #Screen manager build
     def build(self):
         global screen_manager
-        #self.title ="Ä Goals"
+        self.title ="myUNESWA Tree"
         screen_manager = ScreenManager()
-        screen_manager.add_widget(Builder.load_file("Screens/Main.kv"))
+        """ screen_manager.add_widget(Builder.load_file("Screens/Main.kv"))
         screen_manager.add_widget(Builder.load_file("Screens/Login.kv"))  
-        screen_manager.add_widget(Builder.load_file("Screens/SignUp.kv"))
+        screen_manager.add_widget(Builder.load_file("Screens/SignUp.kv")) """ 
         screen_manager.add_widget(Builder.load_file('Screens/HomeScreen.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/TaskView.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/AddTask.kv'))
@@ -122,9 +122,9 @@ class MainApp(MDApp):
         today = date.today()
         wd = date.weekday(today)
         days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday', 'Sunday']
-        year = str(datetime.datetime.now().year)
-        month = str(datetime.datetime.now().strftime("%b"))
-        day = str(datetime.datetime.now().strftime("%d"))
+        year = str(datetime.now().year)
+        month = str(datetime.now().strftime("%b"))
+        day = str(datetime.now().strftime("%d"))
         screen_manager.get_screen("todoScreen").date_text.text = f"{days[wd]}, {day} {month}"
 
         try:
@@ -231,13 +231,12 @@ class MainApp(MDApp):
             cr= str (c[1])
             ca = str (c[2])
             ex = str (c[3])
-            crse= CourseCard(course_key = c[0],CourseID=CourseID, C_Credit=cr,CA_ratio=ca,Ex_ratio=ex)
+            crse= CourseCard(course_key = c[0],CourseID=CourseID, C_Credit=cr,CA_ratio=ca,Ex_ratio=ex) #type: ignore
             screen_manager.get_screen("CoursesScreen").course_list.add_widget(crse)
 
 # add course settings
     def add_course(self,CourseID,C_Credit,CA_ratio,Ex_ratio):
-        #database.cursor.execute("DROP TABLE COURSES")
-        #database.cursor.execute("CREATE TABLE COURSES(ID INTEGER PRIMARY KEY AUTOINCREMENT,COURSE_ID TEXT NOT NULL UNIQUE,CREDIT DECIMAL,CA_R INTERGER NOT NULL,EX_R INTERGER NOT NULL,CA DECIMAL,BASIS DECIMAL ) ")
+        
         if CourseID !="" and CA_ratio !="" and Ex_ratio !="":
             # adding COURSE to database
             data= CourseID,C_Credit,CA_ratio,Ex_ratio
@@ -257,6 +256,34 @@ class MainApp(MDApp):
                     font_size ="19dp").open() # type: ignore
         elif Ex_ratio =="":
             Snackbar(text="Exam Weight cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                    font_size ="19dp").open() # type: ignore
+    #add assessment
+    def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
+        
+        if ass_courseid !="" and ass_mark !="" and ass_name !="" and ass_category!="":
+            # adding COURSE to database
+            data= ass_courseid,ass_category,ass_mark,ass_contr,ass_name
+            database.cursor.execute("INSERT INTO ALLASSESSMENT(COURSE_ID,CATEGORY,MARK,TUG_CONTR,TUG_NAME) VALUES(?,?,?,?,?)",data)
+            database.con.commit()
+            screen_manager.transition.direction = "right"
+            screen_manager.current = "CoursesScreen"
+            #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
+ 
+        elif ass_courseid =="":
+            Snackbar(text="Course ID cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                    font_size ="19dp").open() # type: ignore
+        elif ass_name =="":
+            Snackbar(text="Assessment name cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                    font_size ="19dp").open() # type: ignore
+        elif ass_mark =="":
+            Snackbar(text="Assessment mark cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                    font_size ="19dp").open() # type: ignore
+        elif ass_category =="":
+            Snackbar(text="Assessment Category cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                     font_size ="19dp").open() # type: ignore
 #display from databse
@@ -378,7 +405,10 @@ class MainApp(MDApp):
         
     def show_time_picker(self):
         '''Open time picker dialog.'''
+        
+        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
         time_dialog = MDTimePicker()
+        time_dialog.set_time(previous_time)
         time_dialog.bind(time=self.get_time) #type: ignore
         time_dialog.open() # type: ignore
 
@@ -388,7 +418,9 @@ class MainApp(MDApp):
 
     def show_time_picker2(self):
         '''Open time picker dialog.'''
+        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
         time_dialog = MDTimePicker()
+        time_dialog.set_time(previous_time)
         time_dialog.bind(time=self.get_time2)#type: ignore
         time_dialog.open()#type: ignore
 
@@ -403,48 +435,74 @@ class MainApp(MDApp):
         p =random.choice(pigments)
         return p
 
-#filter for assessment ass_category
+ #filter for assessment ass_category
+
     def on_Test(self,Categ):
         if Categ.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="TEST"
         elif Categ.active ==False:
-            screen_manager.get_screen("addAssesment").ass_category.text =""
+            gory =screen_manager.get_screen("addAssesment").ass_category.text
+            if gory =="TEST":
+                screen_manager.get_screen("addAssesment").ass_category.text =""
+            else:pass
     def on_Lab(self,Categ):
         if Categ.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="LAB"
         elif Categ.active ==False:
-            screen_manager.get_screen("addAssesment").ass_category.text =""
+            gory =screen_manager.get_screen("addAssesment").ass_category.text
+            if gory =="LAB":
+                screen_manager.get_screen("addAssesment").ass_category.text =""
+            else:pass
     def on_Homework(self,Categ):
         if Categ.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="HOMEWORK"
         elif Categ.active ==False:
-            screen_manager.get_screen("addAssesment").ass_category.text =""
+            gory =screen_manager.get_screen("addAssesment").ass_category.text
+            if gory =="HOMEWORK":
+                screen_manager.get_screen("addAssesment").ass_category.text =""
+            else:pass
     def on_Classwork(self,Categ):
         if Categ.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="CLASSWORK"
         elif Categ.active ==False:
-            screen_manager.get_screen("addAssesment").ass_category.text =""
+            gory =screen_manager.get_screen("addAssesment").ass_category.text
+            if gory =="CLASSWORK":
+                screen_manager.get_screen("addAssesment").ass_category.text =""
+            else:pass
     def on_Assignment(self,Categ):
         if Categ.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="ASSIGNMENT"
         elif Categ.active ==False:
-            screen_manager.get_screen("addAssesment").ass_category.text =""
+            gory =screen_manager.get_screen("addAssesment").ass_category.text
+            if gory =="ASSIGNMENT":
+                screen_manager.get_screen("addAssesment").ass_category.text =""
+            else:pass
     def on_Groupwork(self,Categ):
         if Categ.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="GROUPWORK"
         elif Categ.active ==False:
-            screen_manager.get_screen("addAssesment").ass_category.text =""
+            gory =screen_manager.get_screen("addAssesment").ass_category.text
+            if gory =="GROUPWORK":
+                screen_manager.get_screen("addAssesment").ass_category.text =""
+            else:pass
     def on_Presentation(self,Categ):
         if Categ.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="PRESENTATION"
         elif Categ.active ==False:
-           screen_manager.get_screen("addAssesment").ass_category.text =""
+            gory =screen_manager.get_screen("addAssesment").ass_category.text
+            if gory =="PRESENTATION":
+                screen_manager.get_screen("addAssesment").ass_category.text =""
+            else:pass
     def on_Other(self,Categ):
         if Categ.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="OTHER"
         elif Categ.active ==False:
-            screen_manager.get_screen("addAssesment").ass_category.text =""
+            gory =screen_manager.get_screen("addAssesment").ass_category.text
+            if gory =="OTHER":
+                screen_manager.get_screen("addAssesment").ass_category.text =""
+            else:pass
 if __name__ == "__main__":   
-    
     MainApp().run()
-
+    """ database.cursor.execute("DROP TABLE ALLASSESSMENT")
+    database.cursor.execute("CREATE TABLE ALLASSESSMENT(COURSE_ID TEXT NOT NULL,TUG_ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT SECONDARY KEY,MARK DECIMAL NOT NULL  DEFAULT 100.0,TUG_CONTR DECIMAL NOT NULL DEFAULT 100.0,TUG_WEIGHT DECIMAL,TUG_NAME TEXT NOT NULL,FOREIGN KEY(COURSE_ID) REFERENCES COURSES(COURSE_ID)) ")
+    database.con.commit() """

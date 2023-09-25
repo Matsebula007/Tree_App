@@ -17,14 +17,14 @@ MDScreen:
             
         MDLabel:
             text: "Welcome, keep making progress"
-            font_name: "assets/fonts/Sono_Monospace-Medium.ttf"
+            font_name: "assets/fonts/CroissantOne-Regular.ttf"
             font_size: "26dp"
             halign: "center"
             pos_hint: {"center_x": .5,"center_y": .85}
             color: rgba(0,0,59,255)
         MDLabel:
             text: "Sign in."
-            font_name: "assets/fonts/Sono-Medium.ttf"
+            font_name: "assets/fonts/JosefinSans-SemiBoldItalic.ttf"
             font_size: "18dp"
             halign: "center"
             pos_hint: {"center_x":.5,"center_y": .75}
@@ -36,7 +36,7 @@ MDScreen:
             TextInput:
                 id:usr_Username
                 hint_text: "Username"
-                font_name: "assets/fonts/Sono-Regular.ttf"
+                font_name: "assets/fonts/Oxygen-Regular.ttf"
                 size_hint_y: .75
                 pos_hint: {"center_x": .45, "center_y": .50}
                 background_color: 1,1,1,0
@@ -57,7 +57,7 @@ MDScreen:
             TextInput:
                 id:usr_password
                 hint_text: "Password"
-                font_name: "assets/fonts/Sono-Regular.ttf"
+                font_name: "assets/fonts/Oxygen-Regular.ttf"
                 size_hint_y: .75
                 pos_hint: {"center_x": .45, "center_y": .50}
                 background_color: 1,1,1,0
@@ -76,7 +76,7 @@ MDScreen:
             size_hint: .66,.065
             pos_hint: {"center_x":.5,"center_y": .36}
             background_color: 0,0,0,0
-            font_name: "assets/fonts/Sono_Monospace-Medium.ttf"
+            font_name: "assets/fonts/JosefinSans-SemiBold.ttf"
             on_press: 
                 app.userlogin(usr_Username,usr_password)
             canvas.before:
@@ -91,10 +91,10 @@ MDScreen:
             pos_hint: {"center_x":.5,"center_y": .28}
             color:rgba(68,78,132,255)
             font_size:"12dp"
-            font_name:"assets/fonts/Sono_Monospace-Medium.ttf"
+            font_name:"assets/fonts/Oxygen-Bold.ttf"
         MDLabel:
             text:"or"
-            font_name:"assets/fonts/Sono_Monospace-Medium.ttf"
+            font_name:"assets/fonts/Oxygen-Bold.ttf"
             font_size:"13dp"
             color:rgba(52,0,231,255)
             pos_hint: {"center_y":.22}
@@ -109,7 +109,7 @@ MDScreen:
             pos_hint: {"center_x":.7, "center_y":.218} 
         MDLabel:
             text:"Social Media login"
-            font_name:"assets/fonts/Sono_Monospace-Medium.ttf"
+            font_name:"assets/fonts/Oxygen-Bold.ttf"
             font_size:"13dp"
             color:rgba(52,0,231,255)
             pos_hint: {"center_y":.16}
@@ -136,14 +136,14 @@ MDScreen:
                     root.manager.current = "main"   
             MDLabel:
                 text:"Don't have an account?"
-                font_name:"assets/fonts/Sono_Monospace-Medium.ttf"
+                font_name:"assets/fonts/Oxygen-Bold.ttf"
                 font_size:"12dp"
                 color:rgba(135,133,193,255)
                 pos_hint: {"center_x":.40,"center_y":.04}
                 halign:"center"
             MDTextButton:
                 text:"Sign Up"
-                font_name:"assets/fonts/Sono_Monospace-Medium.ttf"
+                font_name:"assets/fonts/Oxygen-Bold.ttf"
                 font_size:"12dp"
                 color:rgba(52,0,231,255)
                 pos_hint: {"center_x":.75,"center_y":.04}
