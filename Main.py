@@ -7,8 +7,7 @@ from kivy.properties import StringProperty,ListProperty,NumericProperty
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.pickers import MDTimePicker
 from kivy.clock import Clock
-from kivymd.toast import toast
-#import datetime
+
 from datetime import date ,datetime
 from kivymd.uix.behaviors import CommonElevationBehavior
 from kivymd.uix.floatlayout import MDFloatLayout
@@ -89,8 +88,11 @@ class Account(MDScreen):
     name = StringProperty()
     Department = StringProperty()
 
-class MainApp(MDApp):    
-      
+
+
+
+class MainApp(MDApp):  
+    
 #Screen manager build
     def build(self):
         global screen_manager
@@ -127,10 +129,13 @@ class MainApp(MDApp):
         day = str(datetime.now().strftime("%d"))
         screen_manager.get_screen("todoScreen").date_text.text = f"{days[wd]}, {day} {month}"
 
+        
+
         try:
+
             completed_tasks, uncomplete_tasks = self.get_tasks()
             taken_courses =self.get_courses()
-
+            
             if completed_tasks != []:
                 for i in completed_tasks:
                     add_task =(TodoCard(pk=i[0],title=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5]))
@@ -207,24 +212,23 @@ class MainApp(MDApp):
         elif description =="":
             Snackbar(text="Description is missing!",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open()
+                    font_size ="19dp").open() # type: ignore
             
         elif len(title)>21:
             Snackbar(text="Title too long!must<20",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open()
+                    font_size ="19dp").open() # type: ignore
             screen_manager.get_screen("add_todo").title.text=""
         elif len(description)>61:
             Snackbar(text="Description too long! must<60",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open()
+                    font_size ="19dp").open() # type: ignore
             screen_manager.get_screen("add_todo").description.text=""
 
 #adding new course to course view
     def update_Course(self,CourseID):
         #database.cursor.execute("DELETE FROM COURSES WHERE COURSE_ID=?",("MUK",))
-        
-        database.con.commit()
+    
         database.cursor.execute("SELECT ID,CREDIT,CA_R,EX_R FROM COURSES WHERE COURSE_ID=?",(CourseID,))
         arr =database.cursor.fetchall()
         for c in arr:
@@ -233,7 +237,8 @@ class MainApp(MDApp):
             ex = str (c[3])
             crse= CourseCard(course_key = c[0],CourseID=CourseID, C_Credit=cr,CA_ratio=ca,Ex_ratio=ex) #type: ignore
             screen_manager.get_screen("CoursesScreen").course_list.add_widget(crse)
-
+    
+   
 # add course settings
     def add_course(self,CourseID,C_Credit,CA_ratio,Ex_ratio):
         
@@ -260,17 +265,27 @@ class MainApp(MDApp):
                     font_size ="19dp").open() # type: ignore
     #add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
-        
-        if ass_courseid !="" and ass_mark !="" and ass_name !="" and ass_category!="":
-            # adding COURSE to database
-            data= ass_courseid,ass_category,ass_mark,ass_contr,ass_name
-            database.cursor.execute("INSERT INTO ALLASSESSMENT(COURSE_ID,CATEGORY,MARK,TUG_CONTR,TUG_NAME) VALUES(?,?,?,?,?)",data)
-            database.con.commit()
-            screen_manager.transition.direction = "right"
-            screen_manager.current = "CoursesScreen"
-            #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
- 
-        elif ass_courseid =="":
+
+        database.cursor.execute("SELECT COURSE_ID FROM COURSES")
+        arr =database.cursor.fetchall()
+        for i in arr:
+            #print(i)
+            if ass_courseid in i[0]:
+                if ass_courseid !="" and ass_mark !="" and ass_name !="" and ass_category!="":
+
+                    # adding COURSE to database
+                    ass_weight = int(ass_mark)*int(ass_contr)/100
+                    data= ass_courseid,ass_category,ass_mark,ass_contr,ass_weight,ass_name
+                    database.cursor.execute("INSERT INTO ALLASSESSMENT(COURSE_ID,CATEGORY,MARK,TUG_CONTR,TUG_WEIGHT,TUG_NAME) VALUES(?,?,?,?,?,?)",data)
+                    database.con.commit()
+                    screen_manager.transition.direction = "right"
+                    screen_manager.current = "CoursesScreen"
+                    #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
+    
+                Snackbar(text="Invalid course",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="14dp").open() # type: ignore    
+        if ass_courseid =="":
             Snackbar(text="Course ID cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                     font_size ="19dp").open() # type: ignore
@@ -286,6 +301,8 @@ class MainApp(MDApp):
             Snackbar(text="Assessment Category cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                     font_size ="19dp").open() # type: ignore
+        
+
 #display from databse
     def display_task_complete(self):
         database.cursor.execute("SELECT Id,Title,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
@@ -435,74 +452,84 @@ class MainApp(MDApp):
         p =random.choice(pigments)
         return p
 
- #filter for assessment ass_category
-
-    def on_Test(self,Categ):
-        if Categ.active ==True:
+ #on_Selection of assessment filter 
+    def on_Selection(self,test,lab,homework,classwork,assignment,group,presentation,other):
+        if test.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="TEST"
-        elif Categ.active ==False:
+        elif test.active ==False:
             gory =screen_manager.get_screen("addAssesment").ass_category.text
             if gory =="TEST":
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
-    def on_Lab(self,Categ):
-        if Categ.active ==True:
+
+        if lab.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="LAB"
-        elif Categ.active ==False:
+        elif lab.active ==False:
             gory =screen_manager.get_screen("addAssesment").ass_category.text
             if gory =="LAB":
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
-    def on_Homework(self,Categ):
-        if Categ.active ==True:
+
+        if homework.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="HOMEWORK"
-        elif Categ.active ==False:
+        elif homework.active ==False:
             gory =screen_manager.get_screen("addAssesment").ass_category.text
             if gory =="HOMEWORK":
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
-    def on_Classwork(self,Categ):
-        if Categ.active ==True:
+
+        if classwork.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="CLASSWORK"
-        elif Categ.active ==False:
+        elif classwork.active ==False:
             gory =screen_manager.get_screen("addAssesment").ass_category.text
             if gory =="CLASSWORK":
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
-    def on_Assignment(self,Categ):
-        if Categ.active ==True:
+
+        if assignment.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="ASSIGNMENT"
-        elif Categ.active ==False:
+        elif assignment.active ==False:
             gory =screen_manager.get_screen("addAssesment").ass_category.text
             if gory =="ASSIGNMENT":
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
-    def on_Groupwork(self,Categ):
-        if Categ.active ==True:
+
+        if group.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="GROUPWORK"
-        elif Categ.active ==False:
+        elif group.active ==False:
             gory =screen_manager.get_screen("addAssesment").ass_category.text
             if gory =="GROUPWORK":
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
-    def on_Presentation(self,Categ):
-        if Categ.active ==True:
+
+        if presentation.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="PRESENTATION"
-        elif Categ.active ==False:
+        elif presentation.active ==False:
             gory =screen_manager.get_screen("addAssesment").ass_category.text
             if gory =="PRESENTATION":
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
-    def on_Other(self,Categ):
-        if Categ.active ==True:
+
+        if other.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="OTHER"
-        elif Categ.active ==False:
+        elif other.active ==False:
             gory =screen_manager.get_screen("addAssesment").ass_category.text
             if gory =="OTHER":
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
+        
+
+
+
 if __name__ == "__main__":   
+ 
     MainApp().run()
-    """ database.cursor.execute("DROP TABLE ALLASSESSMENT")
+    """ sr ="ENG 221"
+    database.cursor.execute("DELETE FROM ALLASSESSMENT WHERE TUG_ID =1")
+    database.cursor.execute("DELETE FROM ALLASSESSMENT WHERE TUG_ID =4")
+    database.cursor.execute("DELETE FROM ALLASSESSMENT WHERE TUG_ID =5")
+    database.cursor.execute("DELETE FROM ALLASSESSMENT WHERE COURSE_ID =?",(sr,))
+    database.con.commit()
+    database.cursor.execute("DROP TABLE ALLASSESSMENT")
     database.cursor.execute("CREATE TABLE ALLASSESSMENT(COURSE_ID TEXT NOT NULL,TUG_ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT SECONDARY KEY,MARK DECIMAL NOT NULL  DEFAULT 100.0,TUG_CONTR DECIMAL NOT NULL DEFAULT 100.0,TUG_WEIGHT DECIMAL,TUG_NAME TEXT NOT NULL,FOREIGN KEY(COURSE_ID) REFERENCES COURSES(COURSE_ID)) ")
     database.con.commit() """

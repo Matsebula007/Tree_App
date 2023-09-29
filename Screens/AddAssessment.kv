@@ -1,6 +1,10 @@
 MDScreen:
     name: "addAssesment"
     ass_category:ass_category
+    ass_mark:ass_mark
+    ass_name:ass_name
+    ass_contr:ass_contr
+    ass_courseid:ass_courseid
     md_bg_color: 244/255,249/255,253/255,.4
     MDFloatLayout:
         md_bg_color: 1,1,1,1
@@ -31,8 +35,8 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id: ass_CourseID
-                hint_text:"PHY 411 *"
+                id: ass_courseid
+                hint_text:"PHY411*"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .48}
                 multiline:False
@@ -46,7 +50,7 @@ MDScreen:
         #Mark settings
         MDFloatLayout:
             size_hint:.28,.08
-            pos_hint: {"center_x": .76,"center_y": .69}
+            pos_hint: {"center_x": .76,"center_y": .74}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -80,8 +84,8 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id:ass_title
-                hint_text:"Title *"
+                id:ass_name
+                hint_text:"Tittle/name*"
                 size_hint: 1,None
                 pos_hint: {"center_x": .5,"center_y": .5}
                 height: self.minimum_height
@@ -95,8 +99,8 @@ MDScreen:
             
         #Assessment Weight
         MDFloatLayout:
-            size_hint:.5,.08
-            pos_hint: {"center_x": .34,"center_y": .64}
+            size_hint:.8,.08
+            pos_hint: {"center_x": .5,"center_y": .64}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -105,8 +109,8 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id:ass_weight
-                hint_text:"Contribution *"
+                id:ass_contr
+                hint_text:"Contribution* 0-100"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
                 height: self.minimum_height
@@ -132,7 +136,7 @@ MDScreen:
                     radius:[15]
             TextInput:
                 id:ass_category
-                hint_text:"Long press above *"
+                hint_text:"Long press Category *"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
                 height: self.minimum_height
@@ -165,7 +169,7 @@ MDScreen:
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
                 on_release:
-                    app.on_Test(test)
+                    app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
                 pos_hint:{"center_x":.2,"center_y":.86}
 
             MDChip:
@@ -176,7 +180,7 @@ MDScreen:
                 icon_check_color:"#1F2F98"
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Assignment(assignment)
+                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
                 pos_hint:{"center_x":.66,"center_y":.86}
             MDChip:
                 id: homework
@@ -187,7 +191,7 @@ MDScreen:
                 pos_hint:{"center_x":.3,"center_y":.63}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Homework(homework)
+                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
             MDChip:
                 id: lab
                 radius: [dp(6),dp(6),dp(6),dp(6)]
@@ -197,8 +201,7 @@ MDScreen:
                 pos_hint:{"center_x":.74,"center_y":.63}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Lab(lab)
-
+                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
             MDChip:
                 id: classwork
                 radius: [dp(6),dp(6),dp(6),dp(6)]
@@ -208,7 +211,7 @@ MDScreen:
                 pos_hint:{"center_x":.72,"center_y":.41}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Classwork(classwork)
+                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
             MDChip:
                 id: group
                 radius: [dp(6),dp(6),dp(6),dp(6)]
@@ -218,7 +221,7 @@ MDScreen:
                 pos_hint:{"center_x":.26,"center_y":.41}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Groupwork(group)
+                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
             MDChip:
                 id: presentation
                 radius: [dp(6),dp(6),dp(6),dp(6)]
@@ -228,7 +231,7 @@ MDScreen:
                 pos_hint:{"center_x":.3,"center_y":.16}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Presentation(presentation)
+                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
             MDChip:
                 id: other
                 radius: [dp(6),dp(6),dp(6),dp(6)]
@@ -239,8 +242,7 @@ MDScreen:
                 check: True
                 #line_color:"grey"
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Other(other)
-
+                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
 
         #add course button
         Button:
@@ -250,14 +252,7 @@ MDScreen:
             background_color:0,0,0,0
             font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size: "18dp"
-            color: 1,1,1,1
-            on_release:
-                app.add_course(CourseID.text,C_Credit.text,CA_ratio.text,Ex_ratio.text)
-                app.update_Course(CourseID.text)
-    
-                #bug clears everything on error prompt
-                #description.text=""
-                
+            color: 1,1,1,1     
             canvas.before:
                 Color:
                     rgba:(30/255,47/255,151/255,1)
@@ -265,3 +260,7 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
+            on_release:
+                app.add_assessment(ass_courseid.text,ass_mark.text,ass_contr.text,ass_category.text,ass_name.text)
+                #app.update_Course(CourseID.text)
+    
