@@ -241,8 +241,31 @@ class MainApp(MDApp):
    
 # add course settings
     def add_course(self,CourseID,C_Credit,CA_ratio,Ex_ratio):
+        #add functionalty for assessment category weights per course
         
         if CourseID !="" and CA_ratio !="" and Ex_ratio !="":
+            #create databse for course added and initialize tables
+            con = sqlite3.connect(f'{CourseID}.db')
+            cursor = con.cursor()
+            cursor.execute("CREATE TABLE TEST(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+            con.commit()
+            cursor.execute("CREATE TABLE LAB(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+            con.commit()
+            cursor.execute("CREATE TABLE ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+            con.commit()
+            cursor.execute("CREATE TABLE HOMEWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+            con.commit()
+            cursor.execute("CREATE TABLE GROUPWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+            con.commit()
+            cursor.execute("CREATE TABLE CLASSWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+            con.commit()
+            cursor.execute("CREATE TABLE PRESENTATION(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+            con.commit()
+            cursor.execute("CREATE TABLE OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+            con.commit()
+            
+
+
             # adding COURSE to database
             data= CourseID,C_Credit,CA_ratio,Ex_ratio
             database.cursor.execute("INSERT INTO COURSES(COURSE_ID,CREDIT,CA_R,EX_R) VALUES(?,?,?,?)",data)
@@ -263,7 +286,9 @@ class MainApp(MDApp):
             Snackbar(text="Exam Weight cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                     font_size ="19dp").open() # type: ignore
-    #add assessment
+
+
+#add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
 
         database.cursor.execute("SELECT COURSE_ID FROM COURSES")
