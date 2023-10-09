@@ -1,7 +1,14 @@
 MDScreen:
     name: "addCourse"
     md_bg_color: 244/255,249/255,253/255,.2
-    
+
+    testCat:testCat
+    testW:testW
+    percentbar:percentbar
+
+    assignmentCat:assignmentCat
+    assignmentW:assignmentW
+    apercentbar:apercentbar
     
     MDFloatLayout:
         md_bg_color: 1,1,1,1
@@ -17,10 +24,10 @@ MDScreen:
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "32dp"
 
-    #Course ID input
+        #Course ID input
         MDFloatLayout:
             size_hint:.5,.08
-            pos_hint: {"center_x": .34,"center_y": .82}
+            pos_hint: {"center_x": .34,"center_y": .84}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -41,10 +48,10 @@ MDScreen:
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
 
-    #Credit settings
+        #Credit settings
         MDFloatLayout:
             size_hint:.3,.08
-            pos_hint: {"center_x": .76,"center_y": .82}
+            pos_hint: {"center_x": .76,"center_y": .84}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -65,11 +72,10 @@ MDScreen:
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
         
-   
-    #CA contribution
+        #CA contribution
         MDFloatLayout:
-            size_hint:.5,.08
-            pos_hint: {"center_x": .34,"center_y": .72}
+            size_hint:.4,.08
+            pos_hint: {"center_x": .28,"center_y": .74}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -93,8 +99,8 @@ MDScreen:
             
         #Exam contribution
         MDFloatLayout:
-            size_hint:.5,.08
-            pos_hint: {"center_x": .34,"center_y": .62}
+            size_hint:.44,.08
+            pos_hint: {"center_x": .74,"center_y": .74}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -115,14 +121,158 @@ MDScreen:
                 padding:15
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
-        
+
+        #category weights
+        MDFloatLayout:
+            size_hint:.92,.58
+            pos_hint: {"center_x": .5,"center_y": .38}
+            canvas:
+                Color:
+                    rgba:(244/255,249/255,253/255,.6)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+
+            # Contribution Header
+            MDFloatLayout:
+                size_hint:1,.12
+                pos_hint: {"center_x":.5,"center_y":.98}
+                canvas:
+                    Color:
+                        rgba:(244/255,249/255,253/255,1)
+                    RoundedRectangle:
+                        size:self.size
+                        pos:self.pos
+                        radius:[15]
+                MDLabel:
+                    text:"Average Contribution"
+                    font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                    font_size: "16dp"
+                    size_hint_x:.7
+                    size_hint_y:1
+                    pos_hint:{"center_x":.46,"center_y": .5}
+                MDLabel:
+                    text:"%"
+                    font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                    font_size: "18dp"
+                    size_hint_x:.1
+                    size_hint_y:1
+                    pos_hint:{"center_x":.9,"center_y": .5}
+
+            #category TEST
+            MDFloatLayout:
+                size_hint:1,.1
+                pos_hint: {"center_x": .5,"center_y": .86}
+                canvas:
+                    Color:
+                        rgba:(244/255,249/255,253/255,1)
+                    Rectangle:
+                        size:self.size
+                        pos:self.pos
+                
+                #category label
+                MDFloatLayout: 
+                    size_hint:.5,1
+                    pos_hint: {"center_x": .3,"center_y": .5}
+                    MDLabel:
+                        id:testCat
+                        text:"TEST"
+                        size_hint: 1,1
+                        pos_hint: {"center_x": .62,"center_y": .5}
+                        foreground_color: 12/255,12/255,13/255,1
+                        background_color: 0,0,0,0
+                        padding:15
+                        font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                        font_size:"18dp"
+                    MDCheckbox:
+                        id:check
+                        size_hint:None,None
+                        size:"48dp","48dp"
+                        pos_hint:{"center_x":.08,"center_y": .5}
+                        #mofify to change percent sign color
+                        on_active: app.cat_select(check,testW,percentbar)
+                        #cat_select(self,value,testW,percentbar):
+                
+                # %input
+                MDFloatLayout:
+                    id:percentbar
+                    size_hint:.2,1
+                    pos_hint: {"center_x": .9,"center_y": .5}
+                    md_bg_color:(0/255,255/255,125/255,.2)
+                    TextInput:
+                        id:testW
+                        hint_text:"%"
+                        size_hint: .8,.8
+                        pos_hint: {"center_x": .6,"center_y": .4}
+                        height: self.minimum_height
+                        multiline:False
+                        cursor_width: "2dp"
+                        foreground_color: 12/255,12/255,13/255,1
+                        background_color: 0,0,0,0
+                        padding:1
+                        font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                        font_size:"18dp"  
+ 
+            #category assignment
+            MDFloatLayout:
+                size_hint:1,.1
+                pos_hint: {"center_x": .5,"center_y": .78}
+                canvas:
+                    Color:
+                        rgba:(244/255,249/255,253/255,1)
+                    Rectangle:
+                        size:self.size
+                        pos:self.pos
+                
+                #category label
+                MDFloatLayout: 
+                    size_hint:.5,1
+                    pos_hint: {"center_x": .3,"center_y": .5}
+                    MDLabel:
+                        id:assignmentCat
+                        text:"ASSIGNMENT"
+                        size_hint: 1,1
+                        pos_hint: {"center_x": .62,"center_y": .5}
+                        foreground_color: 12/255,12/255,13/255,1
+                        background_color: 0,0,0,0
+                        padding:15
+                        font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                        font_size:"18dp"
+                    MDCheckbox:
+                        id:acheck
+                        size_hint:None,None
+                        size:"48dp","48dp"
+                        pos_hint:{"center_x":.08,"center_y": .5}
+                        #mofify to change percent sign color
+                        on_active: app.cat_select(acheck,assignmentW,apercentbar)
+                
+                # %input
+                MDFloatLayout:
+                    id:apercentbar
+                    size_hint:.2,1
+                    pos_hint: {"center_x": .9,"center_y": .5}
+                    md_bg_color:(0/255,255/255,125/255,.2)
+                    TextInput:
+                        id:assignmentW
+                        hint_text:"%"
+                        size_hint: .8,.8
+                        pos_hint: {"center_x": .6,"center_y": .4}
+                        height: self.minimum_height
+                        multiline:False
+                        cursor_width: "2dp"
+                        foreground_color: 12/255,12/255,13/255,1
+                        background_color: 0,0,0,0
+                        padding:1
+                        font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                        font_size:"18dp"   
 
 
         #add course button
         Button:
             text: "Add Course"
             size_hint: .82,.08
-            pos_hint: {"center_x": .5,"center_y": .46}
+            pos_hint: {"center_x": .5,"center_y": .06}
             background_color:0,0,0,0
             font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size: "18dp"

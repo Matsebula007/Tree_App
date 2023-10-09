@@ -110,7 +110,7 @@ MDScreen:
                     radius:[15]
             TextInput:
                 id:ass_contr
-                hint_text:"Contribution* 0-100"
+                hint_text:"Contribution 0|100"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
                 height: self.minimum_height
@@ -169,7 +169,7 @@ MDScreen:
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
                 on_release:
-                    app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
+                    app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
                 pos_hint:{"center_x":.2,"center_y":.86}
 
             MDChip:
@@ -180,18 +180,18 @@ MDScreen:
                 icon_check_color:"#1F2F98"
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
+                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
                 pos_hint:{"center_x":.66,"center_y":.86}
             MDChip:
-                id: homework
+                id: quiz
                 radius: [dp(6),dp(6),dp(6),dp(6)]
-                text: "Homework"
+                text: "Quiz"
                 text_color:(12/255,12/255,13/255,.5)
                 icon_check_color:"#1F2F98"
-                pos_hint:{"center_x":.3,"center_y":.63}
+                pos_hint:{"center_x":.26,"center_y":.41}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
+                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
             MDChip:
                 id: lab
                 radius: [dp(6),dp(6),dp(6),dp(6)]
@@ -201,7 +201,7 @@ MDScreen:
                 pos_hint:{"center_x":.74,"center_y":.63}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
+                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
             MDChip:
                 id: classwork
                 radius: [dp(6),dp(6),dp(6),dp(6)]
@@ -211,17 +211,17 @@ MDScreen:
                 pos_hint:{"center_x":.72,"center_y":.41}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
+                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
             MDChip:
                 id: group
                 radius: [dp(6),dp(6),dp(6),dp(6)]
-                text: "Group"
+                text: "Groupwork"
                 text_color:(12/255,12/255,13/255,.5)
                 icon_check_color:"#1F2F98"
-                pos_hint:{"center_x":.26,"center_y":.41}
+                pos_hint:{"center_x":.26,"center_y":.63}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
+                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
             MDChip:
                 id: presentation
                 radius: [dp(6),dp(6),dp(6),dp(6)]
@@ -231,7 +231,7 @@ MDScreen:
                 pos_hint:{"center_x":.3,"center_y":.16}
                 check: True
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
+                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
             MDChip:
                 id: other
                 radius: [dp(6),dp(6),dp(6),dp(6)]
@@ -242,7 +242,7 @@ MDScreen:
                 check: True
                 #line_color:"grey"
                 md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,homework,classwork,assignment,group,presentation,other)
+                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
 
         #add course button
         Button:

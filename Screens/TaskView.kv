@@ -48,7 +48,6 @@
             id:check
             size_hint:None,None
             size:"48dp","48dp"
-            
             pos_hint:{"center_x":.9,"center_y": .8}
             on_active: app.on_complete(task_card,check,description,bar)
         
@@ -94,10 +93,10 @@
             text:root.task_time
             color: 1/255,1/255,1/255,1
             font_name: 'assets/fonts/JosefinSans-SemiBoldItalic.ttf'
-            font_size:"24sp"
+            font_size:"18sp"
             padding:1,0
-            size_hint_x:.51
-            size_hint_y:.51
+            size_hint_x:.76
+            size_hint_y:.5
             pos_hint:{"center_x":.5,"center_y": .8}
 
         MDLabel:
@@ -105,10 +104,10 @@
             text:root.task_time2
             color:12/255,12/255,13/255,.5
             font_name: 'assets/fonts/JosefinSans-SemiBoldItalic.ttf'
-            font_size:"24sp"
+            font_size:"18sp"
             padding:1,0
-            size_hint_x:.51
-            size_hint_y:.51
+            size_hint_x:.76
+            size_hint_y:.5
             pos_hint:{"center_x":.5,"center_y": .2}
 
 MDScreen:

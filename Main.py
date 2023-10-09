@@ -179,6 +179,15 @@ class MainApp(MDApp):
                 description.text = description.text.replace(i,"")
                 bar.md_bg_color =30/255,47/255,151/255,1 
                 TodoCard.mark_task_as_incomplete(task_card,task_card.pk)
+    
+    def cat_select(self,value,catW,percentbar):
+
+        if value.active == True:
+            percentbar.md_bg_color =0/255,255/255,125/255,1
+       
+        elif value.active == False:
+            catW.text = ""
+            percentbar.md_bg_color =0/255,255/255,125/255,.2
 
 #delete widget from view and info from database
     def delete_item(self, task_card):
@@ -253,7 +262,7 @@ class MainApp(MDApp):
             con.commit()
             cursor.execute("CREATE TABLE ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
             con.commit()
-            cursor.execute("CREATE TABLE HOMEWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+            cursor.execute("CREATE TABLE QUIZ(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
             con.commit()
             cursor.execute("CREATE TABLE GROUPWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
             con.commit()
@@ -290,26 +299,25 @@ class MainApp(MDApp):
 
 #add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
-
+        
         database.cursor.execute("SELECT COURSE_ID FROM COURSES")
         arr =database.cursor.fetchall()
+        #^to be replace by reading card id for each each course on navigation
         for i in arr:
             #print(i)
             if ass_courseid in i[0]:
                 if ass_courseid !="" and ass_mark !="" and ass_name !="" and ass_category!="":
 
                     # adding COURSE to database
+                    con = sqlite3.connect(f'{ass_courseid}.db')
+                    cursor = con.cursor()
                     ass_weight = int(ass_mark)*int(ass_contr)/100
-                    data= ass_courseid,ass_category,ass_mark,ass_contr,ass_weight,ass_name
-                    database.cursor.execute("INSERT INTO ALLASSESSMENT(COURSE_ID,CATEGORY,MARK,TUG_CONTR,TUG_WEIGHT,TUG_NAME) VALUES(?,?,?,?,?,?)",data)
-                    database.con.commit()
+                    data=ass_name,ass_contr,ass_mark,ass_weight
+                    cursor.execute(f"INSERT INTO {ass_category}(TITLE,WEIGHT,MARK,TUG_CONTR) VALUES(?,?,?,?)",data)
+                    con.commit()
                     screen_manager.transition.direction = "right"
                     screen_manager.current = "CoursesScreen"
-                    #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
-    
-                Snackbar(text="Invalid course",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                        font_size ="14dp").open() # type: ignore    
+                    #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio)
         if ass_courseid =="":
             Snackbar(text="Course ID cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
@@ -478,7 +486,7 @@ class MainApp(MDApp):
         return p
 
  #on_Selection of assessment filter 
-    def on_Selection(self,test,lab,homework,classwork,assignment,group,presentation,other):
+    def on_Selection(self,test,lab,quiz,classwork,assignment,group,presentation,other):
         if test.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="TEST"
         elif test.active ==False:
@@ -495,11 +503,11 @@ class MainApp(MDApp):
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
 
-        if homework.active ==True:
-            screen_manager.get_screen("addAssesment").ass_category.text ="HOMEWORK"
-        elif homework.active ==False:
+        if quiz.active ==True:
+            screen_manager.get_screen("addAssesment").ass_category.text ="QUIZ"
+        elif quiz.active ==False:
             gory =screen_manager.get_screen("addAssesment").ass_category.text
-            if gory =="HOMEWORK":
+            if gory =="QUIZ":
                 screen_manager.get_screen("addAssesment").ass_category.text =""
             else:pass
 
@@ -549,12 +557,13 @@ class MainApp(MDApp):
 if __name__ == "__main__":   
  
     MainApp().run()
+   
     """ sr ="ENG 221"
     database.cursor.execute("DELETE FROM ALLASSESSMENT WHERE TUG_ID =1")
     database.cursor.execute("DELETE FROM ALLASSESSMENT WHERE TUG_ID =4")
     database.cursor.execute("DELETE FROM ALLASSESSMENT WHERE TUG_ID =5")
     database.cursor.execute("DELETE FROM ALLASSESSMENT WHERE COURSE_ID =?",(sr,))
-    database.con.commit()
     database.cursor.execute("DROP TABLE ALLASSESSMENT")
+    database.con.commit()
     database.cursor.execute("CREATE TABLE ALLASSESSMENT(COURSE_ID TEXT NOT NULL,TUG_ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT SECONDARY KEY,MARK DECIMAL NOT NULL  DEFAULT 100.0,TUG_CONTR DECIMAL NOT NULL DEFAULT 100.0,TUG_WEIGHT DECIMAL,TUG_NAME TEXT NOT NULL,FOREIGN KEY(COURSE_ID) REFERENCES COURSES(COURSE_ID)) ")
     database.con.commit() """
