@@ -112,11 +112,11 @@
 
 MDScreen:
     name: "todoScreen"
-    md_bg_color: 244/255,249/255,253/255,.2
+    md_bg_color: 244/255,249/255,253/255,1
+    #md_bg_color: 1,1,1,1
     date_text: date_text
     todo_list:todo_list     
     MDFloatLayout:
-        md_bg_color: 244/255,249/255,253/255,.2
         MDLabel:
             text:"Today"
             pos_hint: {"center_x":.55,"center_y": .95}
@@ -167,7 +167,7 @@ MDScreen:
                 root.manager.current = "add_todo"
             canvas.before:
                 Color:
-                    rgba:(20/255,252/255,140/255,1)
+                    rgba:(30/255,47/255,151/255,.5)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
