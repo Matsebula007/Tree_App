@@ -156,14 +156,14 @@ MDScreen:
                     pos:self.pos
                     radius:[20]
 
-        MDIconButton:
-            icon: "home"
-            pos_hint: {"center_x":.2 ,"center_y":.5}
-            theme_text_color:"Custom"
-            text_color: 1,1,1,1
-            on_press:
-                root.manager.transition.direction = "right"
-                root.manager.current = "Home"
+            MDIconButton:
+                icon: "home"
+                pos_hint: {"center_x":.5 ,"center_y":.5}
+                theme_text_color:"Custom"
+                text_color: 1,1,1,1
+                on_press:
+                    root.manager.transition.direction = "right"
+                    root.manager.current = "Home"
 
         MDIconButton:
             icon: "view-agenda"

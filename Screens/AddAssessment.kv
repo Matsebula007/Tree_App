@@ -28,19 +28,17 @@ MDScreen:
             pos_hint: {"center_x": .5,"center_y": .84}
             canvas:
                 Color:
-                    rgba:(238/255,238/255,238/255,1)
+                    rgba:(238/255,238/255,238/255,.6)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
                     radius:[15]
-            TextInput:
+            MDLabel:
                 id: ass_courseid
-                hint_text:"PHY411*"
+                text:""
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .48}
-                multiline:False
-                cursor_width: "2dp"
-                foreground_color: 1/255,1/255,1/255,1
+                foreground_color: 1/255,1/255,1/255,.8
                 background_color: 0,0,0,0
                 padding:10
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'

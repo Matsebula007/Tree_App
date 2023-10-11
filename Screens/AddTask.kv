@@ -2,7 +2,7 @@ MDScreen:
     name:"add_todo"
     md_bg_color: 244/255,249/255,253/255,.2
     description: description
-    title:title
+    tittle:tittle
     task_date:task_date
     task_time:task_time
     task_time2:task_time2
@@ -23,7 +23,7 @@ MDScreen:
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "32dp"
 
-    #title input
+    #tittle input
         MDFloatLayout:
             size_hint:.85,.08
             pos_hint: {"center_x": .5,"center_y": .82}
@@ -35,8 +35,8 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id: title
-                hint_text:"Title"
+                id: tittle
+                hint_text:"tittle"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .4}
                 multiline:False
@@ -172,8 +172,8 @@ MDScreen:
             font_size: "18dp"
             color: 1,1,1,1
             on_release:
-                app.add_todo(title.text, description.text,task_date.text,task_time.text,task_time2.text)
-                app.update_task(title.text)
+                app.add_todo(tittle.text, description.text,task_date.text,task_time.text,task_time2.text)
+                app.update_task(tittle.text)
                 
             canvas.before:
                 Color:

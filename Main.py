@@ -63,7 +63,7 @@ class TodoCard(CommonElevationBehavior,MDFloatLayout):
         database.cursor.execute("DELETE FROM TASK WHERE Id=?", (taskid,))
         database.con.commit()
 
-    tiTtle = StringProperty()
+    tittle = StringProperty()
     description = StringProperty()
     task_date= StringProperty()
     task_time = StringProperty()
@@ -73,10 +73,10 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
         super().__init__(**kwargs)
         # state a course_key which we shall use link the list items with the database primary keys
         self.course_key = course_key
-    
     def navigate(self):
         screen_manager.transition.direction = "left"
-        screen_manager.current = "addAssesment"
+        screen_manager.current = "CourseSummry"
+        #screen_manager.current = "addAssesment"
         pass
     CourseID = StringProperty()
     C_Credit = StringProperty()
@@ -106,6 +106,7 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('Screens/AddTask.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/CoursesView.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/Addcourse.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/CourseSummry.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/AddAssessment.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/AccountScreen.kv'))
 
@@ -114,8 +115,8 @@ class MainApp(MDApp):
     
 
     def get_tasks(self):
-        uncomplete_tasks = database.cursor.execute("SELECT Id,TiTtle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
-        completed_tasks = database.cursor.execute("SELECT Id,TiTtle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
+        uncomplete_tasks = database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
+        completed_tasks = database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
         return completed_tasks, uncomplete_tasks
     def get_courses(self):
         taken_courses = database.cursor.execute("SELECT ID, COURSE_ID,CREDIT,CA_R,EX_R FROM COURSES").fetchall()
@@ -128,21 +129,21 @@ class MainApp(MDApp):
         month = str(datetime.now().strftime("%b"))
         day = str(datetime.now().strftime("%d"))
         screen_manager.get_screen("todoScreen").date_text.text = f"{days[wd]}, {day} {month}"
+       
         try:
-
             completed_tasks, uncomplete_tasks = self.get_tasks()
             taken_courses =self.get_courses()
             
             if completed_tasks != []:
                 for i in completed_tasks:
-                    add_task =(TodoCard(pk=i[0],tiTtle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5]))
+                    add_task =(TodoCard(pk=i[0],tittle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5]))
                     add_task.ids.check.active = True
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
             if uncomplete_tasks != []:
                 for i in uncomplete_tasks:
-                    add_task = TodoCard(pk=i[0],tiTtle=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5])
+                    add_task = TodoCard(pk=i[0],tittle=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5])
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
-           
+            
             if taken_courses !=[]:
                 for c in taken_courses:
                     cr= str (c[2])
@@ -150,10 +151,13 @@ class MainApp(MDApp):
                     ex = str (c[4])
                     add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
-
         except Exception as e:
+            Snackbar(text="App won't start!",snackbar_x ="10dp",snackbar_y ="10dp",
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="19dp").open() # type: ignore
             print(e)
             pass
+       
     def creditscal(self):
         database.cursor.execute("SELECT CREDIT FROM COURSES")
         creds = database.cursor.fetchall()
@@ -193,27 +197,27 @@ class MainApp(MDApp):
         TodoCard.delete_task(task_card,task_card.pk)
 
 #update TASK view table
-    def update_task(self,tiTtle):
-        database.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE TiTtle=?",(tiTtle,))
+    def update_task(self,tittle):
+        database.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Tittle=?",(tittle,))
         arr =database.cursor.fetchall()
         for i in arr:
-            screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],tiTtle=tiTtle, description=i[1],
+            screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],tittle=tittle, description=i[1],
                                                                                   task_date=i[2],task_time=i[3],task_time2=i[4]))
 
 # add task settings
-    def add_todo(self,tiTtle,description,date_time,task_time,task_time2):
+    def add_todo(self,tittle,description,date_time,task_time,task_time2):
        
-        if tiTtle !="" and description !="" and len(tiTtle)<21 and len(description)<61:
+        if tittle !="" and description !="" and len(tittle)<21 and len(description)<61:
             # adding task to database
-            data= tiTtle,description,date_time,task_time,task_time2,0
-            database.cursor.execute("INSERT INTO TASK(TiTtle,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
+            data= tittle,description,date_time,task_time,task_time2,0
+            database.cursor.execute("INSERT INTO TASK(Tittle,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
             database.con.commit()
             screen_manager.transition.direction = "right"
             screen_manager.current = "todoScreen"
-            #screen_manager.get_screen("Home").tasks_home.add_widget(TaskCard(tiTtle=tiTtle, description=description))
+            #screen_manager.get_screen("Home").tasks_home.add_widget(TaskCard(tittle=tittle, description=description))
 
-        elif tiTtle =="":
-            Snackbar(text="TiTtle is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+        elif tittle =="":
+            Snackbar(text="Tittle is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                     font_size ="19dp").open() # type: ignore
         elif description =="":
@@ -221,11 +225,11 @@ class MainApp(MDApp):
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open() # type: ignore
             
-        elif len(tiTtle)>21:
-            Snackbar(text="TiTtle too long!must<20",snackbar_x ="10dp",snackbar_y ="10dp",
+        elif len(tittle)>21:
+            Snackbar(text="Tittle too long!must<20",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open() # type: ignore
-            screen_manager.get_screen("add_todo").tiTtle.text=""
+            screen_manager.get_screen("add_todo").tittle.text=""
         elif len(description)>61:
             Snackbar(text="Description too long! must<60",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
@@ -259,63 +263,63 @@ class MainApp(MDApp):
             cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGOTY TEXT NOT NULL,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTR DECIMAL)")
             con.commit()
 
-            if tcheck.active == True:
+            if tcheck.active == True and testW !="":
                 cursor.execute("CREATE TABLE TEST(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
                 con.commit()
-                if testW !="":
-                    tdata = "TEST",testW
-                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",tdata)
-
+                tdata ="TEST",testW
+                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",tdata)
+                con.commit()
             else:pass
-            if acheck.active ==True:
+
+            if acheck.active ==True and assW !="":
                 cursor.execute("CREATE TABLE ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
                 con.commit()
-                if assW !="":
-                    adata = "ASSIGNMENT",assW
-                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",adata)
+                adata = "ASSIGNMENT",assW
+                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",adata)
+                con.commit()
             else:pass
-            if pcheck.active ==True:
+            if pcheck.active ==True and preseW !="":
                 cursor.execute("CREATE TABLE PRESENTATION(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
                 con.commit()
-                if preseW !="":
-                    pdata = "PRESENTATION",preseW
-                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",pdata)
+                pdata = "PRESENTATION",preseW
+                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",pdata)
+                con.commit()
             else:pass
-            if qcheck.active ==True:
+            if qcheck.active ==True and quizW !="":
                 cursor.execute("CREATE TABLE QUIZ(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
                 con.commit()
-                if quizW !="":
-                    qdata = "QUIZ",quizW
-                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",qdata)
+                qdata = "QUIZ",quizW
+                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",qdata)
+                con.commit()
             else:pass
-            if lcheck.active ==True:
+            if lcheck.active ==True and labW !="":
                 cursor.execute("CREATE TABLE LAB(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
                 con.commit()
-                if labW !="":
-                    ldata = "LAB",labW
-                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
+                ldata = "LAB",labW
+                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
+                con.commit()
             else:pass
-            if  gcheck.active ==True:
+            if  gcheck.active ==True and groupW !="":
                 cursor.execute("CREATE TABLE GROUPWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
                 con.commit()
-                if groupW !="":
-                    gdata = "GROUPWORK",groupW
-                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",gdata)
+                gdata = "GROUPWORK",groupW
+                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",gdata)
+                con.commit()
             else:pass
-            if ccheck.active ==True:
+            if ccheck.active ==True and clswrkW !="":
                 cursor.execute("CREATE TABLE CLASSWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
                 con.commit()
-                if clswrkW !="":
-                    cdata = "CLASSWORK",clswrkW
-                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",cdata)
+                cdata = "CLASSWORK",clswrkW
+                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",cdata)
+                con.commit()
 
             else:pass
-            if ocheck.active ==True:
+            if ocheck.active ==True and otherW !="":
                 cursor.execute("CREATE TABLE OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
                 con.commit()
-                if otherW !="":
-                    odata = "OTHER",otherW
-                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata)
+                odata = "OTHER",otherW
+                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata)
+                con.commit()
             else:pass
 
             
@@ -343,6 +347,12 @@ class MainApp(MDApp):
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                     font_size ="19dp").open() # type: ignore
 
+# add course ID to next screen
+    def get_id(self,key,keycr):
+        screen_manager.get_screen("CourseSummry").crseid.text=f"{key}"
+        screen_manager.get_screen("CourseSummry").crsecr.text=f"{keycr} Cr"
+        screen_manager.get_screen("addAssesment").ass_courseid.text=f"{key}"
+        pass
 
 #add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
@@ -358,12 +368,20 @@ class MainApp(MDApp):
                     # adding COURSE to database
                     con = sqlite3.connect(f'{ass_courseid}.db')
                     cursor = con.cursor()
+    
                     ass_weight = int(ass_mark)*int(ass_contr)/100
                     data=ass_name,ass_contr,ass_mark,ass_weight
-                    cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,TUG_CONTR) VALUES(?,?,?,?)",data)
-                    con.commit()
-                    screen_manager.transition.direction = "right"
-                    screen_manager.current = "CoursesScreen"
+                    try:
+                        cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,TUG_CONTR) VALUES(?,?,?,?)",data)
+                        con.commit()
+                        screen_manager.transition.direction = "right"
+                        screen_manager.current = "CoursesScreen"
+                    except Exception:
+                        Snackbar(text="Invalid Category!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                                font_size ="19dp").open()
+                        pass
+                    
                     #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio)
         if ass_courseid =="":
             Snackbar(text="Course ID cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
@@ -385,10 +403,10 @@ class MainApp(MDApp):
 
 #display from databse
     def display_task_complete(self):
-        database.cursor.execute("SELECT Id,TiTtle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
+        database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
         arr =database.cursor.fetchall()
         for i in arr:
-            add_task =(TodoCard(pk=i[0],tiTtle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],
+            add_task =(TodoCard(pk=i[0],tittle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],
                                 task_time2=i[5]))                                                             
             add_task.ids.check.active = True
             if add_task.ids.pk !=i[0]:
@@ -397,10 +415,10 @@ class MainApp(MDApp):
             #prevent double display of items on list    
             # move reading database from button trigger to read to display when app starts                                                     
     def display_task_incomplete(self):
-        database.cursor.execute("SELECT Id,TiTtle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=0")
+        database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=0")
         arr =database.cursor.fetchall()
         for i in arr:
-            screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],tiTtle=i[1], description=i[2],
+            screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],tittle=i[1], description=i[2],
                                                                                   task_date=i[3],task_time=i[4],task_time2=i[5]))
         
 
@@ -534,6 +552,7 @@ class MainApp(MDApp):
 
  #on_Selection of assessment filter 
     def on_Selection(self,test,lab,quiz,classwork,assignment,group,presentation,other):
+
         if test.active ==True:
             screen_manager.get_screen("addAssesment").ass_category.text ="TEST"
         elif test.active ==False:
@@ -604,6 +623,14 @@ class MainApp(MDApp):
 if __name__ == "__main__":   
  
     MainApp().run()
+ 
+    """ database.cursor.execute("DROP TABLE TASK") 
+    database.con.commit() 
+    database.cursor.execute("DELETE FROM COURSES WHERE ID =29")
+    database.con.commit() 
+                                                                 
+    database.cursor.execute("CREATE TABLE TASK(Id INTEGER PRIMARY KEY AUTOINCREMENT,Tittle VARCHAR(20) NOT NULL,Description VARCHAR(20) NOT NULL,Date TEXT,FromTime TEXT,ToTime TEXT, completed BOOLEAN NOT NULL CHECK (completed IN (0, 1))) ")
+    database.con.commit() """ 
     """ database.cursor.execute("DELETE FROM COURSES WHERE ID =15")
     database.con.commit()
     database.cursor.execute("DELETE FROM COURSES WHERE ID =16")

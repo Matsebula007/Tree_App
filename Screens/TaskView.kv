@@ -22,10 +22,11 @@
                 pos:self.pos
                 radius:[15]
         
-        #task tittle description
+        #task tittle 
         MDLabel:
-            text:root.title
+            text:root.tittle
             markup: True
+            color: 1/255,1/255,1/255,1
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"20sp"
             size_hint_x:.78
@@ -36,6 +37,7 @@
         MDLabel:
             id:description
             text:root.description
+            color: 1/255,1/255,1/255,1
             font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size:"16sp"
             markup:True
@@ -64,6 +66,7 @@
         MDLabel:
             id:task_date
             text:root.task_date
+            color: 1/255,1/255,1/255,1
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"14sp"
             size_hint_x:.8
@@ -212,14 +215,14 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[20]
-        MDIconButton:
-            icon: "view-agenda"
-            pos_hint: {"center_x":.4 ,"center_y":.5}
-            theme_text_color:"Custom"
-            text_color: 1,1,1,1
-            on_press:
-                root.manager.transition.direction = "left"
-                root.manager.current = "todoScreen" 
+            MDIconButton:
+                icon: "view-agenda"
+                pos_hint: {"center_x":.5 ,"center_y":.5}
+                theme_text_color:"Custom"
+                text_color: 1,1,1,1
+                on_press:
+                    root.manager.transition.direction = "left"
+                    root.manager.current = "todoScreen" 
         
         MDIconButton:
             icon: "library"

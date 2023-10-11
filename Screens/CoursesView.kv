@@ -10,7 +10,7 @@
         Color:
             rgba:root.bar_color +[0.8]
         Line:
-            width:10
+            width:12
             ellipse:(self.x,self.y,self.width,self.height,0,root.set_value*3.6)
 
     MDLabel:
@@ -28,6 +28,10 @@
     radius:[8]
     size_hint:1,None
     height:dp(180)
+    course_key:course_key
+    cid:cid
+    crsecr:crsecr
+
     #card primary key holder
     MDLabel:
         id:course_key
@@ -47,6 +51,7 @@
         
         #Course identity
         MDLabel:
+            id:cid
             text:root.CourseID
             markup: True
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
@@ -57,6 +62,7 @@
 
         #course credit
         MDLabel:
+            id:crsecr
             text:root.C_Credit
             markup: True
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
@@ -70,6 +76,7 @@
             icon:"chevron-right"
             pos_hint:{"center_x":.9,"center_y": .1}
             on_press:
+                app.get_id(cid.text,crsecr.text)
                 root.navigate()
 
         #CA CircularProgressBar settings 
@@ -260,14 +267,14 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[20]
-        MDIconButton:
-            icon: "library"
-            pos_hint: {"center_x":.6 ,"center_y":.5}
-            theme_text_color:"Custom"
-            text_color: 1,1,1,1
-            on_press:
-                root.manager.transition.direction = "left"
-                root.manager.current = "CoursesScreen"
+            MDIconButton:
+                icon: "library"
+                pos_hint: {"center_x":.5 ,"center_y":.5}
+                theme_text_color:"Custom"
+                text_color: 1,1,1,1
+                on_press:
+                    root.manager.transition.direction = "left"
+                    root.manager.current = "CoursesScreen"
         
         MDIconButton:
             icon: "account"
