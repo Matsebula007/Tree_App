@@ -7,6 +7,7 @@ from kivy.properties import StringProperty,ListProperty,NumericProperty
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.pickers import MDTimePicker
 from kivy.clock import Clock
+#from dateutil import tz 
 
 from datetime import date ,datetime
 from kivymd.uix.behaviors import CommonElevationBehavior
@@ -42,6 +43,23 @@ class CircularProgressBar(AnchorLayout):
             self.set_value =self.counter
         else:
             Clock.unschedule(self.percent_counter)
+
+
+class TaskCard(CommonElevationBehavior,MDFloatLayout):
+    def __init__(self, cardpk=None, **kwargs):
+        super().__init__(**kwargs)
+        # state a pk which we shall use link the list items with the database primary keys
+        self.cardpk = cardpk
+
+    weekday = StringProperty()
+    daydate = StringProperty()
+    title = StringProperty()
+    frmtime = StringProperty()
+    totime = StringProperty()
+    
+    
+
+
 
 
 class TodoCard(CommonElevationBehavior,MDFloatLayout):
@@ -121,6 +139,9 @@ class MainApp(MDApp):
     def get_courses(self):
         taken_courses = database.cursor.execute("SELECT ID, COURSE_ID,CREDIT,CA_R,EX_R FROM COURSES").fetchall()
         return taken_courses
+    def get_schedule(self):
+        schedule = database.cursor.execute("SELECT Id,Date,Tittle,FromTime,ToTime FROM TASK  WHERE completed = 0").fetchall()
+        return schedule
     def on_start(self):
         today = date.today()
         wd = date.weekday(today)
@@ -133,16 +154,34 @@ class MainApp(MDApp):
         try:
             completed_tasks, uncomplete_tasks = self.get_tasks()
             taken_courses =self.get_courses()
-            
+            toschedule = self.get_schedule()
             if completed_tasks != []:
-                for i in completed_tasks:
+                for i in completed_tasks: 
                     add_task =(TodoCard(pk=i[0],tittle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5]))
-                    add_task.ids.check.active = True
+                    add_task.ids.check.active = True 
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
             if uncomplete_tasks != []:
                 for i in uncomplete_tasks:
                     add_task = TodoCard(pk=i[0],tittle=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5])
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
+            if toschedule !=[]:
+                for scl in toschedule:
+                    ddname =scl[1]
+                    my_date = datetime.strptime(ddname,"%A %d %B")
+                    weekd = my_date.strftime("%A")#%a abrivv
+                    daydt = my_date.strftime("%d")
+
+                    #print(ddname)
+                    #print(datetime.now())
+                    #print(weekd)
+                    
+                    frtime = datetime.strptime(scl[3],"%H:%M")
+                    asd= frtime.time().strftime("%I:%M %p") 
+                    totime = datetime.strptime(scl[4],"%H:%M")
+                    bsd= totime.time().strftime("%I:%M %p")
+        
+                    add_taskHom = TaskCard(cardpk=scl[0],weekday=weekd, daydate=daydt,title=scl[2],frmtime=asd,totime=bsd)
+                    screen_manager.get_screen("Home").tasks_home.add_widget(add_taskHom)
             
             if taken_courses !=[]:
                 for c in taken_courses:
@@ -152,7 +191,7 @@ class MainApp(MDApp):
                     add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
         except Exception as e:
-            Snackbar(text="App won't start!",snackbar_x ="10dp",snackbar_y ="10dp",
+            Snackbar(text="loading Error",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="19dp").open() # type: ignore
             print(e)
@@ -379,7 +418,7 @@ class MainApp(MDApp):
                     except Exception:
                         Snackbar(text="Invalid Category!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                                 size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                                font_size ="19dp").open()
+                                font_size ="19dp").open()# type: ignore
                         pass
                     
                     #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio)
@@ -623,7 +662,6 @@ class MainApp(MDApp):
 if __name__ == "__main__":   
  
     MainApp().run()
- 
     """ database.cursor.execute("DROP TABLE TASK") 
     database.con.commit() 
     database.cursor.execute("DELETE FROM COURSES WHERE ID =29")

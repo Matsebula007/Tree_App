@@ -1,62 +1,8 @@
-<TaskCard>
-    elevation: 0
-    md_bg_color:0,1,.898,1
-    radius:[8]
-    size_hint:None,.99
-    #height:dp(160)
-    width: dp(150)
-
-    MDLabel:
-        text:root.title
-        markup: True
-        font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
-        font_size:"20sp"
-        size_hint_x:.8
-        size_hint_y:.8
-        pos_hint:{"center_x":.5,"center_y": .8}
-    
-    MDLabel:
-        #reead data from json database
-        id:description
-        text:root.description
-        font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
-        markup:True
-        size_hint_x:.9
-        size_hint_y:.9
-        pos_hint:{"center_x": .5,"center_y":.4}
-<CourseDisplayCard>
-    elevation: 0
-    md_bg_color:17/255,162/255,235/255
-    radius:[8]
-    size_hint:1,None
-    height:dp(240)
-    
-    MDLabel:
-        text:root.title
-        markup: True
-        font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
-        font_size:"20sp"
-        size_hint_x:.8
-        size_hint_y:.8
-        pos_hint:{"center_x":.5,"center_y": .8}
-    
-    MDLabel:
-        #reead data from json database
-        id:description
-        text:root.description
-        font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
-        markup:True
-        size_hint_x:.9
-        size_hint_y:.9
-        pos_hint:{"center_x": .5,"center_y":.4}
-    
-
-
 MDScreen:
     name:"CourseSummry"
     crseid:crseid
     crsecr:crsecr
-    md_bg_color: 244/255,249/255,253/255,.2
+    md_bg_color: 244/255,249/255,253/255,1
 
     #home header bar
     MDFloatLayout:

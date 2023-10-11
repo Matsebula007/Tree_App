@@ -1,29 +1,75 @@
 <TaskCard>
     elevation: 0
-    md_bg_color:0,1,.898,1
+    md_bg_color:74/255,222/255,222/255,.6
+    #md_bg_color:238/255,238/255,238/255,1
     radius:[8]
     size_hint:None,.99
     #height:dp(160)
     width: dp(150)
+    
+    #weekday
+    MDLabel:
+        id:weekday
+        text:root.weekday
+        color:(30/255,47/255,151/255,.9)
+        font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+        font_size:"16sp"
+        size_hint_x:.6
+        size_hint_y:.11
+        pos_hint:{"center_x":.5,"center_y": .88}
+    #day date
+    MDLabel:
+        id:ddate
+        text:root.daydate
+        font_name:'assets/fonts/JosefinSans-Bold.ttf'
+        font_size:"30sp"
+        size_hint_x:.3
+        size_hint_y:.3
+        pos_hint:{"center_x": .54,"center_y":.68}
+    #bar 
+    MDFloatLayout:
+        id:nbar
+        size_hint:.04,.22
+        pos_hint:{"center_x":.08, "center_y":.4}
+        md_bg_color:30/255,47/255,151/255,.8
 
     MDLabel:
+        id:title
         text:root.title
-        markup: True
-        font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
-        font_size:"20sp"
+        font_name:'assets/fonts/JosefinSans-Regular.ttf'
+        font_size:"16sp"
         size_hint_x:.8
-        size_hint_y:.8
-        pos_hint:{"center_x":.5,"center_y": .8}
-    
+        size_hint_y:.32
+        pos_hint:{"center_x":.6,"center_y":.4}
+
     MDLabel:
-        #reead data from json database
-        id:description
-        text:root.description
-        font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
-        markup:True
-        size_hint_x:.9
-        size_hint_y:.9
-        pos_hint:{"center_x": .5,"center_y":.4}
+        id:frmtime
+        text:root.frmtime
+        color:(30/255,47/255,151/255,.4)
+        font_name: 'assets/fonts/JosefinSans-Regular.ttf'
+        font_size:"12sp"
+        size_hint_x:.42
+        size_hint_y:.1
+        pos_hint:{"center_x":.28,"center_y": .1}
+    MDLabel:
+        text:"-"
+        color:(30/255,47/255,151/255,.4)
+        font_name: 'assets/fonts/JosefinSans-Regular.ttf'
+        font_size:"30sp"
+        size_hint_x:.1
+        size_hint_y:.1
+        pos_hint:{"center_x":.5,"center_y": .1}
+
+    MDLabel:
+        id:totime
+        text:root.totime
+        color:(30/255,47/255,151/255,.4)
+        font_name: 'assets/fonts/JosefinSans-Regular.ttf'
+        font_size:"12sp"
+        size_hint_x:.42
+        size_hint_y:.1
+        pos_hint:{"center_x":.74,"center_y": .1}
+            
 <CourseDisplayCard>
     elevation: 0
     md_bg_color:17/255,162/255,235/255
@@ -55,7 +101,7 @@ MDScreen:
     name:"Home"
     tasks_home:tasks_home
     course_home: course_home
-    md_bg_color: 244/255,249/255,253/255,.2
+    md_bg_color: 244/255,249/255,253/255,1
 
     #home header bar
     MDFloatLayout:
@@ -79,8 +125,8 @@ MDScreen:
 
     #task view_home
     MDFloatLayout:
-        size_hint:1,.2
-        pos_hint: {"center_x": .5,"center_y": .76}
+        size_hint:1,.22
+        pos_hint: {"center_x": .5,"center_y": .77}
         canvas:
             
             RoundedRectangle:
@@ -110,7 +156,7 @@ MDScreen:
         text:"Your timetable"
         font_name:"assets/fonts/JosefinSans-SemiBold.ttf"
         font_size:"22dp"
-        pos_hint: {"center_x":.56,"center_y": .64}
+        pos_hint: {"center_x":.56,"center_y": .62}
         text_color: 0,0,.59,1
    
     #course view_home
@@ -125,7 +171,6 @@ MDScreen:
             bar_width:0
             GridLayout:
                 #orientation: "lr-tb"
-                md_bg_color: 1,1,1,1
                 id: course_home
                 cols: 2
                 height:self.minimum_height
