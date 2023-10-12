@@ -203,7 +203,7 @@ MDScreen:
         theme_text_color:"Custom"
         text_color: (0/255,0/255,0/255,.5)
         on_release:
-            root.manager.transition.direction = "left"
+            root.manager.transition = FadeTransition()
             root.manager.current = "addCourse"
        
    #Course view
@@ -245,7 +245,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "right"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
 
         MDIconButton:
@@ -254,7 +254,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "right"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "todoScreen" 
         
         MDFloatLayout:

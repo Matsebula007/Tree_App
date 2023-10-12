@@ -174,6 +174,7 @@ MDScreen:
             on_release:
                 app.add_todo(tittle.text, description.text,task_date.text,task_time.text,task_time2.text)
                 app.update_task(tittle.text)
+                app.update_taskHome(tittle.text)
                 
             canvas.before:
                 Color:
@@ -182,3 +183,61 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
+    MDFloatLayout:
+        size_hint:.98,.1
+        pos_hint: {"center_x": .5,"center_y": .06}
+        canvas:
+            Color:
+                rgba:(0/255,0/255,0/255,1)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"center_x":.2 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "Home"
+
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .4,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(30/255,47/255,151/255,.4)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
+            MDIconButton:
+                icon: "view-agenda"
+                pos_hint: {"center_x":.5,"center_y":.5}
+                theme_text_color:"Custom"
+                text_color: 1,1,1,1
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.current = "todoScreen" 
+        
+        
+        MDIconButton:
+            icon: "library"
+            pos_hint: {"center_x":.6 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "CoursesScreen"
+                    
+        MDIconButton:
+            icon: "account"
+            pos_hint: {"center_x":.8 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "AccountMenu"
+

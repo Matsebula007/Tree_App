@@ -14,7 +14,7 @@ MDScreen:
             theme_text_color:'Custom'
             text_color:  12/255,12/255,13/255,1
             on_release:
-                root.manager.transition.direction = "right"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "CoursesScreen"
     
     #Course ID label
@@ -54,7 +54,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "right"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
 
         MDIconButton:
@@ -63,7 +63,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "todoScreen" 
         
         MDFloatLayout:
@@ -81,6 +81,9 @@ MDScreen:
                 pos_hint: {"center_x":.5 ,"center_y":.5}
                 theme_text_color:"Custom"
                 text_color: 1,1,1,1
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.current = "CoursesScreen"
                     
         MDIconButton:
             icon: "account"
@@ -88,5 +91,5 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "AccountMenu"

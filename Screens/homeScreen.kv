@@ -1,4 +1,7 @@
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
+
 <TaskCard>
+    id:task_card
     elevation: 0
     md_bg_color:74/255,222/255,222/255,.6
     #md_bg_color:238/255,238/255,238/255,1
@@ -6,6 +9,9 @@
     size_hint:None,.99
     #height:dp(160)
     width: dp(150)
+    MDLabel:
+        id:cardpk
+        markup:True
     
     #weekday
     MDLabel:
@@ -47,10 +53,10 @@
         text:root.frmtime
         color:(30/255,47/255,151/255,.4)
         font_name: 'assets/fonts/JosefinSans-Regular.ttf'
-        font_size:"12sp"
+        font_size:"14sp"
         size_hint_x:.42
         size_hint_y:.1
-        pos_hint:{"center_x":.28,"center_y": .1}
+        pos_hint:{"center_x":.26,"center_y": .1}
     MDLabel:
         text:"-"
         color:(30/255,47/255,151/255,.4)
@@ -58,17 +64,17 @@
         font_size:"30sp"
         size_hint_x:.1
         size_hint_y:.1
-        pos_hint:{"center_x":.5,"center_y": .1}
+        pos_hint:{"center_x":.52,"center_y": .12}
 
     MDLabel:
         id:totime
         text:root.totime
         color:(30/255,47/255,151/255,.4)
         font_name: 'assets/fonts/JosefinSans-Regular.ttf'
-        font_size:"12sp"
+        font_size:"14sp"
         size_hint_x:.42
         size_hint_y:.1
-        pos_hint:{"center_x":.74,"center_y": .1}
+        pos_hint:{"center_x":.76,"center_y": .1}
             
 <CourseDisplayCard>
     elevation: 0
@@ -95,7 +101,8 @@
         size_hint_x:.9
         size_hint_y:.9
         pos_hint:{"center_x": .5,"center_y":.4}
-    
+
+
 
 MDScreen:
     name:"Home"
@@ -113,7 +120,6 @@ MDScreen:
             theme_text_color:'Custom'
             text_color: 12/255,12/255,13/255,1
             on_press:
-                root.manager.transition.direction = "right"
                 root.manager.current = "AccountMenu"
     
     #schedule label
@@ -128,25 +134,20 @@ MDScreen:
         size_hint:1,.22
         pos_hint: {"center_x": .5,"center_y": .77}
         canvas:
-            
-            RoundedRectangle:
-                size:self.size
-                pos:self.pos
-                radius:[15]
         ScrollView:
             do_scroll_y:False
             do_scroll_x:True
             size_hint:1,1
-            #height: dp(160)
             pos_hint:{"center_x":.5,"center_y":.5}
             bar_width: 0
-            MDGridLayout:
+            GridLayout:
                 orientation:"rl-tb"
                 id: tasks_home
                 rows: 1
+                width:self.minimum_width
                 row_force_default: False
-                size_hint:1,1
-                #height: dp(160)
+                size_hint_x:None
+
                 padding:dp(1)
                 spacing:dp(10)
                 adaptive_width:True
@@ -207,7 +208,7 @@ MDScreen:
                 theme_text_color:"Custom"
                 text_color: 1,1,1,1
                 on_press:
-                    root.manager.transition.direction = "right"
+                    root.manager.transition = FadeTransition()
                     root.manager.current = "Home"
 
         MDIconButton:
@@ -216,7 +217,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "todoScreen" 
         
         MDIconButton:
@@ -225,7 +226,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "CoursesScreen"
         
         MDIconButton:
@@ -234,5 +235,5 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "AccountMenu"

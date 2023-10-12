@@ -2,7 +2,7 @@ from kivy.core.window import Window
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.screenmanager import ScreenManager ,FadeTransition
 from kivy.properties import StringProperty,ListProperty,NumericProperty
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.pickers import MDTimePicker
@@ -57,10 +57,6 @@ class TaskCard(CommonElevationBehavior,MDFloatLayout):
     frmtime = StringProperty()
     totime = StringProperty()
     
-    
-
-
-
 
 class TodoCard(CommonElevationBehavior,MDFloatLayout):
     def __init__(self, pk=None, **kwargs):
@@ -92,8 +88,8 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
         # state a course_key which we shall use link the list items with the database primary keys
         self.course_key = course_key
     def navigate(self):
-        screen_manager.transition.direction = "left"
-        screen_manager.current = "CourseSummry"
+        screen_manager.transition = FadeTransition()
+        screen_manager.current = "addAssesment"
         #screen_manager.current = "addAssesment"
         pass
     CourseID = StringProperty()
@@ -166,20 +162,16 @@ class MainApp(MDApp):
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
             if toschedule !=[]:
                 for scl in toschedule:
-                    ddname =scl[1]
-                    my_date = datetime.strptime(ddname,"%A %d %B")
-                    weekd = my_date.strftime("%A")#%a abrivv
+                    ddname =f"{year} "+scl[1]
+                    my_date = datetime.strptime(ddname,"%Y %A %d %B")
+                    weekd=my_date.strftime("%A")
                     daydt = my_date.strftime("%d")
 
-                    #print(ddname)
-                    #print(datetime.now())
-                    #print(weekd)
-                    
                     frtime = datetime.strptime(scl[3],"%H:%M")
                     asd= frtime.time().strftime("%I:%M %p") 
                     totime = datetime.strptime(scl[4],"%H:%M")
                     bsd= totime.time().strftime("%I:%M %p")
-        
+
                     add_taskHom = TaskCard(cardpk=scl[0],weekday=weekd, daydate=daydt,title=scl[2],frmtime=asd,totime=bsd)
                     screen_manager.get_screen("Home").tasks_home.add_widget(add_taskHom)
             
@@ -190,13 +182,34 @@ class MainApp(MDApp):
                     ex = str (c[4])
                     add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
-        except Exception as e:
-            Snackbar(text="loading Error",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open() # type: ignore
-            print(e)
+        except Exception:
+            Snackbar(text="Murky Start",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                    font_size ="15dp").open()# type: ignore
             pass
-       
+
+    def Full_notime(self):
+        year = str(datetime.now().year)
+        tos = self.get_schedule() 
+        for scl in tos:
+            ddname =f"{year} "+scl[1]
+            day1 =f"{year} "+scl[1]+f" {scl[3]}"
+
+            dday1 = datetime.strptime(ddname,"%Y %A %d %B %H:%M" ) 
+            print(ddname)
+            my_date = datetime.strptime(ddname,"%Y %A %d %B")
+            print(my_date)
+            weekd=my_date.strftime("%A")
+            daydt = my_date.strftime("%d")
+
+            """ print(type(my_date.weekday()))
+            teks =my_date.weekday()-1 """
+            
+            frtime = datetime.strptime(scl[3],"%H:%M")
+            asd= frtime.time().strftime("%I:%M %p") 
+            totime = datetime.strptime(scl[4],"%H:%M")
+            bsd= totime.time().strftime("%I:%M %p")
+
     def creditscal(self):
         database.cursor.execute("SELECT CREDIT FROM COURSES")
         creds = database.cursor.fetchall()
@@ -220,7 +233,7 @@ class MainApp(MDApp):
                 description.text = description.text.replace(i,"")
                 bar.md_bg_color =30/255,47/255,151/255,1 
                 TodoCard.mark_task_as_incomplete(task_card,task_card.pk)
-    
+    #add course ui
     def cat_select(self,value,catW,percentbar):
 
         if value.active == True:
@@ -235,46 +248,110 @@ class MainApp(MDApp):
         screen_manager.get_screen("todoScreen").todo_list.remove_widget(task_card)
         TodoCard.delete_task(task_card,task_card.pk)
 
-#update TASK view table
+#delete widget from view and info from database
+    def delete_card(self, task_cardID):
+        
+        screen_manager.get_screen("Home").tasks_home.remove_widget(task_cardID)
+        
+
+#update TASK view 
     def update_task(self,tittle):
         database.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Tittle=?",(tittle,))
         arr =database.cursor.fetchall()
         for i in arr:
             screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],tittle=tittle, description=i[1],
                                                                                   task_date=i[2],task_time=i[3],task_time2=i[4]))
+    def update_taskHome(self,tittle):
+        year = str(datetime.now().year)
+        database.cursor.execute("SELECT Id,Date,FromTime,ToTime FROM TASK  WHERE Tittle=?",(tittle,))
+        tohome = database.cursor.fetchall()
+        if tohome !=[]:
+            for scl in tohome:
+                ddname =f"{year} "+scl[1]
+                my_date = datetime.strptime(ddname,"%Y %A %d %B")
+                weekd=my_date.strftime("%A")
+                daydt = my_date.strftime("%d")
+
+                frtime = datetime.strptime(scl[2],"%H:%M")
+                asd= frtime.time().strftime("%I:%M %p") 
+                totime = datetime.strptime(scl[3],"%H:%M")
+                bsd= totime.time().strftime("%I:%M %p")
+
+                """ day1 =f"{year} "+scl[1]+f" {scl[3]}"
+                dday1 = datetime.strptime(day1,"%Y %A %d %B %H:%M" )
+
+                day2 =f"{year} "+scl[1]+f" {scl[4]}"
+                dday2 = datetime.strptime(day2,"%Y %A %d %B %H:%M" )
+                
+                duration = dday2 - dday1
+                secsD = duration.total_seconds()
+                houRs = divmod(secsD,3600)[0]
+                minTs = divmod(secsD,60)[0]
+
+                timeNow=datetime.now()
+
+                print(f"{minTs}" +" Hrs " )
+                print(timeNow)
+                #print(dday2)
+
+                print(type(my_date.weekday()))
+                teks =my_date.weekday()-1 """
+                
+                add_taskHom = TaskCard(cardpk=scl[0],weekday=weekd, daydate=daydt,title=tittle,frmtime=asd,totime=bsd)
+                screen_manager.get_screen("Home").tasks_home.add_widget(add_taskHom)
+
 
 # add task settings
     def add_todo(self,tittle,description,date_time,task_time,task_time2):
        
-        if tittle !="" and description !="" and len(tittle)<21 and len(description)<61:
+        if tittle !="" and description !="" and len(tittle)<21 and len(description)<61 and date_time!=""and task_time!="" and task_time2!="" :
             # adding task to database
             data= tittle,description,date_time,task_time,task_time2,0
             database.cursor.execute("INSERT INTO TASK(Tittle,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
             database.con.commit()
-            screen_manager.transition.direction = "right"
+            screen_manager.transition = FadeTransition()
             screen_manager.current = "todoScreen"
             #screen_manager.get_screen("Home").tasks_home.add_widget(TaskCard(tittle=tittle, description=description))
 
         elif tittle =="":
             Snackbar(text="Tittle is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
         elif description =="":
-            Snackbar(text="Description is missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+            Snackbar(text="Description is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore 
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
             
         elif len(tittle)>21:
             Snackbar(text="Tittle too long!must<20",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
             screen_manager.get_screen("add_todo").tittle.text=""
         elif len(description)>61:
             Snackbar(text="Description too long! must<60",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
             screen_manager.get_screen("add_todo").description.text=""
-
+        
+        elif date_time=="":
+            Snackbar(text="Specify date",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
+                    #add action mybe highlight empty area   
+        elif task_time=="":
+            Snackbar(text="Specify start time",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
+        
+        elif task_time2=="":
+            Snackbar(text="Specify completion time",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
+        else:
+            Snackbar(text="Task Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
+            
 #adding new course to course view
     def update_Course(self,CourseID):
         #database.cursor.execute("DELETE FROM COURSES WHERE COURSE_ID=?",("MUK",))
@@ -357,34 +434,34 @@ class MainApp(MDApp):
                 cursor.execute("CREATE TABLE OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
                 con.commit()
                 odata = "OTHER",otherW
-                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata)
+                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata) 
                 con.commit()
             else:pass
-
-            
-            
-
 
             # adding COURSE to database
             data= CourseID,C_Credit,CA_ratio,Ex_ratio
             database.cursor.execute("INSERT INTO COURSES(COURSE_ID,CREDIT,CA_R,EX_R) VALUES(?,?,?,?)",data)
             database.con.commit()
-            screen_manager.transition.direction = "right"
+            screen_manager.transition = FadeTransition()
             screen_manager.current = "CoursesScreen"
             #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
  
         elif CourseID =="":
             Snackbar(text="Course ID cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
         elif CA_ratio =="":
             Snackbar(text="CA Weight cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
         elif Ex_ratio =="":
             Snackbar(text="Exam Weight cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
+        else:
+            Snackbar(text="Course Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
 
 # add course ID to next screen
     def get_id(self,key,keycr):
@@ -392,53 +469,61 @@ class MainApp(MDApp):
         screen_manager.get_screen("CourseSummry").crsecr.text=f"{keycr} Cr"
         screen_manager.get_screen("addAssesment").ass_courseid.text=f"{key}"
         pass
-
+#clear input fields
+    def clear_screenTask(self):
+        screen_manager.get_screen("add_todo").description.text=""
+        screen_manager.get_screen("add_todo").tittle.text=""
+        screen_manager.get_screen("add_todo").task_date.text=""
+        screen_manager.get_screen("add_todo").task_time.text=""
+        screen_manager.get_screen("add_todo").task_time2.text=""
+        pass
 #add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
         
-        database.cursor.execute("SELECT COURSE_ID FROM COURSES")
-        arr =database.cursor.fetchall()
-        #^to be replace by reading card id for each each course on navigation
-        for i in arr:
-            #print(i)
-            if ass_courseid in i[0]:
-                if ass_courseid !="" and ass_mark !="" and ass_name !="" and ass_category!="":
-
-                    # adding COURSE to database
-                    con = sqlite3.connect(f'{ass_courseid}.db')
-                    cursor = con.cursor()
-    
-                    ass_weight = int(ass_mark)*int(ass_contr)/100
-                    data=ass_name,ass_contr,ass_mark,ass_weight
-                    try:
-                        cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,TUG_CONTR) VALUES(?,?,?,?)",data)
-                        con.commit()
-                        screen_manager.transition.direction = "right"
-                        screen_manager.current = "CoursesScreen"
-                    except Exception:
-                        Snackbar(text="Invalid Category!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                                font_size ="19dp").open()# type: ignore
-                        pass
-                    
-                    #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio)
+        if ass_courseid !="" and ass_mark !="" and ass_name !="" and ass_category!=""and ass_contr!="":
+            # adding COURSE to database
+            con = sqlite3.connect(f'{ass_courseid}.db')
+            cursor = con.cursor()
+           
+            ass_weight = int(ass_mark)*int(ass_contr)/100
+            data=ass_name,ass_contr,ass_mark,ass_weight
+                
+            try:
+                cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,TUG_CONTR) VALUES(?,?,?,?)",data)
+                con.commit()
+                screen_manager.transition = FadeTransition()
+                screen_manager.current = "CoursesScreen"
+            except Exception:
+                Snackbar(text="Category not in Course!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="15dp").open()# type: ignore
+                pass
+                
+                #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio)
         if ass_courseid =="":
-            Snackbar(text="Course ID cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+            Snackbar(text="Course ID  empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
         elif ass_name =="":
-            Snackbar(text="Assessment name cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+            Snackbar(text="Assessment name  empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
         elif ass_mark =="":
-            Snackbar(text="Assessment mark cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+            Snackbar(text="Mark empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
         elif ass_category =="":
-            Snackbar(text="Assessment Category cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+            Snackbar(text="Category  empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="19dp").open() # type: ignore
-        
+                    font_size ="15dp").open() # type: ignore
+        elif ass_contr =="":
+            Snackbar(text="Contribution empty default-100",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                    font_size ="15dp").open() # type: ignore
+        else:
+            Snackbar(text="Assessment Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
 
 #display from databse
     def display_task_complete(self):
@@ -478,33 +563,37 @@ class MainApp(MDApp):
 
                     database.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
                     database.con.commit()
-                    screen_manager.transition.direction = "right"
+                    screen_manager.transition = FadeTransition()
                     screen_manager.current = "Home"
                 
                 elif i[0] !="" and i[1] !="":
                     Snackbar(text="Illegal Sign up!",snackbar_x ="10dp",snackbar_y ="10dp",
                             size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                            font_size ="19dp").open()
+                            font_size ="15dp").open()
         elif user_name =="":
             Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open()
+                    font_size ="15dp").open()
         elif user_email =="":
             Snackbar(text="Email  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open()
+                    font_size ="15dp").open()
         elif user_password =="":
             Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
         elif len(user_name)>21:
             Snackbar(text="Username must<21",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open()
+                    font_size ="15dp").open()
         elif len(user_password)>61 :
             Snackbar(text="Password must<61",snackbar_x ="10dp",snackbar_y ="10dp",
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="19dp").open() # type: ignore
+                    font_size ="15dp").open() # type: ignore
+        else:
+            Snackbar(text="Sign Up Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
 
 # user login settings
     def userlogin(self,user_name,user_password):
@@ -519,25 +608,29 @@ class MainApp(MDApp):
             uspassword = i[1]
            
             if user_name !="" and user_password !="" and user_name == usname and user_password == uspassword:
-                screen_manager.transition.direction = "right"
+                screen_manager.transition = FadeTransition()
                 screen_manager.current = "Home"
 
             elif user_name =="":
                 Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                        font_size ="19dp").open() # type: ignore
+                        font_size ="15dp").open() # type: ignore
             elif user_password =="":
                 Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                        font_size ="19dp").open()
+                        font_size ="15dp").open()
             elif user_name != usname:
                 Snackbar(text="Invalid username",snackbar_x ="10dp",snackbar_y ="10dp",
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                        font_size ="19dp").open()
+                        font_size ="15dp").open()
             elif user_password != uspassword:
                 Snackbar(text="Invalid password",snackbar_x ="10dp",snackbar_y ="10dp",
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                        font_size ="19dp").open()
+                        font_size ="15dp").open()
+            else:
+                Snackbar(text="Login Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open() # type: ignore
 
 # date picker
     def on_save(self, instance, value, date_range):

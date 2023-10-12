@@ -141,10 +141,8 @@ MDScreen:
             size_hint_y:.85
             pos_hint:{"center_x":.5,"center_y": .5}
             bar_width:0
-            
             GridLayout:
                 orientation: "lr-bt"
-                md_bg_color: 1,1,1,1
                 id: todo_list
                 cols: 1
                 height:self.minimum_height
@@ -166,7 +164,8 @@ MDScreen:
             font_size: "18dp"
             color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                app.clear_screenTask()
+                root.manager.transition = FadeTransition()
                 root.manager.current = "add_todo"
             canvas.before:
                 Color:
@@ -181,7 +180,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "add_todo"
 
     #navigation menu                    
@@ -202,7 +201,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "right"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
         
         MDFloatLayout:
@@ -221,7 +220,7 @@ MDScreen:
                 theme_text_color:"Custom"
                 text_color: 1,1,1,1
                 on_press:
-                    root.manager.transition.direction = "left"
+                    root.manager.transition = FadeTransition()
                     root.manager.current = "todoScreen" 
         
         MDIconButton:
@@ -230,7 +229,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "CoursesScreen"
         
         MDIconButton:
@@ -239,5 +238,5 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "AccountMenu"
