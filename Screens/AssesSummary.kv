@@ -1,0 +1,96 @@
+MDScreen:
+    name:"AssessmentSummary"
+    crseid:crseid
+    crsecr:crsecr
+    md_bg_color: 244/255,249/255,253/255,1
+
+    #home header bar
+    MDFloatLayout:
+    
+        MDIconButton:
+            icon:"chevron-left"
+            user_font: "40dp"
+            pos_hint:{"center_y":.95}
+            theme_text_color:'Custom'
+            text_color:  12/255,12/255,13/255,1
+            on_release:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "CoursesScreen"
+    
+    #Course ID label
+        MDLabel:
+            id:crseid
+            text:""
+            pos_hint: {"center_x": .72,"center_y": .95}
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size: "32dp"
+    
+    #Course Credit label
+        MDLabel:
+            id:crsecr
+            text:""
+            size_hint:.3,.8
+            pos_hint: {"center_x": .94,"center_y": .95}
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size: "18dp"
+  
+    
+                
+#navigation menu
+    MDFloatLayout:
+        size_hint:.98,.1
+        pos_hint: {"center_x": .5,"center_y": .06}
+        canvas:
+            Color:
+                rgba:(0/255,0/255,0/255,1)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"center_x":.2 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "Home"
+
+        MDIconButton:
+            icon: "view-agenda"
+            pos_hint: {"center_x":.4 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "todoScreen" 
+        
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .6,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(30/255,47/255,151/255,.4)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
+            MDIconButton:
+                icon: "library"
+                pos_hint: {"center_x":.5 ,"center_y":.5}
+                theme_text_color:"Custom"
+                text_color: 1,1,1,1
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.current =  "CourseSummry"
+"
+                    
+        MDIconButton:
+            icon: "account"
+            pos_hint: {"center_x":.8 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "AccountMenu"

@@ -25,7 +25,7 @@ MDScreen:
         #Course ID for Assessment
         MDFloatLayout:
             size_hint:.62,.08
-            pos_hint: {"center_x": .4,"center_y": .84}
+            pos_hint: {"center_x": .4,"center_y": .86}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,.6)
@@ -47,7 +47,7 @@ MDScreen:
         #Mark settings
         MDFloatLayout:
             size_hint:.28,.08
-            pos_hint: {"center_x": .76,"center_y": .74}
+            pos_hint: {"center_x": .76,"center_y": .76}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -72,7 +72,7 @@ MDScreen:
         #Assessment title
         MDFloatLayout:
             size_hint:.5,.08
-            pos_hint: {"center_x": .34,"center_y": .74}
+            pos_hint: {"center_x": .34,"center_y": .76}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -97,7 +97,7 @@ MDScreen:
         #Assessment Weight
         MDFloatLayout:
             size_hint:.8,.08
-            pos_hint: {"center_x": .5,"center_y": .64}
+            pos_hint: {"center_x": .5,"center_y": .66}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -122,8 +122,8 @@ MDScreen:
     
         #Assessment Category text
         MDFloatLayout:
-            size_hint:.8,.08
-            pos_hint: {"center_x": .5,"center_y": .22}
+            size_hint:.6,.08
+            pos_hint: {"center_x": .5,"center_y": .3}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -133,10 +133,11 @@ MDScreen:
                     radius:[15]
             MDLabel:
                 id:ass_category
-                hint_text:"Long press Category *"
+                text:"Long press obove*"
+                color:12/255,12/255,13/255,.5
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
-                foreground_color: 12/255,12/255,13/255,1
+                foreground_color: 12/255,12/255,13/255,.2
                 background_color: 0,0,0,0
                 padding:15
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
@@ -145,7 +146,7 @@ MDScreen:
         #Assessment Category filter
         MDFloatLayout:
             size_hint:.9,.27
-            pos_hint: {"center_x": .5,"center_y": .42}
+            pos_hint: {"center_x": .5,"center_y": .48}
             canvas:
                 Color:
                     rgba:(244/255,249/255,253/255,.6)
@@ -241,8 +242,8 @@ MDScreen:
         #add course button
         Button:
             text: "Add Assessment"
-            size_hint: .82,.08
-            pos_hint: {"center_x": .5,"center_y": .12}
+            size_hint: .5,.08
+            pos_hint: {"center_x": .5,"center_y": .2}
             background_color:0,0,0,0
             font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size: "18dp"
@@ -258,3 +259,60 @@ MDScreen:
                 app.add_assessment(ass_courseid.text,ass_mark.text,ass_contr.text,ass_category.text,ass_name.text)
                 #app.update_Course(CourseID.text)
     
+        #navigation menu
+    MDFloatLayout:
+        size_hint:.98,.1
+        pos_hint: {"center_x": .5,"center_y": .06}
+        canvas:
+            Color:
+                rgba:(0/255,0/255,0/255,1)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"center_x":.2 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "Home"
+
+        MDIconButton:
+            icon: "view-agenda"
+            pos_hint: {"center_x":.4 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "todoScreen" 
+        
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .6,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(30/255,47/255,151/255,.4)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
+            MDIconButton:
+                icon: "library"
+                pos_hint: {"center_x":.5 ,"center_y":.5}
+                theme_text_color:"Custom"
+                text_color: 1,1,1,1
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.current = "CoursesScreen"
+                    
+        MDIconButton:
+            icon: "account"
+            pos_hint: {"center_x":.8 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "AccountMenu"

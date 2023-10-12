@@ -12,6 +12,9 @@ from kivy.clock import Clock
 from datetime import date ,datetime
 from kivymd.uix.behaviors import CommonElevationBehavior
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.behaviors import HoverBehavior
+from kivy.uix.button import Button
+from kivy.animation import Animation
 from kivy.uix.anchorlayout import AnchorLayout
 from kivymd.uix.snackbar import Snackbar
 from kivy.metrics import dp
@@ -22,6 +25,17 @@ import sqlite3
 class database():
     con = sqlite3.connect('User_Database.db')
     cursor = con.cursor()
+
+class HoverButton(Button,HoverBehavior):
+    background =ListProperty((30/255,47/255,151/255,.4))
+    def on_enter(self):
+        self.background = ((26/255,167/255,236/255,1))
+        Animation(size_hint =(.28,.05),d=0.3).start(self)
+    def on_leave(self):
+        self.background = ((30/255,47/255,151/255,.4))
+        Animation(size_hint =(.2,.046),d=0.3).start(self)
+
+    pass
 
 class CircularProgressBar(AnchorLayout):
     set_value = NumericProperty(0)
@@ -121,6 +135,7 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('Screens/CoursesView.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/Addcourse.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/CourseSummry.kv'))
+        screen_manager.add_widget(Builder.load_file('Screens/AssesSummary.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/AddAssessment.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/AccountScreen.kv'))
 
@@ -303,165 +318,173 @@ class MainApp(MDApp):
 
 # add task settings
     def add_todo(self,tittle,description,date_time,task_time,task_time2):
-       
-        if tittle !="" and description !="" and len(tittle)<21 and len(description)<61 and date_time!=""and task_time!="" and task_time2!="" :
-            # adding task to database
-            data= tittle,description,date_time,task_time,task_time2,0
-            database.cursor.execute("INSERT INTO TASK(Tittle,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
-            database.con.commit()
-            screen_manager.transition = FadeTransition()
-            screen_manager.current = "todoScreen"
-            #screen_manager.get_screen("Home").tasks_home.add_widget(TaskCard(tittle=tittle, description=description))
+        
+        try:
+            if tittle !="" and description !="" and len(tittle)<21 and len(description)<61 and date_time!=""and task_time!="" and task_time2!="" :
+                # adding task to database
+                data= tittle,description,date_time,task_time,task_time2,0
+                database.cursor.execute("INSERT INTO TASK(Tittle,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
+                database.con.commit()
+                screen_manager.transition = FadeTransition()
+                screen_manager.current = "todoScreen"
+                #screen_manager.get_screen("Home").tasks_home.add_widget(TaskCard(tittle=tittle, description=description))
 
-        elif tittle =="":
-            Snackbar(text="Tittle is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="15dp").open() # type: ignore
-        elif description =="":
-            Snackbar(text="Description is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore 
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open() # type: ignore
+            elif tittle =="":
+                Snackbar(text="Tittle is missing",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif description =="":
+                Snackbar(text="Description is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore 
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open() # type: ignore
+                
+            elif len(tittle)>21:
+                Snackbar(text="Tittle must be < 21 char",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open() # type: ignore
+                screen_manager.get_screen("add_todo").tittle.text=""
+            elif len(description)>61:
+                Snackbar(text="Description must be < 60 char",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open() # type: ignore
+                screen_manager.get_screen("add_todo").description.text=""
             
-        elif len(tittle)>21:
-            Snackbar(text="Tittle too long!must<20",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open() # type: ignore
-            screen_manager.get_screen("add_todo").tittle.text=""
-        elif len(description)>61:
-            Snackbar(text="Description too long! must<60",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open() # type: ignore
-            screen_manager.get_screen("add_todo").description.text=""
-        
-        elif date_time=="":
-            Snackbar(text="Specify date",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open() # type: ignore
-                    #add action mybe highlight empty area   
-        elif task_time=="":
-            Snackbar(text="Specify start time",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open() # type: ignore
-        
-        elif task_time2=="":
-            Snackbar(text="Specify completion time",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open() # type: ignore
-        else:
+            elif date_time=="":
+                Snackbar(text="Specify date",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open() # type: ignore
+                        #add action mybe highlight empty area   
+            elif task_time=="":
+                Snackbar(text="Specify start time",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open() # type: ignore
+            
+            elif task_time2=="":
+                Snackbar(text="Specify completion time",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open() # type: ignore
+        except Exception:
             Snackbar(text="Task Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="15dp").open() # type: ignore
+            pass
             
 #adding new course to course view
     def update_Course(self,CourseID):
         #database.cursor.execute("DELETE FROM COURSES WHERE COURSE_ID=?",("MUK",))
-    
-        database.cursor.execute("SELECT ID,CREDIT,CA_R,EX_R FROM COURSES WHERE COURSE_ID=?",(CourseID,))
-        arr =database.cursor.fetchall()
-        for c in arr:
-            cr= str (c[1])
-            ca = str (c[2])
-            ex = str (c[3])
-            crse= CourseCard(course_key = c[0],CourseID=CourseID, C_Credit=cr,CA_ratio=ca,Ex_ratio=ex) #type: ignore
-            screen_manager.get_screen("CoursesScreen").course_list.add_widget(crse)
+        try:
+            database.cursor.execute("SELECT ID,CREDIT,CA_R,EX_R FROM COURSES WHERE COURSE_ID=?",(CourseID,))
+            arr =database.cursor.fetchall()
+            for c in arr:
+                cr= str (c[1])
+                ca = str (c[2])
+                ex = str (c[3])
+                crse= CourseCard(course_key = c[0],CourseID=CourseID, C_Credit=cr,CA_ratio=ca,Ex_ratio=ex) #type: ignore
+                screen_manager.get_screen("CoursesScreen").course_list.add_widget(crse)
+        except Exception:
+            Snackbar(text="Course Update Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
+            pass
     
    
 # add course settings
     def add_course(self,tcheck,testW,acheck,assW,pcheck,preseW,qcheck,quizW,lcheck,labW,gcheck,groupW,ccheck,clswrkW,ocheck,otherW,CourseID,C_Credit,CA_ratio,Ex_ratio):
-        
-        if CourseID !="" and CA_ratio !="" and Ex_ratio !="":
-            #create databse for course and initialize tables of categories
-            con = sqlite3.connect(f'{CourseID}.db')
-            cursor = con.cursor()
+        try:
+            if CourseID !="" and CA_ratio !="" and Ex_ratio !="":
+                #create databse for course and initialize tables of categories
+                con = sqlite3.connect(f'{CourseID}.db')
+                cursor = con.cursor()
 
-            cursor.execute("CREATE TABLE CATEGORY(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0)")
-            con.commit()
-            cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGOTY TEXT NOT NULL,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTR DECIMAL)")
-            con.commit()
-
-            if tcheck.active == True and testW !="":
-                cursor.execute("CREATE TABLE TEST(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                cursor.execute("CREATE TABLE CATEGORY(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0)")
                 con.commit()
-                tdata ="TEST",testW
-                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",tdata)
-                con.commit()
-            else:pass
-
-            if acheck.active ==True and assW !="":
-                cursor.execute("CREATE TABLE ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
-                con.commit()
-                adata = "ASSIGNMENT",assW
-                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",adata)
-                con.commit()
-            else:pass
-            if pcheck.active ==True and preseW !="":
-                cursor.execute("CREATE TABLE PRESENTATION(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
-                con.commit()
-                pdata = "PRESENTATION",preseW
-                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",pdata)
-                con.commit()
-            else:pass
-            if qcheck.active ==True and quizW !="":
-                cursor.execute("CREATE TABLE QUIZ(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
-                con.commit()
-                qdata = "QUIZ",quizW
-                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",qdata)
-                con.commit()
-            else:pass
-            if lcheck.active ==True and labW !="":
-                cursor.execute("CREATE TABLE LAB(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
-                con.commit()
-                ldata = "LAB",labW
-                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
-                con.commit()
-            else:pass
-            if  gcheck.active ==True and groupW !="":
-                cursor.execute("CREATE TABLE GROUPWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
-                con.commit()
-                gdata = "GROUPWORK",groupW
-                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",gdata)
-                con.commit()
-            else:pass
-            if ccheck.active ==True and clswrkW !="":
-                cursor.execute("CREATE TABLE CLASSWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
-                con.commit()
-                cdata = "CLASSWORK",clswrkW
-                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",cdata)
+                cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGOTY TEXT NOT NULL,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTR DECIMAL)")
                 con.commit()
 
-            else:pass
-            if ocheck.active ==True and otherW !="":
-                cursor.execute("CREATE TABLE OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
-                con.commit()
-                odata = "OTHER",otherW
-                cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata) 
-                con.commit()
-            else:pass
+                if tcheck.active == True and testW !="":
+                    cursor.execute("CREATE TABLE TEST(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                    con.commit()
+                    tdata ="TEST",testW
+                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",tdata)
+                    con.commit()
+                else:pass
 
-            # adding COURSE to database
-            data= CourseID,C_Credit,CA_ratio,Ex_ratio
-            database.cursor.execute("INSERT INTO COURSES(COURSE_ID,CREDIT,CA_R,EX_R) VALUES(?,?,?,?)",data)
-            database.con.commit()
-            screen_manager.transition = FadeTransition()
-            screen_manager.current = "CoursesScreen"
-            #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
- 
-        elif CourseID =="":
-            Snackbar(text="Course ID cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="15dp").open() # type: ignore
-        elif CA_ratio =="":
-            Snackbar(text="CA Weight cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="15dp").open() # type: ignore
-        elif Ex_ratio =="":
-            Snackbar(text="Exam Weight cannot be empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="15dp").open() # type: ignore
-        else:
-            Snackbar(text="Course Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                if acheck.active ==True and assW !="":
+                    cursor.execute("CREATE TABLE ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                    con.commit()
+                    adata = "ASSIGNMENT",assW
+                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",adata)
+                    con.commit()
+                else:pass
+                if pcheck.active ==True and preseW !="":
+                    cursor.execute("CREATE TABLE PRESENTATION(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                    con.commit()
+                    pdata = "PRESENTATION",preseW
+                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",pdata)
+                    con.commit()
+                else:pass
+                if qcheck.active ==True and quizW !="":
+                    cursor.execute("CREATE TABLE QUIZ(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                    con.commit()
+                    qdata = "QUIZ",quizW
+                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",qdata)
+                    con.commit()
+                else:pass
+                if lcheck.active ==True and labW !="":
+                    cursor.execute("CREATE TABLE LAB(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                    con.commit()
+                    ldata = "LAB",labW
+                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
+                    con.commit()
+                else:pass
+                if  gcheck.active ==True and groupW !="":
+                    cursor.execute("CREATE TABLE GROUPWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                    con.commit()
+                    gdata = "GROUPWORK",groupW
+                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",gdata)
+                    con.commit()
+                else:pass
+                if ccheck.active ==True and clswrkW !="":
+                    cursor.execute("CREATE TABLE CLASSWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                    con.commit()
+                    cdata = "CLASSWORK",clswrkW
+                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",cdata)
+                    con.commit()
+
+                else:pass
+                if ocheck.active ==True and otherW !="":
+                    cursor.execute("CREATE TABLE OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                    con.commit()
+                    odata = "OTHER",otherW
+                    cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata) 
+                    con.commit()
+                else:pass
+
+                # adding COURSE to database
+                data= CourseID,C_Credit,CA_ratio,Ex_ratio
+                database.cursor.execute("INSERT INTO COURSES(COURSE_ID,CREDIT,CA_R,EX_R) VALUES(?,?,?,?)",data)
+                database.con.commit()
+                screen_manager.transition = FadeTransition()
+                screen_manager.current = "CoursesScreen"
+                #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
+    
+            elif CourseID =="":
+                Snackbar(text="Course ID empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif CA_ratio =="":
+                Snackbar(text="CA Weight  empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif Ex_ratio =="":
+                Snackbar(text="Exam Weight empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+        except Exception:
+            Snackbar(text="Add Course Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="15dp").open() # type: ignore
+            pass
 
 # add course ID to next screen
     def get_id(self,key,keycr):
@@ -479,51 +502,52 @@ class MainApp(MDApp):
         pass
 #add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
-        
-        if ass_courseid !="" and ass_mark !="" and ass_name !="" and ass_category!=""and ass_contr!="":
-            # adding COURSE to database
-            con = sqlite3.connect(f'{ass_courseid}.db')
-            cursor = con.cursor()
-           
-            ass_weight = int(ass_mark)*int(ass_contr)/100
-            data=ass_name,ass_contr,ass_mark,ass_weight
-                
-            try:
-                cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,TUG_CONTR) VALUES(?,?,?,?)",data)
-                con.commit()
-                screen_manager.transition = FadeTransition()
-                screen_manager.current = "CoursesScreen"
-            except Exception:
-                Snackbar(text="Category not in Course!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+        try:
+            if ass_courseid !="" and ass_mark !="" and ass_name !="" and ass_category!=""and ass_contr!="":
+                # adding COURSE to database
+                con = sqlite3.connect(f'{ass_courseid}.db')
+                cursor = con.cursor()
+            
+                ass_weight = int(ass_mark)*int(ass_contr)/100
+                data=ass_name,ass_contr,ass_mark,ass_weight
+                    
+                try:
+                    cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,TUG_CONTR) VALUES(?,?,?,?)",data)
+                    con.commit()
+                    screen_manager.transition = FadeTransition()
+                    screen_manager.current = "CoursesScreen"
+                except Exception:
+                    Snackbar(text="Category not in Course!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                            font_size ="15dp").open()# type: ignore
+                    pass
+                    
+                    #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio)
+            if ass_courseid =="":
+                Snackbar(text="Course ID  empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                        font_size ="15dp").open()# type: ignore
-                pass
-                
-                #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio)
-        if ass_courseid =="":
-            Snackbar(text="Course ID  empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="15dp").open() # type: ignore
-        elif ass_name =="":
-            Snackbar(text="Assessment name  empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="15dp").open() # type: ignore
-        elif ass_mark =="":
-            Snackbar(text="Mark empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="15dp").open() # type: ignore
-        elif ass_category =="":
-            Snackbar(text="Category  empty!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="15dp").open() # type: ignore
-        elif ass_contr =="":
-            Snackbar(text="Contribution empty default-100",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                    font_size ="15dp").open() # type: ignore
-        else:
-            Snackbar(text="Assessment Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif ass_name =="":
+                Snackbar(text="Assessment name empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif ass_mark =="":
+                Snackbar(text="Mark empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif ass_category =="":
+                Snackbar(text="Category  empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif ass_contr =="":
+                Snackbar(text="Contribution empty default-100",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+        except Exception:
+            Snackbar(text="Add Assessment Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="15dp").open() # type: ignore
+            pass
 
 #display from databse
     def display_task_complete(self):
@@ -552,85 +576,87 @@ class MainApp(MDApp):
         user_email = screen_manager.get_screen("SignUp").usr_email.text
         user_password = screen_manager.get_screen("SignUp").usr_pass.text
 
+        try:
+            if user_name !="" and user_email !="" and user_password !="" and len(user_name)<21 and len(user_password)<60:
+                data = (user_name,user_email,user_password)
+                #prevent more user sign up if one user alredy signed up
+                database.cursor.execute("SELECT UserName,Password FROM LOGIN")
+                arr =database.cursor.fetchall()
+                for i in arr:
+                    if i[0] =="" and i[1] =="":
 
-        if user_name !="" and user_email !="" and user_password !="" and len(user_name)<21 and len(user_password)<60:
-            data = (user_name,user_email,user_password)
-            #prevent more user sign up if one user alredy signed up
-            database.cursor.execute("SELECT UserName,Password FROM LOGIN")
-            arr =database.cursor.fetchall()
-            for i in arr:
-                if i[0] =="" and i[1] =="":
-
-                    database.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
-                    database.con.commit()
-                    screen_manager.transition = FadeTransition()
-                    screen_manager.current = "Home"
-                
-                elif i[0] !="" and i[1] !="":
-                    Snackbar(text="Illegal Sign up!",snackbar_x ="10dp",snackbar_y ="10dp",
-                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                            font_size ="15dp").open()
-        elif user_name =="":
-            Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open()
-        elif user_email =="":
-            Snackbar(text="Email  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open()
-        elif user_password =="":
-            Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open() # type: ignore
-        elif len(user_name)>21:
-            Snackbar(text="Username must<21",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open()
-        elif len(user_password)>61 :
-            Snackbar(text="Password must<61",snackbar_x ="10dp",snackbar_y ="10dp",
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open() # type: ignore
-        else:
+                        database.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
+                        database.con.commit()
+                        screen_manager.transition = FadeTransition()
+                        screen_manager.current = "Home"
+                    
+                    elif i[0] !="" and i[1] !="":
+                        Snackbar(text="Illegal Sign up!",snackbar_x ="10dp",snackbar_y ="10dp",
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                                font_size ="15dp").open()
+            elif user_name =="":
+                Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open()
+            elif user_email =="":
+                Snackbar(text="Email  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open()
+            elif user_password =="":
+                Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open() # type: ignore
+            elif len(user_name)>21:
+                Snackbar(text="Username must<21",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open()
+            elif len(user_password)>61 :
+                Snackbar(text="Password must<61",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                        font_size ="15dp").open() # type: ignore
+        except Exception:
             Snackbar(text="Sign Up Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="15dp").open() # type: ignore
+            pass
 
 # user login settings
     def userlogin(self,user_name,user_password):
             
         user_name = screen_manager.get_screen("Login").usr_Username.text
         user_password = screen_manager.get_screen("Login").usr_password.text
-        
-        database.cursor.execute("SELECT UserName,Password FROM LOGIN")
-        arr =database.cursor.fetchall()
-        for i in arr:
-            usname = i[0]
-            uspassword = i[1]
-           
-            if user_name !="" and user_password !="" and user_name == usname and user_password == uspassword:
-                screen_manager.transition = FadeTransition()
-                screen_manager.current = "Home"
+        try:
+            database.cursor.execute("SELECT UserName,Password FROM LOGIN")
+            arr =database.cursor.fetchall()
+            for i in arr:
+                usname = i[0]
+                uspassword = i[1]
+            
+                if user_name !="" and user_password !="" and user_name == usname and user_password == uspassword:
+                    screen_manager.transition = FadeTransition()
+                    screen_manager.current = "Home"
 
-            elif user_name =="":
-                Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                        font_size ="15dp").open() # type: ignore
-            elif user_password =="":
-                Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                        font_size ="15dp").open()
-            elif user_name != usname:
-                Snackbar(text="Invalid username",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                        font_size ="15dp").open()
-            elif user_password != uspassword:
-                Snackbar(text="Invalid password",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                        font_size ="15dp").open()
-            else:
-                Snackbar(text="Login Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                        font_size ="15dp").open() # type: ignore
+                elif user_name =="":
+                    Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                            font_size ="15dp").open() # type: ignore
+                elif user_password =="":
+                    Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                            font_size ="15dp").open()
+                elif user_name != usname:
+                    Snackbar(text="Invalid username",snackbar_x ="10dp",snackbar_y ="10dp",
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                            font_size ="15dp").open()
+                elif user_password != uspassword:
+                    Snackbar(text="Invalid password",snackbar_x ="10dp",snackbar_y ="10dp",
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                            font_size ="15dp").open()
+        except Exception:
+            Snackbar(text="Login Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
+            pass
 
 # date picker
     def on_save(self, instance, value, date_range):
