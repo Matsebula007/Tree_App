@@ -1,5 +1,5 @@
 
-MDScreen:
+<AssesSummary>:
     name:"AssessmentSummary"
     crseid:crseid
     crsecr:crsecr
@@ -17,6 +17,24 @@ MDScreen:
             on_release:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "overviewscreen"
+    HoverButton:
+        size_hint: .2,.046
+        text: "+"
+        font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+        font_size: "32dp"
+        background_color:1,1,1,0
+        pos_hint: {"center_x":.8 ,"center_y":.94}
+        color: 1,1,1,1     
+        canvas.before:
+            Color:
+                rgba:self.background
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[10]
+        on_release:
+            root.manager.transition = FadeTransition()
+            root.manager.current = "addAssesment"
     
     #Course ID label
         MDLabel:

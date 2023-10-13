@@ -137,27 +137,19 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
 
 
 class OverviewScreen(MDScreen,MDFloatLayout):
-    #add Category to overview
-
+    #Category to overview
     def on_enter(self):
-        #try:
-        #for i in range(0,5,1):
-        """ tugcount = str(5)+" TUG"
-        contrib= str(35)
-        add_categ =(OverviewCard(categ_key=0,Category="PRESENTATION",Letter_grade="A+",TUG_count=tugcount,Contribution=contrib))
-        self.ids.category_list.add_widget(add_categ) """
         pass
-
-
-        """ except Exception as e:
-            Snackbar(text=f"{e}",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
-                    font_size ="15dp").open() # type: ignore
-            pass """
     def on_leave(self,*args):
-        """ add_categ =(OverviewCard()) """
         pass
-        #self.ids.category_list.clear_widgets()
+        
+
+class AssesSummary(MDScreen,MDFloatLayout):
+    #Assessment  overview
+    def on_enter(self):
+        pass
+    def on_leave(self,*args):
+        pass
 
 
 class Account(MDScreen):
@@ -180,8 +172,9 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('Screens/AddTask.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/CoursesView.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/Addcourse.kv'))
-        Builder.load_file('Screens/CourseSummry.kv')
-        screen_manager.add_widget(Builder.load_file('Screens/AssesSummary.kv'))
+        Builder.load_file('Screens/OverviewScr.kv')
+        Builder.load_file('Screens/AssesSummary.kv')
+        screen_manager.add_widget(AssesSummary(name="AssessmentSummary"))
         screen_manager.add_widget(OverviewScreen(name='overviewscreen'))
         screen_manager.add_widget(Builder.load_file('Screens/AddAssessment.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/AccountScreen.kv'))
@@ -275,12 +268,13 @@ class MainApp(MDApp):
     def creditscal(self):
         database.cursor.execute("SELECT CREDIT FROM COURSES")
         creds = database.cursor.fetchall()
-        total_cre =0
+        total_cre =0.0
         for cre in creds:
             for i in cre:
+                i =float(i)
                 total_cre =total_cre + i
         cred_format ="{:.1f}".format(total_cre)
-        return cred_format
+        return str(cred_format)
 #checkbox seetings
     def on_complete(self,task_card,value,description,bar):
 
@@ -417,8 +411,10 @@ class MainApp(MDApp):
             pass
             
 #adding new course to course view
-    def update_Course(self,CourseID):
-        #database.cursor.execute("DELETE FROM COURSES WHERE COURSE_ID=?",("MUK",))
+    def update_Course(self,Course_ID):
+        courID = str(Course_ID)
+        CourseID =courID.replace(" ","")
+        CourseID = CourseID.upper()
         try:
             database.cursor.execute("SELECT ID,CREDIT,CA_R,EX_R FROM COURSES WHERE COURSE_ID=?",(CourseID,))
             arr =database.cursor.fetchall()
@@ -428,6 +424,7 @@ class MainApp(MDApp):
                 ex = str (c[3])
                 crse= CourseCard(course_key = c[0],CourseID=CourseID, C_Credit=cr,CA_ratio=ca,Ex_ratio=ex) #type: ignore
                 screen_manager.get_screen("CoursesScreen").course_list.add_widget(crse)
+                screen_manager.get_screen("CoursesScreen").crtot.text= self.creditscal()
         except Exception:
             Snackbar(text="Course Update Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
@@ -452,21 +449,22 @@ class MainApp(MDApp):
                 Snackbar(text="Course Alredy exist",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                     font_size ="15dp").open() # type: ignore
-            else: 
+                
+            elif CourseID not in takenC: 
                 
                 try:
-                    if CourseID !="" and CA_ratio !="" and Ex_ratio !="" and C_Credit =="":
+                    if CourseID !="" and CA_ratio !="" and C_Credit !="" and Ex_ratio !="":
                         #create databse for course and initialize tables of categories
                         con = sqlite3.connect(f'{CourseID}.db')
                         cursor = con.cursor() # type: ignore
 
                         cursor.execute("CREATE TABLE CATEGORY(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0)")
                         con.commit()
-                        cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT NOT NULL,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTR DECIMAL,LETGRADE TEXT)")
+                        cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT NOT NULL,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTRIB DECIMAL,LETGRADE TEXT,TUG_COUNT DECIMAL)")
                         con.commit()
 
                         if tcheck.active == True and testW !="":
-                            cursor.execute("CREATE TABLE TEST(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                            cursor.execute("CREATE TABLE TEST(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                             con.commit()
                             tdata ="TEST",testW
                             cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",tdata)
@@ -474,42 +472,42 @@ class MainApp(MDApp):
                         else:pass
 
                         if acheck.active ==True and assW !="":
-                            cursor.execute("CREATE TABLE ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                            cursor.execute("CREATE TABLE ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                             con.commit()
                             adata = "ASSIGNMENT",assW
                             cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",adata)
                             con.commit()
                         else:pass
                         if pcheck.active ==True and preseW !="":
-                            cursor.execute("CREATE TABLE PRESENTATION(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                            cursor.execute("CREATE TABLE PRESENTATION(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                             con.commit()
                             pdata = "PRESENTATION",preseW
                             cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",pdata)
                             con.commit()
                         else:pass
                         if qcheck.active ==True and quizW !="":
-                            cursor.execute("CREATE TABLE QUIZ(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                            cursor.execute("CREATE TABLE QUIZ(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                             con.commit()
                             qdata = "QUIZ",quizW
                             cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",qdata)
                             con.commit()
                         else:pass
                         if lcheck.active ==True and labW !="":
-                            cursor.execute("CREATE TABLE LAB(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                            cursor.execute("CREATE TABLE LAB(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                             con.commit()
                             ldata = "LAB",labW
                             cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
                             con.commit()
                         else:pass
                         if  gcheck.active ==True and groupW !="":
-                            cursor.execute("CREATE TABLE GROUPWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                            cursor.execute("CREATE TABLE GROUPWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                             con.commit()
                             gdata = "GROUPWORK",groupW
                             cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",gdata)
                             con.commit()
                         else:pass
                         if ccheck.active ==True and clswrkW !="":
-                            cursor.execute("CREATE TABLE CLASSWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                            cursor.execute("CREATE TABLE CLASSWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                             con.commit()
                             cdata = "CLASSWORK",clswrkW
                             cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",cdata)
@@ -517,7 +515,7 @@ class MainApp(MDApp):
 
                         else:pass
                         if ocheck.active ==True and otherW !="":
-                            cursor.execute("CREATE TABLE OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,TUG_CONTR DECIMAL)")
+                            cursor.execute("CREATE TABLE OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                             con.commit()
                             odata = "OTHER",otherW
                             cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata) 
@@ -530,7 +528,6 @@ class MainApp(MDApp):
                         database.con.commit()
                         screen_manager.transition = FadeTransition()
                         screen_manager.current = "CoursesScreen"
-                        #screen_manager.get_screen("CoursesScreen").course_list.add_widget(CourseCard(CourseID=CourseID, C_Credit=C_Credit,CA_ratio=CA_ratio,Ex_ratio=Ex_ratio))
             
                     elif CourseID =="":
                         Snackbar(text="Course ID empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
@@ -540,14 +537,15 @@ class MainApp(MDApp):
                         Snackbar(text="CA Weight  empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                                 size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                                 font_size ="15dp").open() # type: ignore
+                    elif C_Credit =="":
+                        Snackbar(text="Credit hours empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
+                                font_size ="15dp").open() # type: ignore
                     elif Ex_ratio =="":
                         Snackbar(text="Exam Weight empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                                 size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
                                 font_size ="15dp").open() # type: ignore
-                    elif C_Credit =="":
-                        Snackbar(text="Credits empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1), # type: ignore
-                                font_size ="15dp").open() # type: ignore
+                    
                 except Exception:
                     Snackbar(text="Add Course Indigenous error 2",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                             size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
@@ -565,6 +563,7 @@ class MainApp(MDApp):
         screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
 #course summary calculations
     def summariseCourse(self):
+        print("Calculations")
         pass
 # add course ID to next screen
     def get_id(self,key,keycr):
@@ -592,7 +591,7 @@ class MainApp(MDApp):
                 data=ass_name,ass_contr,ass_mark,ass_weight
                     
                 try:
-                    cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,TUG_CONTR) VALUES(?,?,?,?)",data)
+                    cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,CONTRIB) VALUES(?,?,?,?)",data)
                     con.commit()
                     screen_manager.transition = FadeTransition()
                     screen_manager.current = "CoursesScreen"
@@ -859,8 +858,9 @@ class MainApp(MDApp):
 
 
 if __name__ == "__main__":   
- 
+   
     MainApp().run()
+     
     """ database.cursor.execute("DROP TABLE TASK") 
     database.con.commit() 
     database.cursor.execute("DELETE FROM COURSES WHERE ID =29")
@@ -880,5 +880,5 @@ if __name__ == "__main__":
     database.cursor.execute("DELETE FROM ALLASSESSMENT WHERE COURSE_ID =?",(sr,))
     database.cursor.execute("DROP TABLE ALLASSESSMENT")
     database.con.commit()
-    database.cursor.execute("CREATE TABLE ALLASSESSMENT(COURSE_ID TEXT NOT NULL,TUG_ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT SECONDARY KEY,MARK DECIMAL NOT NULL  DEFAULT 100.0,TUG_CONTR DECIMAL NOT NULL DEFAULT 100.0,TUG_WEIGHT DECIMAL,TUG_NAME TEXT NOT NULL,FOREIGN KEY(COURSE_ID) REFERENCES COURSES(COURSE_ID)) ")
+    database.cursor.execute("CREATE TABLE ALLASSESSMENT(COURSE_ID TEXT NOT NULL,TUG_ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT SECONDARY KEY,MARK DECIMAL NOT NULL  DEFAULT 100.0,CONTRIB DECIMAL NOT NULL DEFAULT 100.0,TUG_WEIGHT DECIMAL,TUG_NAME TEXT NOT NULL,FOREIGN KEY(COURSE_ID) REFERENCES COURSES(COURSE_ID)) ")
     database.con.commit() """

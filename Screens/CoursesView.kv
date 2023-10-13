@@ -183,6 +183,7 @@ MDScreen:
     name: "CoursesScreen"
     md_bg_color: 244/255,249/255,253/255,1
     course_list:course_list  
+    crtot:crtot
 
     #your courses
     MDFloatLayout:
@@ -192,6 +193,7 @@ MDScreen:
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"28dp"  
         MDLabel:
+            id:crtot
             text:app.creditscal()
             pos_hint: {"center_x":.54,"center_y": .92}
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
@@ -288,6 +290,7 @@ MDScreen:
                 theme_text_color:"Custom"
                 text_color: 1,1,1,1
                 on_press:
+                    app.summariseCourse()
                     root.manager.transition = FadeTransition()
                     root.manager.current = "CoursesScreen"
         
