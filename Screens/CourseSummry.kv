@@ -1,12 +1,95 @@
-MDScreen:
-    name:"CourseSummry"
+<OverviewCard>
+    id: overv_card
+    elevation: 0
+    md_bg_color:244/255,249/255,253/255,1
+    radius:[8]
+    size_hint:1,None
+    height:dp(180)
+    categ_key:categ_key
+    let_grade:let_grade
+    tug_count:tug_count
+    contrib:contrib
+    cat_name:cat_name
+    
+    #card primary key holder
+    MDLabel:
+        id:categ_key
+        markup:True
+
+    #main card 
+    MDFloatLayout:
+        size_hint:1,1
+        pos_hint: {"center_x": .5,"center_y": .5}
+        canvas:
+            Color:
+                rgba:app.Courseschooser()
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+        
+        #Course identity
+        MDLabel:
+            id:cat_name
+            text:root.Category
+            markup: True
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"18sp"
+            size_hint_x:.9
+            size_hint_y:.3
+            pos_hint:{"center_x":.5,"center_y": .88}
+        
+        #Category letter grade
+        MDLabel:
+            id:let_grade
+            text:root.Letter_grade
+            markup: True
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"38sp"
+            size_hint_x:.4
+            size_hint_y:.36
+            pos_hint:{"center_x":.28,"center_y": .6}
+
+        #TUG count
+        MDLabel:
+            id:tug_count
+            text:root.TUG_count
+            markup: True
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"18sp"
+            size_hint_x:.4
+            size_hint_y:.28
+            pos_hint:{"center_x":.75,"center_y": .68}
+
+        #Contribution Header
+        MDLabel:
+            text:"Contribution"
+            markup: True
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"18sp"
+            size_hint_x:.88
+            size_hint_y:.2
+            pos_hint:{"center_x":.5,"center_y": .38}
+
+        #Contribution
+        MDLabel:
+            id:contrib
+            text:root.Contribution
+            markup: True
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"30sp"
+            size_hint_x:.4
+            size_hint_y:.28
+            pos_hint:{"center_x":.5,"center_y": .2}
+
+<OverviewScreen>
+    category_list:category_list
     crseid:crseid
     crsecr:crsecr
     md_bg_color: 244/255,249/255,253/255,1
 
     #home header bar
     MDFloatLayout:
-    
         MDIconButton:
             icon:"chevron-left"
             user_font: "40dp"
@@ -14,8 +97,19 @@ MDScreen:
             theme_text_color:'Custom'
             text_color:  12/255,12/255,13/255,1
             on_release:
+                app.clearOverview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "CoursesScreen"
+        MDIconButton:
+            icon:"chevron-right"
+            user_font: "40dp"
+            pos_hint:{"center_x":.96,"center_y":.95}
+            theme_text_color:'Custom'
+            text_color:  12/255,12/255,13/255,1
+            on_release:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "AssessmentSummary"
+
     
     #Course ID label
         MDLabel:
@@ -33,10 +127,52 @@ MDScreen:
             pos_hint: {"center_x": .94,"center_y": .95}
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "18dp"
-  
-    
-                
-#navigation menu
+
+    MDFloatLayout:
+        size_hint:.98,.08
+        pos_hint: {"center_x": .5,"center_y": .88}
+        canvas:
+            Color:
+                rgba:(238/255,238/255,238/255,.2)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+        MDLabel:
+            id: overview
+            text:" Overview"
+            size_hint: 1,1
+            pos_hint: {"center_x": .5,"center_y": .5}
+            foreground_color: 1/255,1/255,1/255,.8
+            background_color: 0,0,0,0
+            padding:10
+            font_name:'assets/fonts/JosefinSans-Regular.ttf'
+            font_size:"26dp"
+    #Category summary scroll
+    MDFloatLayout:
+        size_hint:.98,.74
+        pos_hint:{"center_x":.5,"center_y": .47}
+        canvas:
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]    
+        ScrollView:
+            do_scroll_y:True
+            do_scroll_x:False
+            size_hint_y:1
+            pos_hint:{"center_x":.5,"center_y": .5}
+            bar_width:0
+            GridLayout:
+                orientation: "lr-tb"
+                id: category_list
+                cols: 2
+                height:self.minimum_height
+                row_default_height:80
+                size_hint_y:None
+                padding:10,10
+                spacing:10,10
+    #navigation menu
     MDFloatLayout:
         size_hint:.98,.1
         pos_hint: {"center_x": .5,"center_y": .06}
@@ -82,6 +218,7 @@ MDScreen:
                 theme_text_color:"Custom"
                 text_color: 1,1,1,1
                 on_press:
+                    app.clearOverview()
                     root.manager.transition = FadeTransition()
                     root.manager.current = "CoursesScreen"
                     

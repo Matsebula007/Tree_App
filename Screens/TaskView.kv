@@ -1,7 +1,7 @@
 <TodoCard>
     id: task_card
     elevation: 0
-    md_bg_color:244/255,249/255,253/255,.4
+    md_bg_color:244/255,249/255,253/255,1
     radius:[8]
     size_hint:1,None
     height:dp(160)
@@ -133,12 +133,17 @@ MDScreen:
     
     #task view
     MDFloatLayout:
-        size_hint:.99,.9
-        pos_hint:{"center_x":.5,"center_y": .48}    
+        size_hint:.99,.78
+        pos_hint:{"center_x":.5,"center_y": .48}  
+        canvas:
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]  
         ScrollView:
             do_scroll_y:True
             do_scroll_x:False
-            size_hint_y:.85
+            size_hint_y:1
             pos_hint:{"center_x":.5,"center_y": .5}
             bar_width:0
             GridLayout:
@@ -183,7 +188,7 @@ MDScreen:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "add_todo"
 
-    #navigation menu                    
+#navigation menu                    
     MDFloatLayout:
         size_hint:.98,.1
         pos_hint: {"center_x": .5,"center_y": .06}

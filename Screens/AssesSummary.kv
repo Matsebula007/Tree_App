@@ -1,3 +1,4 @@
+
 MDScreen:
     name:"AssessmentSummary"
     crseid:crseid
@@ -15,7 +16,7 @@ MDScreen:
             text_color:  12/255,12/255,13/255,1
             on_release:
                 root.manager.transition = FadeTransition()
-                root.manager.current = "CoursesScreen"
+                root.manager.current = "overviewscreen"
     
     #Course ID label
         MDLabel:
@@ -71,7 +72,7 @@ MDScreen:
             pos_hint: {"center_x": .6,"center_y": .5}
             canvas:
                 Color:
-                    rgba:(30/255,47/255,151/255,.4)
+                    rgba:(30/255,47/255,151/255,.6)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
@@ -83,8 +84,7 @@ MDScreen:
                 text_color: 1,1,1,1
                 on_press:
                     root.manager.transition = FadeTransition()
-                    root.manager.current =  "CourseSummry"
-"
+                    root.manager.current =  "overviewscreen"
                     
         MDIconButton:
             icon: "account"

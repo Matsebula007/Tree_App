@@ -2,7 +2,7 @@ from kivy.core.window import Window
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager ,FadeTransition
+from kivy.uix.screenmanager import ScreenManager ,FadeTransition,Screen
 from kivy.properties import StringProperty,ListProperty,NumericProperty
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.pickers import MDTimePicker
@@ -33,7 +33,7 @@ class HoverButton(Button,HoverBehavior):
         Animation(size_hint =(.28,.05),d=0.3).start(self)
     def on_leave(self):
         self.background = ((30/255,47/255,151/255,.4))
-        Animation(size_hint =(.2,.046),d=0.3).start(self)
+        Animation(size_hint =(.2,.046),d=0.1).start(self)
 
     pass
 
@@ -96,27 +96,72 @@ class TodoCard(CommonElevationBehavior,MDFloatLayout):
     task_date= StringProperty()
     task_time = StringProperty()
     task_time2 = StringProperty()
+
+class OverviewCard(CommonElevationBehavior,MDFloatLayout):
+    def __init__(self, categ_key=None, **kwargs):
+        super().__init__(**kwargs)
+        # state a categ_key which we shall use link the list items with the database primary keys
+        self.course_key = categ_key
+
+    Category=StringProperty()
+    Letter_grade=StringProperty()
+    TUG_count=StringProperty()
+    Contribution=StringProperty()
+
 class CourseCard(CommonElevationBehavior,MDFloatLayout):
     def __init__(self, course_key=None, **kwargs):
         super().__init__(**kwargs)
         # state a course_key which we shall use link the list items with the database primary keys
         self.course_key = course_key
     def navigate(self):
+        #self.add_categmary()
+        self.add_summary()
         screen_manager.transition = FadeTransition()
-        screen_manager.current = "addAssesment"
+        screen_manager.current = "overviewscreen"
         #screen_manager.current = "addAssesment"
         pass
+    def add_summary(self):
+        tugcount = str(5)+" TUG"
+        contrib= str(35)
+        add_categ =(OverviewCard(categ_key=0,Category="PRESENTATION",Letter_grade="A+",TUG_count=tugcount,Contribution=contrib))
+        screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
+
+    crsaverage = NumericProperty(78)
     CourseID = StringProperty()
     C_Credit = StringProperty()
     C_CA=StringProperty()
     C_Basis=StringProperty()
     CA_ratio=StringProperty()
     Ex_ratio=StringProperty()
+
+
+class OverviewScreen(MDScreen,MDFloatLayout):
+    #add Category to overview
+
+    def on_enter(self):
+        #try:
+        #for i in range(0,5,1):
+        """ tugcount = str(5)+" TUG"
+        contrib= str(35)
+        add_categ =(OverviewCard(categ_key=0,Category="PRESENTATION",Letter_grade="A+",TUG_count=tugcount,Contribution=contrib))
+        self.ids.category_list.add_widget(add_categ) """
+        pass
+
+
+        """ except Exception as e:
+            Snackbar(text=f"{e}",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
+                    font_size ="15dp").open() # type: ignore
+            pass """
+    def on_leave(self,*args):
+        """ add_categ =(OverviewCard()) """
+        pass
+        #self.ids.category_list.clear_widgets()
+
+
 class Account(MDScreen):
     name = StringProperty()
     Department = StringProperty()
-
-
 
 
 class MainApp(MDApp):  
@@ -134,8 +179,9 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('Screens/AddTask.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/CoursesView.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/Addcourse.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/CourseSummry.kv'))
+        Builder.load_file('Screens/CourseSummry.kv')
         screen_manager.add_widget(Builder.load_file('Screens/AssesSummary.kv'))
+        screen_manager.add_widget(OverviewScreen(name='overviewscreen'))
         screen_manager.add_widget(Builder.load_file('Screens/AddAssessment.kv'))
         screen_manager.add_widget(Builder.load_file('Screens/AccountScreen.kv'))
 
@@ -263,7 +309,7 @@ class MainApp(MDApp):
         screen_manager.get_screen("todoScreen").todo_list.remove_widget(task_card)
         TodoCard.delete_task(task_card,task_card.pk)
 
-#delete widget from view and info from database
+#delete widget from HOME view 
     def delete_card(self, task_cardID):
         
         screen_manager.get_screen("Home").tasks_home.remove_widget(task_cardID)
@@ -386,8 +432,7 @@ class MainApp(MDApp):
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,1),
                     font_size ="15dp").open() # type: ignore
             pass
-    
-   
+     
 # add course settings
     def add_course(self,tcheck,testW,acheck,assW,pcheck,preseW,qcheck,quizW,lcheck,labW,gcheck,groupW,ccheck,clswrkW,ocheck,otherW,CourseID,C_Credit,CA_ratio,Ex_ratio):
         try:
@@ -398,7 +443,7 @@ class MainApp(MDApp):
 
                 cursor.execute("CREATE TABLE CATEGORY(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0)")
                 con.commit()
-                cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGOTY TEXT NOT NULL,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTR DECIMAL)")
+                cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT NOT NULL,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTR DECIMAL,LETGRADE TEXT)")
                 con.commit()
 
                 if tcheck.active == True and testW !="":
@@ -486,11 +531,16 @@ class MainApp(MDApp):
                     font_size ="15dp").open() # type: ignore
             pass
 
+
+#clear overview screen
+    def clearOverview(self):
+        screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
+
 # add course ID to next screen
     def get_id(self,key,keycr):
-        screen_manager.get_screen("CourseSummry").crseid.text=f"{key}"
-        screen_manager.get_screen("CourseSummry").crsecr.text=f"{keycr} Cr"
-        screen_manager.get_screen("addAssesment").ass_courseid.text=f"{key}"
+        screen_manager.get_screen("overviewscreen").crseid.text=f"{key}"
+        screen_manager.get_screen("overviewscreen").crsecr.text=f"{keycr} Cr"
+        #screen_manager.get_screen("addAssesment").ass_courseid.text=f"{key}"
         pass
 #clear input fields
     def clear_screenTask(self):

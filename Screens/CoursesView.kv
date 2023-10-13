@@ -24,13 +24,14 @@
 <CourseCard>
     id: course_card
     elevation: 0
-    md_bg_color:244/255,249/255,253/255,.4
+    md_bg_color:244/255,249/255,253/255,1
     radius:[8]
     size_hint:1,None
     height:dp(180)
     course_key:course_key
     cid:cid
     crsecr:crsecr
+    caBar:caBar
 
     #card primary key holder
     MDLabel:
@@ -92,9 +93,10 @@
                     radius:[10]
             
             CircularProgressBar:
+                id:caBar
                 size_hint:None,None
                 size:85,85
-                value:80
+                value:root.crsaverage
                 pos_hint:{"center_x":.5,"center_y": .5}
 
         #Basis settings 
@@ -184,7 +186,6 @@ MDScreen:
 
     #your courses
     MDFloatLayout:
-        md_bg_color: 244/255,249/255,253/255,1
         MDLabel:
             text:"Your courses"
             pos_hint: {"center_x":.55,"center_y": .96}
@@ -211,15 +212,20 @@ MDScreen:
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[15]
+                radius:[10]
         on_release:
             root.manager.transition = FadeTransition()
-            root.manager.current = "CourseSummry"
+            root.manager.current = "addCourse"
        
    #Course view
     MDFloatLayout:
-        size_hint:.96,.8
-        pos_hint:{"center_x":.5,"center_y": .5}    
+        size_hint:.99,.8
+        pos_hint:{"center_x":.5,"center_y": .5} 
+        canvas:
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]   
         ScrollView:
             do_scroll_y:True
             do_scroll_x:False
@@ -228,7 +234,6 @@ MDScreen:
             bar_width:0
             GridLayout:
                 orientation: "lr-bt"
-                md_bg_color: 1,1,1,1
                 id: course_list
                 cols: 1
                 height:self.minimum_height
@@ -283,7 +288,7 @@ MDScreen:
                 theme_text_color:"Custom"
                 text_color: 1,1,1,1
                 on_press:
-                    root.manager.transition.direction = "left"
+                    root.manager.transition = FadeTransition()
                     root.manager.current = "CoursesScreen"
         
         MDIconButton:
@@ -292,5 +297,5 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "AccountMenu"
