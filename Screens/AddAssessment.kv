@@ -25,8 +25,8 @@ MDScreen:
 
         #Course ID for Assessment
         MDFloatLayout:
-            size_hint:.62,.08
-            pos_hint: {"center_x": .42,"center_y": .82}
+            size_hint:.8,.08
+            pos_hint: {"center_x": .5,"center_y": .82}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,.6)
@@ -42,38 +42,35 @@ MDScreen:
                 foreground_color: 1/255,1/255,1/255,.8
                 background_color: 0,0,0,0
                 padding:10
-                font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
                 font_size:"18dp"
 
-        #Mark settings
+         #Assessment Category text
         MDFloatLayout:
-            size_hint:.28,.08
-            pos_hint: {"center_x": .77,"center_y": .7}
+            size_hint:.8,.08
+            pos_hint: {"center_x": .5,"center_y": .72}
             canvas:
                 Color:
-                    rgba:(238/255,238/255,238/255,1)
+                    rgba:(238/255,238/255,238/255,.6)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
                     radius:[15]
-            TextInput:
-                id: ass_mark
-                hint_text:"Mark*"
+            MDLabel:
+                id:ass_category
+                text:""
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
-                multiline:True
-                cursor_width: "2dp"
-                foreground_color: 1/255,1/255,1/255,1
+                foreground_color: 1/255,1/255,1/255,.8
                 background_color: 0,0,0,0
                 padding:15
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
-        
 
         #Assessment title
         MDFloatLayout:
-            size_hint:.5,.08
-            pos_hint: {"center_x": .35,"center_y": .7}
+            size_hint:.6,.08
+            pos_hint: {"center_x": .5,"center_y": .62}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -94,11 +91,36 @@ MDScreen:
                 padding:15
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
+        
+        #Mark settings
+        MDFloatLayout:
+            size_hint:.3,.08
+            pos_hint: {"center_x": .5,"center_y": .52}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            TextInput:
+                id: ass_mark
+                hint_text:"Mark*"
+                size_hint: 1,1
+                pos_hint: {"center_x": .5,"center_y": .5}
+                multiline:True
+                cursor_width: "2dp"
+                foreground_color: 1/255,1/255,1/255,1
+                background_color: 0,0,0,0
+                padding:15
+                font_name:'assets/fonts/JosefinSans-Regular.ttf'
+                font_size:"18dp"
+        
             
         #Assessment Weight
         MDFloatLayout:
-            size_hint:.64,.08
-            pos_hint: {"center_x": .42,"center_y": .6}
+            size_hint:.6,.08
+            pos_hint: {"center_x": .5,"center_y": .42}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -120,36 +142,11 @@ MDScreen:
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
 
-    
-        #Assessment Category text
-        MDFloatLayout:
-            size_hint:.8,.08
-            pos_hint: {"center_x": .5,"center_y": .48}
-            canvas:
-                Color:
-                    rgba:(238/255,238/255,238/255,1)
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[15]
-            MDLabel:
-                id:ass_category
-                text:""
-                color:12/255,12/255,13/255,.5
-                size_hint: 1,1
-                pos_hint: {"center_x": .5,"center_y": .5}
-                foreground_color: 1/255,1/255,1/255,.8
-                background_color: 0,0,0,0
-                padding:15
-                font_name:'assets/fonts/JosefinSans-Regular.ttf'
-                font_size:"18dp"
-
-
         #add course button
         Button:
             text: "Add Assessment"
             size_hint: .5,.08
-            pos_hint: {"center_x": .5,"center_y": .36}
+            pos_hint: {"center_x": .5,"center_y": .26}
             background_color:0,0,0,0
             font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size: "18dp"

@@ -1,5 +1,6 @@
 
 <AssesSummary>:
+    md_bg_color: 244/255,249/255,253/255,1
     name:"AssessmentSummary"
     crseid:crseid
     crsecr:crsecr
@@ -8,8 +9,6 @@
     categContrib:categContrib
     avgbar:avgbar
     
-    
-    md_bg_color: 244/255,249/255,253/255,1
 
     #home header bar
     MDFloatLayout:
@@ -153,6 +152,7 @@
                 radius:[10]
         on_release:
             app.getCateg(categName.text)
+            app.clear_Add_assesmnt()
             root.manager.transition = FadeTransition()
             root.manager.current = "addAssesment"
   

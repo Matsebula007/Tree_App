@@ -99,9 +99,9 @@ class TodoCard(CommonElevationBehavior,MDFloatLayout):
     task_time2 = StringProperty()
 
 class OverviewCard(CommonElevationBehavior,MDFloatLayout):
+    # state a categ_key which we shall use link the list items with the database primary keys
     def __init__(self, categ_key=None, **kwargs):
         super().__init__(**kwargs)
-        # state a categ_key which we shall use link the list items with the database primary keys
         self.course_key = categ_key
 
     Category=StringProperty()
@@ -119,9 +119,9 @@ class OverviewCard(CommonElevationBehavior,MDFloatLayout):
 
 
 class CourseCard(CommonElevationBehavior,MDFloatLayout):
+    # state a course_key which we shall use link the list items with the database primary keys
     def __init__(self, course_key=None, **kwargs):
         super().__init__(**kwargs)
-        # state a course_key which we shall use link the list items with the database primary keys
         self.course_key = course_key
     def navigate(self):
         self.add_Overview()
@@ -133,7 +133,7 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
     def add_Overview(self):
         tugcount = str(5)+" TUG"
         contrib= str(40)
-        add_categ =(OverviewCard(categ_key=0,Category="ASSIGNMENT",Letter_grade="B+",TUG_count=tugcount,Contribution=contrib))
+        add_categ =(OverviewCard(categ_key=0,Category="GROUPWORK",Letter_grade="B+",TUG_count=tugcount,Contribution=contrib))
         screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
 
     crsaverage = NumericProperty(78)
@@ -150,8 +150,7 @@ class OverviewScreen(MDScreen,MDFloatLayout):
     def on_enter(self):
         pass
     def on_leave(self,*args):
-        pass
-        
+        pass      
 
 class AssesSummary(MDScreen,MDFloatLayout):
     #Assessment  overview
@@ -159,12 +158,6 @@ class AssesSummary(MDScreen,MDFloatLayout):
         pass
     def on_leave(self,*args):
         pass
-
-
-class Account(MDScreen):
-    name = StringProperty()
-    Department = StringProperty()
-
 
 class MainApp(MDApp):  
     
@@ -191,7 +184,6 @@ class MainApp(MDApp):
         Window.size = [300, 600]
         return screen_manager
     
-
     def get_tasks(self):
         uncomplete_tasks = database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
         completed_tasks = database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
@@ -202,6 +194,8 @@ class MainApp(MDApp):
     def get_schedule(self):
         schedule = database.cursor.execute("SELECT Id,Date,Tittle,FromTime,ToTime FROM TASK  WHERE completed = 0").fetchall()
         return schedule
+                                                          
+
     def on_start(self):
         today = date.today()
         wd = date.weekday(today)
@@ -252,6 +246,95 @@ class MainApp(MDApp):
                         font_size ="15dp").open() # type: ignore
             pass
 
+
+# User sign up settings
+    def userSignUp(self,user_name,user_email,user_password):
+        user_name = screen_manager.get_screen("SignUp").usr_name.text
+        user_email = screen_manager.get_screen("SignUp").usr_email.text
+        user_password = screen_manager.get_screen("SignUp").usr_pass.text
+
+        try:
+            if user_name !="" and user_email !="" and user_password !="" and len(user_name)<21 and len(user_password)<60:
+                data = (user_name,user_email,user_password)
+                #prevent more user sign up if one user alredy signed up
+                database.cursor.execute("SELECT UserName,Password FROM LOGIN")
+                arr =database.cursor.fetchall()
+                for i in arr:
+                    if i[0] =="" and i[1] =="":
+
+                        database.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
+                        database.con.commit()
+                        screen_manager.transition = FadeTransition()
+                        screen_manager.current = "Home"
+                    
+                    elif i[0] !="" and i[1] !="":
+                        Snackbar(text="Illegal Sign UP !",snackbar_x ="10dp",snackbar_y ="10dp",
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                                font_size ="15dp").open()
+            elif user_name =="":
+                Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                        font_size ="15dp").open()
+            elif user_email =="":
+                Snackbar(text="Email  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                        font_size ="15dp").open()
+            elif user_password =="":
+                Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                        font_size ="15dp").open() # type: ignore
+            elif len(user_name)>21:
+                Snackbar(text="Username must<21",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                        font_size ="15dp").open()
+            elif len(user_password)>61 :
+                Snackbar(text="Password must<61",snackbar_x ="10dp",snackbar_y ="10dp",
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                        font_size ="15dp").open() # type: ignore
+        except Exception:
+            Snackbar(text="Sign Up Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                    font_size ="15dp").open() # type: ignore
+            pass
+
+# user login settings
+    def userlogin(self,user_name,user_password):
+            
+        user_name = screen_manager.get_screen("Login").usr_Username.text
+        user_password = screen_manager.get_screen("Login").usr_password.text
+        try:
+            database.cursor.execute("SELECT UserName,Password FROM LOGIN")
+            arr =database.cursor.fetchall()
+            for i in arr:
+                usname = i[0]
+                uspassword = i[1]
+            
+                if user_name !="" and user_password !="" and user_name == usname and user_password == uspassword:
+                    screen_manager.transition = FadeTransition()
+                    screen_manager.current = "Home"
+
+                elif user_name =="":
+                    Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                            font_size ="15dp").open() # type: ignore
+                elif user_password =="":
+                    Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                            font_size ="15dp").open()
+                elif user_name != usname:
+                    Snackbar(text="Invalid username",snackbar_x ="10dp",snackbar_y ="10dp",
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                            font_size ="15dp").open()
+                elif user_password != uspassword:
+                    Snackbar(text="Invalid password",snackbar_x ="10dp",snackbar_y ="10dp",
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                            font_size ="15dp").open()
+        except Exception:
+            Snackbar(text="Login Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                    font_size ="15dp").open() # type: ignore
+            pass
+
 #calculates total credit taken 
     def creditscal(self):
         database.cursor.execute("SELECT CREDIT FROM COURSES")
@@ -263,42 +346,132 @@ class MainApp(MDApp):
                 total_cre =total_cre + i
         cred_format ="{:.1f}".format(total_cre)
         return str(cred_format)
+
 #checkbox seetings
     def on_complete(self,task_card,value,description,bar):
-
         if value.active == True:
             description.text = f"[s]{description.text}[/s]"
             bar.md_bg_color =12/255,12/255,13/255,.5
             TodoCard.mark_task_as_complete(task_card,task_card.pk)
-       
         else:
             remove = ["[s]", "[/s]"]
             for i in remove:
                 description.text = description.text.replace(i,"")
                 bar.md_bg_color =30/255,47/255,151/255,.8 
                 TodoCard.mark_task_as_incomplete(task_card,task_card.pk)
+
+# date pickers
+    def on_save(self, instance, value, date_range):
+        date = value.strftime('%A %d %B')
+        screen_manager.get_screen("add_todo").task_date.text = str(date)
+    def on_cancel(self):
+        MDDatePicker.close() # type: ignore
+    def show_date_picker(self):
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_save=self.on_save) #type: ignore
+        date_dialog.open()#type: ignore
+
+#time pickers
+    def get_time(self,instance,time):
+        Time= time.strftime('%H:%M')
+        screen_manager.get_screen("add_todo").task_time.text = str(Time)      
+    def show_time_picker(self):
+        '''Open time picker dialog.'''       
+        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
+        time_dialog = MDTimePicker()
+        time_dialog.set_time(previous_time)
+        time_dialog.bind(time=self.get_time) #type: ignore
+        time_dialog.open() # type: ignore
+    def get_time2(self,instance,time):
+        Time= time.strftime('%H:%M')
+        screen_manager.get_screen("add_todo").task_time2.text = str(Time)
+    def show_time_picker2(self):
+        '''Open time picker dialog.'''
+        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
+        time_dialog = MDTimePicker()
+        time_dialog.set_time(previous_time)
+        time_dialog.bind(time=self.get_time2)#type: ignore
+        time_dialog.open()#type: ignore
+
+#color choosers
+    def Noteschooser(self):
+        colors = [(85/255,204/255,96/255,1),(43/255,175/255,252/255,1),
+                  (158/255,245/255,1,1),(186/255,232/255,172/255,1),(120/255,127/255,246/255,1)]
+        d = random.choice(colors)
+        return d
+    def Courseschooser(self):
+        pigments =[(121/255,126/255,246/255,1),(74/255,222/255,222/255,1),
+                  (26/255,167/255,236/255,1),(130/255,215/255,255/255,1)]
+        p =random.choice(pigments)
+        return p
+
 #Category selection in add course
     def cat_select(self,value,catW,percentbar):
-
         if value.active == True:
             percentbar.md_bg_color =0/255,255/255,125/255,1
-       
         elif value.active == False:
             catW.text = ""
             percentbar.md_bg_color =0/255,255/255,125/255,.2
 
-#delete widget from view and info from database
+# add course ID to next screen
+    def get_id(self,CID,CidCR):
+        screen_manager.get_screen("overviewscreen").crseid.text=f"{CID}"
+        screen_manager.get_screen("overviewscreen").crsecr.text=f"{CidCR} Cr"
+        screen_manager.get_screen("addAssesment").ass_courseid.text=f"{CID}"
+        screen_manager.get_screen("AssessmentSummary").crseid.text=f"{CID}"
+        screen_manager.get_screen("AssessmentSummary").crsecr.text=f"{CidCR} Cr"
+        pass
+
+#get Category from assessment summary to add assessment
+    def getCateg(self,categName):
+        screen_manager.get_screen("addAssesment").ass_category.text=f"{categName}"
+        categName =str(categName)
+        categName =categName.lower()
+        screen_manager.get_screen("addAssesment").ass_name.hint_text =f"{categName} name"
+
+#delete widget from view and info from database HOME and task
     def delete_item(self, task_card):
         screen_manager.get_screen("todoScreen").todo_list.remove_widget(task_card)
         TodoCard.delete_task(task_card,task_card.pk)
+        screen_manager.get_screen("Home").tasks_home.clear_widgets()
+        year = str(datetime.now().year)
+        toschedule =self.get_schedule()
+        if toschedule !=[]:
+            for scl in toschedule:
+                ddname =f"{year} "+scl[1]
+                my_date = datetime.strptime(ddname,"%Y %A %d %B")
+                weekd=my_date.strftime("%A")
+                daydt = my_date.strftime("%d")
 
-#delete widget from HOME view 
-    def delete_card(self, task_cardID):
-        
-        screen_manager.get_screen("Home").tasks_home.remove_widget(task_cardID)
-        
+                frtime = datetime.strptime(scl[3],"%H:%M")
+                asd= frtime.time().strftime("%I:%M %p") 
+                totime = datetime.strptime(scl[4],"%H:%M")
+                bsd= totime.time().strftime("%I:%M %p")
 
-#update TASK view 
+                add_taskHom = TaskCard(cardpk=scl[0],weekday=weekd, daydate=daydt,title=scl[2],frmtime=asd,totime=bsd)
+                screen_manager.get_screen("Home").tasks_home.add_widget(add_taskHom)
+           
+#clear overview screen
+    def clearOverview(self):
+        screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
+        pass
+
+#clear input fields
+    def clear_screenTask(self):
+        screen_manager.get_screen("add_todo").description.text=""
+        screen_manager.get_screen("add_todo").tittle.text=""
+        screen_manager.get_screen("add_todo").task_date.text=""
+        screen_manager.get_screen("add_todo").task_time.text=""
+        screen_manager.get_screen("add_todo").task_time2.text=""
+        pass
+
+    def clear_Add_assesmnt(self):
+        screen_manager.get_screen("addAssesment").ass_contr.text=""
+        screen_manager.get_screen("addAssesment").ass_mark.text=""
+        screen_manager.get_screen("addAssesment").ass_name.text=""
+        pass
+
+#update TASK and HOME view 
     def update_task(self,tittle):
         database.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Tittle=?",(tittle,))
         arr =database.cursor.fetchall()
@@ -343,7 +516,6 @@ class MainApp(MDApp):
                 
                 add_taskHom = TaskCard(cardpk=scl[0],weekday=weekd, daydate=daydt,title=tittle,frmtime=asd,totime=bsd)
                 screen_manager.get_screen("Home").tasks_home.add_widget(add_taskHom)
-
 
 # add task settings
     def add_todo(self,tittle,description,date_time,task_time,task_time2):
@@ -572,36 +744,11 @@ class MainApp(MDApp):
                     font_size ="15dp").open() # type: ignore
             pass
 
-
-#clear overview screen
-    def clearOverview(self):
-        screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
 #course summary calculations
     def summariseCourse(self):
         print("Calculations")
         pass
-# add course ID to next screen
-    def get_id(self,CID,CidCR):
-        screen_manager.get_screen("overviewscreen").crseid.text=f"{CID}"
-        screen_manager.get_screen("overviewscreen").crsecr.text=f"{CidCR} Cr"
-        screen_manager.get_screen("addAssesment").ass_courseid.text=f"{CID}"
-        screen_manager.get_screen("AssessmentSummary").crseid.text=f"{CID}"
-        screen_manager.get_screen("AssessmentSummary").crsecr.text=f"{CidCR} Cr"
-        pass
 
-#get Category from assessment summary to add assessment
-    def getCateg(self,categName):
-        screen_manager.get_screen("addAssesment").ass_category.text=f"{categName}"
-
-    
-#clear input fields
-    def clear_screenTask(self):
-        screen_manager.get_screen("add_todo").description.text=""
-        screen_manager.get_screen("add_todo").tittle.text=""
-        screen_manager.get_screen("add_todo").task_date.text=""
-        screen_manager.get_screen("add_todo").task_time.text=""
-        screen_manager.get_screen("add_todo").task_time2.text=""
-        pass
 #add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
 
@@ -683,7 +830,9 @@ class MainApp(MDApp):
                     font_size ="15dp").open() # type: ignore
         pass
 
-#display from databse
+
+
+#display TASKS from databse
     def display_task_complete(self):
         database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
         arr =database.cursor.fetchall()
@@ -693,156 +842,7 @@ class MainApp(MDApp):
             add_task.ids.check.active = True
             if add_task.ids.pk !=i[0]:
                 screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
-           
-            #prevent double display of items on list    
-            # move reading database from button trigger to read to display when app starts                                                     
-    def display_task_incomplete(self):
-        database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=0")
-        arr =database.cursor.fetchall()
-        for i in arr:
-            screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],tittle=i[1], description=i[2],
-                                                                                  task_date=i[3],task_time=i[4],task_time2=i[5]))
-        
-
-# User sign up settings
-    def userSignUp(self,user_name,user_email,user_password):
-        user_name = screen_manager.get_screen("SignUp").usr_name.text
-        user_email = screen_manager.get_screen("SignUp").usr_email.text
-        user_password = screen_manager.get_screen("SignUp").usr_pass.text
-
-        try:
-            if user_name !="" and user_email !="" and user_password !="" and len(user_name)<21 and len(user_password)<60:
-                data = (user_name,user_email,user_password)
-                #prevent more user sign up if one user alredy signed up
-                database.cursor.execute("SELECT UserName,Password FROM LOGIN")
-                arr =database.cursor.fetchall()
-                for i in arr:
-                    if i[0] =="" and i[1] =="":
-
-                        database.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
-                        database.con.commit()
-                        screen_manager.transition = FadeTransition()
-                        screen_manager.current = "Home"
-                    
-                    elif i[0] !="" and i[1] !="":
-                        Snackbar(text="Illegal Sign UP !",snackbar_x ="10dp",snackbar_y ="10dp",
-                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                                font_size ="15dp").open()
-            elif user_name =="":
-                Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open()
-            elif user_email =="":
-                Snackbar(text="Email  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open()
-            elif user_password =="":
-                Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open() # type: ignore
-            elif len(user_name)>21:
-                Snackbar(text="Username must<21",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open()
-            elif len(user_password)>61 :
-                Snackbar(text="Password must<61",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open() # type: ignore
-        except Exception:
-            Snackbar(text="Sign Up Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                    font_size ="15dp").open() # type: ignore
-            pass
-
-# user login settings
-    def userlogin(self,user_name,user_password):
-            
-        user_name = screen_manager.get_screen("Login").usr_Username.text
-        user_password = screen_manager.get_screen("Login").usr_password.text
-        try:
-            database.cursor.execute("SELECT UserName,Password FROM LOGIN")
-            arr =database.cursor.fetchall()
-            for i in arr:
-                usname = i[0]
-                uspassword = i[1]
-            
-                if user_name !="" and user_password !="" and user_name == usname and user_password == uspassword:
-                    screen_manager.transition = FadeTransition()
-                    screen_manager.current = "Home"
-
-                elif user_name =="":
-                    Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                            font_size ="15dp").open() # type: ignore
-                elif user_password =="":
-                    Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                            font_size ="15dp").open()
-                elif user_name != usname:
-                    Snackbar(text="Invalid username",snackbar_x ="10dp",snackbar_y ="10dp",
-                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                            font_size ="15dp").open()
-                elif user_password != uspassword:
-                    Snackbar(text="Invalid password",snackbar_x ="10dp",snackbar_y ="10dp",
-                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                            font_size ="15dp").open()
-        except Exception:
-            Snackbar(text="Login Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                    font_size ="15dp").open() # type: ignore
-            pass
-
-# date picker
-    def on_save(self, instance, value, date_range):
-        date = value.strftime('%A %d %B')
-        screen_manager.get_screen("add_todo").task_date.text = str(date)
-
-    def on_cancel(self):
-        MDDatePicker.close() # type: ignore
-
-    def show_date_picker(self):
-        date_dialog = MDDatePicker()
-        date_dialog.bind(on_save=self.on_save) #type: ignore
-        date_dialog.open()#type: ignore
-
-#time picker
-    def get_time(self,instance,time):
-        Time= time.strftime('%H:%M')
-        screen_manager.get_screen("add_todo").task_time.text = str(Time)
-        
-    def show_time_picker(self):
-        '''Open time picker dialog.'''
-        
-        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
-        time_dialog = MDTimePicker()
-        time_dialog.set_time(previous_time)
-        time_dialog.bind(time=self.get_time) #type: ignore
-        time_dialog.open() # type: ignore
-
-    def get_time2(self,instance,time):
-        Time= time.strftime('%H:%M')
-        screen_manager.get_screen("add_todo").task_time2.text = str(Time)
-
-    def show_time_picker2(self):
-        '''Open time picker dialog.'''
-        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
-        time_dialog = MDTimePicker()
-        time_dialog.set_time(previous_time)
-        time_dialog.bind(time=self.get_time2)#type: ignore
-        time_dialog.open()#type: ignore
-
-    def Noteschooser(self):
-        colors = [(85/255,204/255,96/255,1),(43/255,175/255,252/255,1),
-                  (158/255,245/255,1,1),(186/255,232/255,172/255,1),(120/255,127/255,246/255,1)]
-        d = random.choice(colors)
-        return d
-    def Courseschooser(self):
-        pigments =[(121/255,126/255,246/255,1),(74/255,222/255,222/255,1),
-                  (26/255,167/255,236/255,1),(130/255,215/255,255/255,1)]
-        p =random.choice(pigments)
-        return p
-
-
+                
 
 if __name__ == "__main__":   
    
