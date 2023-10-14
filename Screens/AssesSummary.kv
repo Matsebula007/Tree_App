@@ -17,13 +17,114 @@
             on_release:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "overviewscreen"
+    
+        #Course ID label
+        MDLabel:
+            id:crseid
+            text:""
+            pos_hint: {"center_x": .72,"center_y": .95}
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size: "32dp"
+    
+        #Course Credit label
+        MDLabel:
+            id:crsecr
+            text:""
+            size_hint:.3,.8
+            pos_hint: {"center_x": .94,"center_y": .95}
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size: "18dp"
+
+    MDFloatLayout:
+        size_hint:.98,.28
+        pos_hint: {"center_x": .5,"center_y": .76}
+        canvas:
+            Color:
+                rgba:(238/255,238/255,238/255,.2)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+        MDLabel:
+            id: categName
+            text:"PRESENTATION"
+            size_hint: .32,.4
+            pos_hint: {"center_x": .2,"center_y": .8}
+            foreground_color: 1/255,1/255,1/255,.8
+            background_color: 0,0,0,0
+            padding:8
+            font_name:'assets/fonts/JosefinSans-Bold.ttf'
+            font_size:"17dp"
+
+        #  Tug weight
+        MDFloatLayout:
+            size_hint:.28,.7
+            pos_hint: {"center_x": .48,"center_y": .6}
+            canvas:
+                Color:
+                    rgba:app.Courseschooser()
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            MDLabel:
+                text:"Weight"
+                size_hint: 1,.2
+                pos_hint: {"center_x": .5,"center_y": .82}
+                foreground_color: 1/255,1/255,1/255,1
+                background_color: 0,0,0,0
+                padding:6
+                font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"18dp"
+            MDLabel:
+                id: categWeight
+                text:"50"
+                size_hint: 1,.8
+                pos_hint: {"center_x": .52,"center_y": .4}
+                foreground_color: 1/255,1/255,1/255,.8
+                background_color: 0,0,0,0
+                padding:8
+                font_name:'assets/fonts/JosefinSans-Bold.ttf'
+                font_size:"46dp"
+
+        #  Tug Contribution
+        MDFloatLayout:
+            size_hint:.34,.94
+            pos_hint: {"center_x": .82,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:app.Courseschooser()
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            MDLabel:
+                text:"Contrib."
+                size_hint: 1,.2
+                pos_hint: {"center_x": .5,"center_y": .82}
+                foreground_color: 1/255,1/255,1/255,1
+                background_color: 0,0,0,0
+                padding:6
+                font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"18dp"
+            MDLabel:
+                id: categContrib
+                text:"35"
+                size_hint: 1,.8
+                pos_hint: {"center_x": .52,"center_y": .4}
+                foreground_color: 1/255,1/255,1/255,.8
+                background_color: 0,0,0,0
+                padding:8
+                font_name:'assets/fonts/JosefinSans-Bold.ttf'
+                font_size:"60dp"
+
     HoverButton:
-        size_hint: .2,.046
+        size_hint: .2,.048
         text: "+"
         font_name: 'assets/fonts/JosefinSans-Bold.ttf'
         font_size: "32dp"
         background_color:1,1,1,0
-        pos_hint: {"center_x":.8 ,"center_y":.94}
+        pos_hint: {"center_x":.48 ,"center_y":.66}
         color: 1,1,1,1     
         canvas.before:
             Color:
@@ -35,23 +136,6 @@
         on_release:
             root.manager.transition = FadeTransition()
             root.manager.current = "addAssesment"
-    
-    #Course ID label
-        MDLabel:
-            id:crseid
-            text:""
-            pos_hint: {"center_x": .72,"center_y": .95}
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
-            font_size: "32dp"
-    
-    #Course Credit label
-        MDLabel:
-            id:crsecr
-            text:""
-            size_hint:.3,.8
-            pos_hint: {"center_x": .94,"center_y": .95}
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
-            font_size: "18dp"
   
     
                 
