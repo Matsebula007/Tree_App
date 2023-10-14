@@ -10,7 +10,12 @@
     tug_count:tug_count
     contrib:contrib
     cat_name:cat_name
-    
+    Button:
+        size_hint: .8,.8
+        pos_hint: {"center_x":.5,"center_y":.5}  
+        on_release:
+            root.Navigate()
+            root.add_categmary(cat_name.text,contrib.text)
     #card primary key holder
     MDLabel:
         id:categ_key
@@ -33,7 +38,7 @@
             id:cat_name
             text:root.Category
             markup: True
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_name: 'assets/fonts/Poppins-Bold.ttf'
             font_size:"18sp"
             size_hint_x:.9
             size_hint_y:.3
@@ -44,7 +49,7 @@
             id:let_grade
             text:root.Letter_grade
             markup: True
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"38sp"
             size_hint_x:.4
             size_hint_y:.36
@@ -55,7 +60,7 @@
             id:tug_count
             text:root.TUG_count
             markup: True
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"18sp"
             size_hint_x:.4
             size_hint_y:.28
@@ -76,7 +81,7 @@
             id:contrib
             text:root.Contribution
             markup: True
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"30sp"
             size_hint_x:.4
             size_hint_y:.28
@@ -101,15 +106,6 @@
                 app.clearOverview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "CoursesScreen"
-        MDIconButton:
-            icon:"chevron-right"
-            user_font: "40dp"
-            pos_hint:{"center_x":.96,"center_y":.95}
-            theme_text_color:'Custom'
-            text_color:  12/255,12/255,13/255,1
-            on_release:
-                root.manager.transition = FadeTransition()
-                root.manager.current = "AssessmentSummary"
 
     
     #Course ID label
@@ -126,33 +122,43 @@
             text:""
             size_hint:.3,.8
             pos_hint: {"center_x": .94,"center_y": .95}
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size: "18dp"
 
     MDFloatLayout:
-        size_hint:.98,.08
-        pos_hint: {"center_x": .5,"center_y": .88}
+        size_hint:.98,.04
+        pos_hint: {"center_x": .5,"center_y": .91}
         canvas:
             Color:
                 rgba:(238/255,238/255,238/255,.2)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[15]
+                radius:[10]
         MDLabel:
             id: overview
             text:" Overview"
             size_hint: 1,1
-            pos_hint: {"center_x": .5,"center_y": .5}
+            pos_hint: {"center_x": .55,"center_y": .5}
             foreground_color: 1/255,1/255,1/255,.8
             background_color: 0,0,0,0
             padding:10
-            font_name:'assets/fonts/JosefinSans-Regular.ttf'
-            font_size:"26dp"
+            font_name:'assets/fonts/Poppins-Bold.ttf'
+            font_size:"18dp"
+
+        MDIconButton:
+            icon:"chevron-right"
+            user_font: "40dp"
+            pos_hint:{"center_x":.96,"center_y":.5}
+            theme_text_color:'Custom'
+            text_color:  12/255,12/255,13/255,1
+            on_release:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "AssessmentSummary"
     #Category summary scroll
     MDFloatLayout:
-        size_hint:.98,.74
-        pos_hint:{"center_x":.5,"center_y": .47}
+        size_hint:.99,.78
+        pos_hint:{"center_x":.5,"center_y": .5}
         canvas:
             RoundedRectangle:
                 size:self.size
@@ -173,7 +179,9 @@
                 size_hint_y:None
                 padding:10,10
                 spacing:10,10
-    #navigation menu
+    
+    
+#navigation menu
     MDFloatLayout:
         size_hint:.98,.1
         pos_hint: {"center_x": .5,"center_y": .06}
@@ -191,7 +199,7 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                app.clearOverview()
+                #app.clearOverview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
 

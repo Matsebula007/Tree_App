@@ -4,7 +4,7 @@
     md_bg_color:244/255,249/255,253/255,1
     radius:[8]
     size_hint:1,None
-    height:dp(160)
+    height:dp(180)
     #card primary key holder
     MDLabel:
         id:pk
@@ -38,7 +38,7 @@
             id:description
             text:root.description
             color: 1/255,1/255,1/255,1
-            font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
+            font_name:'assets/fonts/JosefinSans-Regular.ttf'
             font_size:"16sp"
             markup:True
             size_hint_x:.8
@@ -95,23 +95,23 @@
             id:task_time
             text:root.task_time
             color: 1/255,1/255,1/255,1
-            font_name: 'assets/fonts/JosefinSans-SemiBoldItalic.ttf'
+            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"18sp"
             padding:1,0
-            size_hint_x:.76
-            size_hint_y:.5
-            pos_hint:{"center_x":.5,"center_y": .8}
+            size_hint_x:.78
+            size_hint_y:.4
+            pos_hint:{"center_x":.46,"center_y": .8}
 
         MDLabel:
             id:task_time2
             text:root.task_time2
             color:12/255,12/255,13/255,.5
-            font_name: 'assets/fonts/JosefinSans-SemiBoldItalic.ttf'
+            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"18sp"
             padding:1,0
-            size_hint_x:.76
-            size_hint_y:.5
-            pos_hint:{"center_x":.5,"center_y": .2}
+            size_hint_x:.8
+            size_hint_y:.4
+            pos_hint:{"center_x":.46,"center_y": .2}
 
 MDScreen:
     name: "todoScreen"
@@ -122,19 +122,19 @@ MDScreen:
     MDFloatLayout:
         MDLabel:
             text:"Today"
-            pos_hint: {"center_x":.55,"center_y": .95}
+            pos_hint: {"center_x":.55,"center_y": .96}
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"30dp"
         MDLabel:
             id: date_text
-            pos_hint: {"center_x":.55,"center_y": .9}
+            pos_hint: {"center_x":.55,"center_y": .92}
             font_name: 'assets/fonts/JosefinSans-Regular.ttf'
             font_size:"14sp"
     
     #task view
     MDFloatLayout:
-        size_hint:.99,.78
-        pos_hint:{"center_x":.5,"center_y": .48}  
+        size_hint:.99,.8
+        pos_hint:{"center_x":.5,"center_y": .5}  
         canvas:
             RoundedRectangle:
                 size:self.size
@@ -159,7 +159,7 @@ MDScreen:
     #top add task button
     MDFloatLayout:
         size_hint:.46,.06
-        pos_hint: {"center_x": .75,"center_y": .92}
+        pos_hint: {"center_x": .75,"center_y": .94}
         Button:
             text: "Add Task"
             size_hint:1,1

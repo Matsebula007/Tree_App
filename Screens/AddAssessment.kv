@@ -26,7 +26,7 @@ MDScreen:
         #Course ID for Assessment
         MDFloatLayout:
             size_hint:.62,.08
-            pos_hint: {"center_x": .4,"center_y": .86}
+            pos_hint: {"center_x": .42,"center_y": .82}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,.6)
@@ -48,7 +48,7 @@ MDScreen:
         #Mark settings
         MDFloatLayout:
             size_hint:.28,.08
-            pos_hint: {"center_x": .76,"center_y": .76}
+            pos_hint: {"center_x": .77,"center_y": .7}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -73,7 +73,7 @@ MDScreen:
         #Assessment title
         MDFloatLayout:
             size_hint:.5,.08
-            pos_hint: {"center_x": .34,"center_y": .76}
+            pos_hint: {"center_x": .35,"center_y": .7}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -97,8 +97,8 @@ MDScreen:
             
         #Assessment Weight
         MDFloatLayout:
-            size_hint:.8,.08
-            pos_hint: {"center_x": .5,"center_y": .66}
+            size_hint:.64,.08
+            pos_hint: {"center_x": .42,"center_y": .6}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -108,7 +108,7 @@ MDScreen:
                     radius:[15]
             TextInput:
                 id:ass_contr
-                hint_text:"Contribution 0|100"
+                hint_text:"Contribute 0-100 *"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
                 height: self.minimum_height
@@ -123,8 +123,8 @@ MDScreen:
     
         #Assessment Category text
         MDFloatLayout:
-            size_hint:.6,.08
-            pos_hint: {"center_x": .5,"center_y": .3}
+            size_hint:.8,.08
+            pos_hint: {"center_x": .5,"center_y": .48}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -138,113 +138,18 @@ MDScreen:
                 color:12/255,12/255,13/255,.5
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
-                foreground_color: 12/255,12/255,13/255,.4
+                foreground_color: 1/255,1/255,1/255,.8
                 background_color: 0,0,0,0
                 padding:15
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
 
-        #Assessment Category filter
-        MDFloatLayout:
-            size_hint:.9,.27
-            pos_hint: {"center_x": .5,"center_y": .48}
-            canvas:
-                Color:
-                    rgba:(244/255,249/255,253/255,.6)
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[15]
-          
-            MDChip:
-                id: test
-                radius: [dp(6),dp(6),dp(6),dp(6)]
-                text: "Test"
-                text_color:(12/255,12/255,13/255,.5)
-                icon_check_color:"#1F2F98"
-                check: True
-                md_bg_color:74/255,222/255,222/255,1
-                on_release:
-                    app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
-                pos_hint:{"center_x":.2,"center_y":.86}
-
-            MDChip:
-                id: assignment
-                radius: [dp(6),dp(6),dp(6),dp(6)]
-                text: "Assignment"
-                text_color:(12/255,12/255,13/255,.5)
-                icon_check_color:"#1F2F98"
-                check: True
-                md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
-                pos_hint:{"center_x":.66,"center_y":.86}
-            MDChip:
-                id: quiz
-                radius: [dp(6),dp(6),dp(6),dp(6)]
-                text: "Quiz"
-                text_color:(12/255,12/255,13/255,.5)
-                icon_check_color:"#1F2F98"
-                pos_hint:{"center_x":.26,"center_y":.41}
-                check: True
-                md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
-            MDChip:
-                id: lab
-                radius: [dp(6),dp(6),dp(6),dp(6)]
-                text: "Lab"
-                text_color:(12/255,12/255,13/255,.5)
-                icon_check_color:"#1F2F98"
-                pos_hint:{"center_x":.74,"center_y":.63}
-                check: True
-                md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
-            MDChip:
-                id: classwork
-                radius: [dp(6),dp(6),dp(6),dp(6)]
-                text: "Classwork"
-                text_color:(12/255,12/255,13/255,.5)
-                icon_check_color:"#1F2F98"
-                pos_hint:{"center_x":.72,"center_y":.41}
-                check: True
-                md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
-            MDChip:
-                id: group
-                radius: [dp(6),dp(6),dp(6),dp(6)]
-                text: "Groupwork"
-                text_color:(12/255,12/255,13/255,.5)
-                icon_check_color:"#1F2F98"
-                pos_hint:{"center_x":.26,"center_y":.63}
-                check: True
-                md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
-            MDChip:
-                id: presentation
-                radius: [dp(6),dp(6),dp(6),dp(6)]
-                icon_check_color:"#1F2F98"
-                text: "Presentation"
-                text_color:(12/255,12/255,13/255,.5)
-                pos_hint:{"center_x":.3,"center_y":.16}
-                check: True
-                md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
-            MDChip:
-                id: other
-                radius: [dp(6),dp(6),dp(6),dp(6)]
-                text: "Other"
-                text_color:(12/255,12/255,13/255,.5)
-                icon_check_color:"#1F2F98"
-                pos_hint:{"center_x":.78,"center_y":.16}
-                check: True
-                #line_color:"grey"
-                md_bg_color:74/255,222/255,222/255,1
-                on_release:app.on_Selection(test,lab,quiz,classwork,assignment,group,presentation,other)
 
         #add course button
         Button:
             text: "Add Assessment"
             size_hint: .5,.08
-            pos_hint: {"center_x": .5,"center_y": .2}
+            pos_hint: {"center_x": .5,"center_y": .36}
             background_color:0,0,0,0
             font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size: "18dp"
@@ -278,6 +183,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.clearOverview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
 
@@ -287,6 +193,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.clearOverview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "todoScreen" 
         
@@ -315,5 +222,6 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.clearOverview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "AccountMenu"

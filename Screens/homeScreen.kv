@@ -27,7 +27,7 @@
     MDLabel:
         id:ddate
         text:root.daydate
-        font_name:'assets/fonts/JosefinSans-Bold.ttf'
+        font_name:'assets/fonts/CroissantOne-Regular.ttf'
         font_size:"30sp"
         size_hint_x:.3
         size_hint_y:.3
@@ -116,7 +116,7 @@ MDScreen:
         MDIconButton:
             icon: "menu"
             user_font: "60dp"
-            pos_hint: {"center_x":.1,"center_y":.95}
+            pos_hint: {"center_x":.08,"center_y":.97}
             theme_text_color:'Custom'
             text_color: 12/255,12/255,13/255,1
             on_press:
@@ -125,14 +125,14 @@ MDScreen:
     #schedule label
     MDLabel:
         text:"Your schedule"
-        font_name:"assets/fonts/JosefinSans-SemiBold.ttf"
-        font_size:"20dp"
-        pos_hint: {"center_x":.56,"center_y": .9}
+        font_name:"assets/fonts/JosefinSans-Bold.ttf"
+        font_size:"24dp"
+        pos_hint: {"center_x":.55,"center_y": .93}
 
     #task view_home
     MDFloatLayout:
         size_hint:1,.22
-        pos_hint: {"center_x": .5,"center_y": .77}
+        pos_hint: {"center_x": .5,"center_y": .79}
         canvas:
         ScrollView:
             do_scroll_y:False
@@ -155,10 +155,9 @@ MDScreen:
     #courses label
     MDLabel:
         text:"Your timetable"
-        font_name:"assets/fonts/JosefinSans-SemiBold.ttf"
-        font_size:"22dp"
-        pos_hint: {"center_x":.56,"center_y": .62}
-        text_color: 0,0,.59,1
+        font_name:"assets/fonts/JosefinSans-Bold.ttf"
+        font_size:"24dp"
+        pos_hint: {"center_x":.55,"center_y": .64}
    
     #course view_home
     MDFloatLayout:

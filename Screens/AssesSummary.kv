@@ -3,6 +3,12 @@
     name:"AssessmentSummary"
     crseid:crseid
     crsecr:crsecr
+    categName:categName
+    categWeight:categWeight
+    categContrib:categContrib
+    avgbar:avgbar
+    
+    
     md_bg_color: 244/255,249/255,253/255,1
 
     #home header bar
@@ -32,12 +38,12 @@
             text:""
             size_hint:.3,.8
             pos_hint: {"center_x": .94,"center_y": .95}
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size: "18dp"
 
     MDFloatLayout:
         size_hint:.98,.28
-        pos_hint: {"center_x": .5,"center_y": .76}
+        pos_hint: {"center_x": .49,"center_y": .76}
         canvas:
             Color:
                 rgba:(238/255,238/255,238/255,.2)
@@ -47,19 +53,19 @@
                 radius:[15]
         MDLabel:
             id: categName
-            text:"PRESENTATION"
-            size_hint: .32,.4
-            pos_hint: {"center_x": .2,"center_y": .8}
-            foreground_color: 1/255,1/255,1/255,.8
+            text:""
+            size_hint: .34,.4
+            pos_hint: {"center_x": .18,"center_y": .8}
+            foreground_color: 1/255,1/255,1/255,1
             background_color: 0,0,0,0
             padding:8
-            font_name:'assets/fonts/JosefinSans-Bold.ttf'
-            font_size:"17dp"
+            font_name:'assets/fonts/Poppins-Bold.ttf'
+            font_size:"18dp"
 
-        #  Tug weight
+        #Tug weight
         MDFloatLayout:
             size_hint:.28,.7
-            pos_hint: {"center_x": .48,"center_y": .6}
+            pos_hint: {"center_x": .46,"center_y": .6}
             canvas:
                 Color:
                     rgba:app.Courseschooser()
@@ -74,7 +80,7 @@
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
                 padding:6
-                font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_name:'assets/fonts/Poppins-Bold.ttf'
                 font_size:"18dp"
             MDLabel:
                 id: categWeight
@@ -84,13 +90,13 @@
                 foreground_color: 1/255,1/255,1/255,.8
                 background_color: 0,0,0,0
                 padding:8
-                font_name:'assets/fonts/JosefinSans-Bold.ttf'
-                font_size:"46dp"
+                font_name:'assets/fonts/CroissantOne-Regular.ttf'
+                font_size:"48dp"
 
-        #  Tug Contribution
+        #Tug Contribution
         MDFloatLayout:
-            size_hint:.34,.94
-            pos_hint: {"center_x": .82,"center_y": .5}
+            size_hint:.38,.94
+            pos_hint: {"center_x": .8,"center_y": .5}
             canvas:
                 Color:
                     rgba:app.Courseschooser()
@@ -99,24 +105,36 @@
                     pos:self.pos
                     radius:[15]
             MDLabel:
-                text:"Contrib."
+                text:"Contribute"
                 size_hint: 1,.2
-                pos_hint: {"center_x": .5,"center_y": .82}
+                pos_hint: {"center_x":.5,"center_y": .84}
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
                 padding:6
-                font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
-                font_size:"18dp"
+                font_name:'assets/fonts/Poppins-Bold.ttf'
+                font_size:"17dp"
             MDLabel:
                 id: categContrib
-                text:"35"
-                size_hint: 1,.8
+                text:""
+                size_hint:1,.8
                 pos_hint: {"center_x": .52,"center_y": .4}
                 foreground_color: 1/255,1/255,1/255,.8
                 background_color: 0,0,0,0
-                padding:8
-                font_name:'assets/fonts/JosefinSans-Bold.ttf'
+                padding:5
+                font_name:'assets/fonts/CroissantOne-Regular.ttf'
                 font_size:"60dp"
+        MDFloatLayout:
+            canvas:
+                Color:
+                    rgba:(30/255,47/255,151/255,.8)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[2]
+            id:avgbar
+            size_hint:.28,.04
+            pos_hint:{"center_x":.16, "center_y":.58}
+            
 
     HoverButton:
         size_hint: .2,.048
@@ -124,7 +142,7 @@
         font_name: 'assets/fonts/JosefinSans-Bold.ttf'
         font_size: "32dp"
         background_color:1,1,1,0
-        pos_hint: {"center_x":.48 ,"center_y":.66}
+        pos_hint: {"center_x":.45 ,"center_y":.66}
         color: 1,1,1,1     
         canvas.before:
             Color:
@@ -134,6 +152,7 @@
                 pos:self.pos
                 radius:[10]
         on_release:
+            app.getCateg(categName.text)
             root.manager.transition = FadeTransition()
             root.manager.current = "addAssesment"
   
@@ -157,6 +176,7 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.clearOverview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
 
@@ -166,6 +186,7 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.clearOverview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "todoScreen" 
         
@@ -194,5 +215,6 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.clearOverview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "AccountMenu"

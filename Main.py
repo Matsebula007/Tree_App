@@ -79,7 +79,7 @@ class TodoCard(CommonElevationBehavior,MDFloatLayout):
         self.pk = pk
 
     def mark_task_as_complete(self, taskid):
-        database.cursor.execute("UPDATE TASK SET completed=1 WHERE id=?", (taskid,))
+        database.cursor.execute("UPDATE TASK SET completed=1 WHERE id=?", (taskid,)) # type: ignore
         database.con.commit()
 
     def mark_task_as_incomplete(self, taskid):
@@ -108,6 +108,15 @@ class OverviewCard(CommonElevationBehavior,MDFloatLayout):
     Letter_grade=StringProperty()
     TUG_count=StringProperty()
     Contribution=StringProperty()
+    def Navigate(self):
+        screen_manager.transition = FadeTransition()
+        screen_manager.current = "AssessmentSummary"
+
+    def add_categmary(self,catName,catContr):
+        screen_manager.get_screen("AssessmentSummary").categName.text =f"{catName}"
+        screen_manager.get_screen("AssessmentSummary").categContrib.text =f"{catContr}"
+        pass
+
 
 class CourseCard(CommonElevationBehavior,MDFloatLayout):
     def __init__(self, course_key=None, **kwargs):
@@ -115,16 +124,16 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
         # state a course_key which we shall use link the list items with the database primary keys
         self.course_key = course_key
     def navigate(self):
-        #self.add_categmary()
-        self.add_summary()
+        self.add_Overview()
         screen_manager.transition = FadeTransition()
         screen_manager.current = "overviewscreen"
         #screen_manager.current = "addAssesment"
         pass
-    def add_summary(self):
+
+    def add_Overview(self):
         tugcount = str(5)+" TUG"
-        contrib= str(35)
-        add_categ =(OverviewCard(categ_key=0,Category="PRESENTATION",Letter_grade="A+",TUG_count=tugcount,Contribution=contrib))
+        contrib= str(40)
+        add_categ =(OverviewCard(categ_key=0,Category="ASSIGNMENT",Letter_grade="B+",TUG_count=tugcount,Contribution=contrib))
         screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
 
     crsaverage = NumericProperty(78)
@@ -524,10 +533,12 @@ class MainApp(MDApp):
                                         Snackbar(text="INDE:4:Faulty category weights",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                                                 size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                                                 font_size ="15dp").open() # type: ignore
+                                        pass
                                 except Exception:
                                     Snackbar(text="INDE:3: Add Course Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                                             size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                                             font_size ="15dp").open() # type: ignore
+                                    pass
                             elif totalRatio!=100.0:
                                 Snackbar(text="Faulty Course ratio",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
@@ -570,13 +581,19 @@ class MainApp(MDApp):
         print("Calculations")
         pass
 # add course ID to next screen
-    def get_id(self,key,keycr):
-        screen_manager.get_screen("overviewscreen").crseid.text=f"{key}"
-        screen_manager.get_screen("overviewscreen").crsecr.text=f"{keycr} Cr"
-        screen_manager.get_screen("addAssesment").ass_courseid.text=f"{key}"
-        screen_manager.get_screen("AssessmentSummary").crseid.text=f"{key}"
-        screen_manager.get_screen("AssessmentSummary").crsecr.text=f"{keycr} Cr"
+    def get_id(self,CID,CidCR):
+        screen_manager.get_screen("overviewscreen").crseid.text=f"{CID}"
+        screen_manager.get_screen("overviewscreen").crsecr.text=f"{CidCR} Cr"
+        screen_manager.get_screen("addAssesment").ass_courseid.text=f"{CID}"
+        screen_manager.get_screen("AssessmentSummary").crseid.text=f"{CID}"
+        screen_manager.get_screen("AssessmentSummary").crsecr.text=f"{CidCR} Cr"
         pass
+
+#get Category from assessment summary to add assessment
+    def getCateg(self,categName):
+        screen_manager.get_screen("addAssesment").ass_category.text=f"{categName}"
+
+    
 #clear input fields
     def clear_screenTask(self):
         screen_manager.get_screen("add_todo").description.text=""
@@ -824,74 +841,6 @@ class MainApp(MDApp):
                   (26/255,167/255,236/255,1),(130/255,215/255,255/255,1)]
         p =random.choice(pigments)
         return p
-
- #on_Selection of assessment filter 
-    def on_Selection(self,test,lab,quiz,classwork,assignment,group,presentation,other):
-
-        if test.active ==True:
-            screen_manager.get_screen("addAssesment").ass_category.text ="TEST"
-        elif test.active ==False:
-            gory =screen_manager.get_screen("addAssesment").ass_category.text
-            if gory =="TEST":
-                screen_manager.get_screen("addAssesment").ass_category.text =""
-            else:pass
-
-        if lab.active ==True:
-            screen_manager.get_screen("addAssesment").ass_category.text ="LAB"
-        elif lab.active ==False:
-            gory =screen_manager.get_screen("addAssesment").ass_category.text
-            if gory =="LAB":
-                screen_manager.get_screen("addAssesment").ass_category.text =""
-            else:pass
-
-        if quiz.active ==True:
-            screen_manager.get_screen("addAssesment").ass_category.text ="QUIZ"
-        elif quiz.active ==False:
-            gory =screen_manager.get_screen("addAssesment").ass_category.text
-            if gory =="QUIZ":
-                screen_manager.get_screen("addAssesment").ass_category.text =""
-            else:pass
-
-        if classwork.active ==True:
-            screen_manager.get_screen("addAssesment").ass_category.text ="CLASSWORK"
-        elif classwork.active ==False:
-            gory =screen_manager.get_screen("addAssesment").ass_category.text
-            if gory =="CLASSWORK":
-                screen_manager.get_screen("addAssesment").ass_category.text =""
-            else:pass
-
-        if assignment.active ==True:
-            screen_manager.get_screen("addAssesment").ass_category.text ="ASSIGNMENT"
-        elif assignment.active ==False:
-            gory =screen_manager.get_screen("addAssesment").ass_category.text
-            if gory =="ASSIGNMENT":
-                screen_manager.get_screen("addAssesment").ass_category.text =""
-            else:pass
-
-        if group.active ==True:
-            screen_manager.get_screen("addAssesment").ass_category.text ="GROUPWORK"
-        elif group.active ==False:
-            gory =screen_manager.get_screen("addAssesment").ass_category.text
-            if gory =="GROUPWORK":
-                screen_manager.get_screen("addAssesment").ass_category.text =""
-            else:pass
-
-        if presentation.active ==True:
-            screen_manager.get_screen("addAssesment").ass_category.text ="PRESENTATION"
-        elif presentation.active ==False:
-            gory =screen_manager.get_screen("addAssesment").ass_category.text
-            if gory =="PRESENTATION":
-                screen_manager.get_screen("addAssesment").ass_category.text =""
-            else:pass
-
-        if other.active ==True:
-            screen_manager.get_screen("addAssesment").ass_category.text ="OTHER"
-        elif other.active ==False:
-            gory =screen_manager.get_screen("addAssesment").ass_category.text
-            if gory =="OTHER":
-                screen_manager.get_screen("addAssesment").ass_category.text =""
-            else:pass
-        
 
 
 
