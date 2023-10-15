@@ -1,3 +1,4 @@
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
 MDScreen:
     name:"main"
     MDFloatLayout:
@@ -27,7 +28,7 @@ MDScreen:
             background_color: 0,0,0,0
             font_name: "assets/fonts/JosefinSans-SemiBold.ttf"
             on_press: 
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "Login"
             canvas.before:
                 Color:
@@ -44,7 +45,7 @@ MDScreen:
             background_color: 0,0,0,0
             font_name: "assets/fonts/JosefinSans-SemiBold.ttf"
             on_press: 
-                root.manager.transition.direction = "left"
+                root.manager.transition = FadeTransition()
                 root.manager.current = "SignUp"
             canvas.before:
                 Color:

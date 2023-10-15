@@ -1,3 +1,4 @@
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
 <CircularProgressBar>
     md_bg_color:244/255,249/255,253/255,.4
     canvas.before:
@@ -231,7 +232,8 @@ MDScreen:
             do_scroll_x:False
             size_hint_y:1
             pos_hint:{"center_x":.5,"center_y": .5}
-            bar_width:.2
+            bar_width:2
+            bar_color:(30/255,47/255,151/255,.8)
             GridLayout:
                 orientation: "lr-bt"
                 id: course_list
@@ -277,7 +279,7 @@ MDScreen:
             pos_hint: {"center_x": .6,"center_y": .5}
             canvas:
                 Color:
-                    rgba:(12/255,12/255,13/255,1)
+                    rgba:(30/255,47/255,151/255,.2)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
@@ -286,7 +288,7 @@ MDScreen:
                 icon: "library"
                 pos_hint: {"center_x":.5 ,"center_y":.5}
                 theme_text_color:"Custom"
-                text_color: 1,1,1,1
+                color:(30/255,47/255,151/255,1)
                 on_press:
                     app.summariseCourse()
                     root.manager.transition = FadeTransition()

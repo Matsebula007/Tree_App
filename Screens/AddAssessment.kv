@@ -1,5 +1,5 @@
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
 MDScreen:
-    # change chip text color when selected
     name: "addAssesment"
     ass_category:ass_category
     ass_mark:ass_mark
@@ -13,7 +13,7 @@ MDScreen:
             user_font: "40dp"
             pos_hint:{"center_y":.95}
             theme_text_color:'Custom'
-            text_color:  12/255,12/255,13/255,1
+            color:(30/255,47/255,151/255,1)
             on_release:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "AssessmentSummary"
@@ -198,7 +198,7 @@ MDScreen:
             pos_hint: {"center_x": .6,"center_y": .5}
             canvas:
                 Color:
-                    rgba:(30/255,47/255,151/255,1)
+                    rgba:(30/255,47/255,151/255,.8)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
@@ -207,7 +207,7 @@ MDScreen:
                 icon: "library"
                 pos_hint: {"center_x":.5 ,"center_y":.5}
                 theme_text_color:"Custom"
-                text_color: 1,1,1,1
+                color:(30/255,47/255,151/255,1)
                 on_press:
                     root.manager.transition = FadeTransition()
                     root.manager.current = "AssessmentSummary"

@@ -139,7 +139,8 @@ MDScreen:
             do_scroll_x:True
             size_hint:1,1
             pos_hint:{"center_x":.5,"center_y":.5}
-            bar_width: 0
+            bar_width:1
+            bar_color:(30/255,47/255,151/255,.8)
             GridLayout:
                 orientation:"rl-tb"
                 id: tasks_home
@@ -147,9 +148,8 @@ MDScreen:
                 width:self.minimum_width
                 row_force_default: False
                 size_hint_x:None
-
-                padding:dp(1)
-                spacing:dp(10)
+                padding:8
+                spacing:8
                 adaptive_width:True
     
     #courses label
@@ -168,7 +168,7 @@ MDScreen:
             do_scroll_x:False
             size_hint_y:.85
             pos_hint:{"center_x":.5,"center_y": .26}
-            bar_width:0
+            bar_width:1
             GridLayout:
                 #orientation: "lr-tb"
                 id: course_home
@@ -195,7 +195,7 @@ MDScreen:
             pos_hint: {"center_x": .2,"center_y": .5}
             canvas:
                 Color:
-                    rgba:(12/255,12/255,13/255,1)
+                    rgba:(30/255,47/255,151/255,.2)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
@@ -205,7 +205,7 @@ MDScreen:
                 icon: "home"
                 pos_hint: {"center_x":.5 ,"center_y":.5}
                 theme_text_color:"Custom"
-                text_color: 1,1,1,1
+                color:(30/255,47/255,151/255,1)
                 on_press:
                     root.manager.transition = FadeTransition()
                     root.manager.current = "Home"

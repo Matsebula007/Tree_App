@@ -29,6 +29,7 @@ class database():
 class HoverButton(Button,HoverBehavior):
     background =ListProperty((30/255,47/255,151/255,.4))
     def on_enter(self):
+        
         self.background = ((26/255,167/255,236/255,1))
         Animation(size_hint =(.24,.05),d=0.3).start(self)
     def on_leave(self):
@@ -168,7 +169,7 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
 
     def add_Overview(self,CourseID):
         tugcount = str(5)+" Tug"
-        contrib= str(29)
+        contrib= str(29.7)
         try:
             con = sqlite3.connect(f"{CourseID}.db")
             cursor = con.cursor()
@@ -384,7 +385,7 @@ class MainApp(MDApp):
             pass
 
 #calculates total credit taken 
-    def creditscal(self):
+    def creditscal(self): 
         database.cursor.execute("SELECT CREDIT FROM COURSES")
         creds = database.cursor.fetchall()
         total_cre =0.0
@@ -444,7 +445,7 @@ class MainApp(MDApp):
 #color choosers
     def Noteschooser(self):
         colors = [(85/255,204/255,96/255,1),(43/255,175/255,252/255,1),
-                  (158/255,245/255,1,1),(186/255,232/255,172/255,1),(120/255,127/255,246/255,1)]
+                  (186/255,232/255,172/255,1),(120/255,127/255,246/255,1)]
         d = random.choice(colors)
         return d
     def Courseschooser(self):
@@ -459,6 +460,18 @@ class MainApp(MDApp):
         elif value.active == False:
             catW.text = ""
             percentbar.md_bg_color =0/255,255/255,125/255,.2
+#Category selection in add course
+    def avg_color(self,mark): 
+        mark=float(mark)
+        color=(52/255,168/255,83/255,1)
+        if mark<50.0000001:
+            color =(234/255,67/255,53/255,1)     
+        if mark>49.9999999:
+            color =(52/255,168/255,83/255,1)
+        if mark<0.0:
+            color =(52/255,168/255,83/255,1)
+            
+        return color
 
 # add course ID to next screen
     def get_id(self,CID,CidCR):

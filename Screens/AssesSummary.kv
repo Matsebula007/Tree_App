@@ -1,8 +1,9 @@
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
 <AssessmentCard>
     id: assessmnt_card
     elevation: 0
     radius:[8]
-    size_hint:1,None
+    size_hint:.5,None
     height:dp(140)
     assmtContr:assmtContr
     assmtMark:assmtMark
@@ -75,6 +76,7 @@
     categWeight:categWeight
     categContrib:categContrib
     avgbar:avgbar
+    categavar:categavar
     assessmnt_list:assessmnt_list
     
 
@@ -86,7 +88,7 @@
             user_font: "40dp"
             pos_hint:{"center_y":.95}
             theme_text_color:'Custom'
-            text_color:  12/255,12/255,13/255,1
+            color:(30/255,47/255,151/255,1)
             on_release:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "overviewscreen"
@@ -111,14 +113,14 @@
 
     MDFloatLayout:
         size_hint:.96,.28
-        pos_hint: {"center_x": .5,"center_y": .76}
+        pos_hint: {"center_x": .49,"center_y": .76}
         canvas:
             Color:
                 rgba:(244/255,249/255,253/255,.8)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[15]
+                radius:[20]
         MDLabel:
             id: categName
             text:""
@@ -132,29 +134,31 @@
 
         #Tug weight
         MDFloatLayout:
-            size_hint:.27,.5
-            pos_hint: {"center_x": .46,"center_y": .5}
+            size_hint:.27,.6
+            pos_hint: {"center_x": .45,"center_y": .32}
             canvas:
                 Color:
                     rgba:(30/255,47/255,151/255,.5)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
-                    radius:[15]
+                    radius:[7.5]
             MDLabel:
                 text:"Weight"
                 size_hint:1,.2
+                color: (.2,.2,.2,1)
                 pos_hint: {"center_x": .54,"center_y": .82}
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
                 padding:2
-                font_name:'assets/fonts/Poppins-Bold.ttf'
+                font_name:'assets/fonts/Oxygen-Bold.ttf'
                 font_size:"17dp"
             MDLabel:
                 id: categWeight
                 text:""
                 size_hint: 1,.5
-                pos_hint: {"center_x": .55,"center_y": .4}
+                color:(1,1,1,.8)
+                pos_hint: {"center_x": .62,"center_y": .4}
                 foreground_color: 1/255,1/255,1/255,.8
                 background_color: 0,0,0,0
                 padding:2
@@ -163,15 +167,15 @@
 
         #Tug Contribution
         MDFloatLayout:
-            size_hint:.37,.94
-            pos_hint: {"center_x": .81,"center_y": .5}
+            size_hint:.37,.96
+            pos_hint: {"center_x": .805,"center_y": .5}
             canvas:
                 Color:
-                    rgba:app.Courseschooser()
+                    rgba:(30/255,47/255,151/255,.6)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
-                    radius:[15]
+                    radius:[7.5]
             MDLabel:
                 text:"Contribute"
                 size_hint: 1,.2
@@ -179,53 +183,55 @@
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
                 padding:2
-                font_name:'assets/fonts/Poppins-Bold.ttf'
-                font_size:"16dp"
+                font_name:'assets/fonts/Oxygen-Bold.ttf'
+                font_size:"20dp"
             MDLabel:
                 id: categContrib
                 text:""
+                color:(1,1,1,.9)
                 size_hint:1,.5
-                pos_hint: {"center_x": .6,"center_y": .4}
-                padding:2
+                pos_hint: {"center_x": .55,"center_y": .4}
+                padding:1
                 font_name:'assets/fonts/CroissantOne-Regular.ttf'
-                font_size:"60dp"
+                font_size:"48dp"
 
-        MDFloatLayout:
-            id:avgbar
-            size_hint:.24,.04
-            pos_hint:{"center_x":.16, "center_y":.7}
-            canvas:
-                Color:
-                    rgba:(245/255,83/255,133/255,1)
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[2]
                     
         MDFloatLayout:
-            pos_hint: {'center_x':.17,'center_y':.4}
-            size_hint:.3,.4
+            pos_hint: {'center_x':.2,'center_y':.44}
+            size_hint:.4,.4
             MDLabel:
                 id:categavar
-                text: "70"
-                color:(35/255,209/255,139/255,1)
-                pos_hint: {'center_x':.5,'center_y':.5}
+                text: "47.9"
+                color:app.avg_color(categavar.text)
+                pos_hint: {'center_x':.55,'center_y':.5}
+                size_hint: 1, 1
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
                 padding:2
                 font_name:'assets/fonts/CroissantOne-Regular.ttf'
-                font_size:"60dp"
+                font_size:"38dp"
        
+        MDFloatLayout:
+            id:avgbar
+            size_hint:.56,.04
+            pos_hint:{"center_x":.3, "center_y":.7}
+            canvas:
+                Color:
+                    rgba:categavar.color
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[2]
             
             
 
     HoverButton:
-        size_hint: .2,.048
+        size_hint:.2,.048
         text: "+"
-        font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+        font_name: 'assets/fonts/CroissantOne-Regular.ttf'
         font_size: "32dp"
         background_color:1,1,1,0
-        pos_hint: {"center_x":.455 ,"center_y":.65}
+        pos_hint: {"center_x":.16,"center_y":.66}
         color: 1,1,1,1     
         canvas.before:
             Color:
@@ -233,7 +239,7 @@
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[10]
+                radius:[7.5]
         on_release:
             app.getCateg(categName.text)
             app.clear_Add_assesmnt()
@@ -249,13 +255,14 @@
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[10]    
+                radius:[15]    
         ScrollView:
             do_scroll_y:True
             do_scroll_x:False
             size_hint_y:1
             pos_hint:{"center_x":.5,"center_y": .5}
-            bar_width:0
+            bar_width:2
+            bar_color:(30/255,47/255,151/255,.8)
             GridLayout:
                 orientation: "lr-tb"
                 id: assessmnt_list
@@ -263,7 +270,7 @@
                 height:self.minimum_height
                 row_default_height:80
                 size_hint_y:None
-                padding:8,8
+                padding:10,10
                 spacing:10,10
     
                 
@@ -315,7 +322,7 @@
                 icon: "library"
                 pos_hint: {"center_x":.5 ,"center_y":.5}
                 theme_text_color:"Custom"
-                text_color: 1,1,1,1
+                color:(30/255,47/255,151/255,1)
                 on_press:
                     app.clearAssmary()
                     root.manager.transition = FadeTransition()
