@@ -60,6 +60,7 @@ class CircularProgressBar(AnchorLayout):
 
 
 class TaskCard(CommonElevationBehavior,MDFloatLayout):
+    #HOME SCHEDULE
     def __init__(self, cardpk=None, **kwargs):
         super().__init__(**kwargs)
         # state a pk which we shall use link the list items with the database primary keys
@@ -70,12 +71,22 @@ class TaskCard(CommonElevationBehavior,MDFloatLayout):
     title = StringProperty()
     frmtime = StringProperty()
     totime = StringProperty()
-    
 
+class AssessmentCard(CommonElevationBehavior,MDFloatLayout):
+    def __init__(self, testpk=None, **kwargs):
+        super().__init__(**kwargs)
+        # state a pk which we shall use link the card  with the database item primary keys
+        self.testpk = testpk
+    testName=StringProperty()
+    testWeight= StringProperty()
+    testMark =StringProperty()
+    testContrib =StringProperty()
+
+    
 class TodoCard(CommonElevationBehavior,MDFloatLayout):
     def __init__(self, pk=None, **kwargs):
         super().__init__(**kwargs)
-        # state a pk which we shall use link the list items with the database primary keys
+        # state a pk which we shall use link the card with the database item primary keys
         self.pk = pk
 
     def mark_task_as_complete(self, taskid):
@@ -99,7 +110,7 @@ class TodoCard(CommonElevationBehavior,MDFloatLayout):
     task_time2 = StringProperty()
 
 class OverviewCard(CommonElevationBehavior,MDFloatLayout):
-    # state a categ_key which we shall use link the list items with the database primary keys
+    # state a categ_key which we shall use link the card with the database item primary keys
     def __init__(self, categ_key=None, **kwargs):
         super().__init__(**kwargs)
         self.course_key = categ_key
@@ -108,6 +119,7 @@ class OverviewCard(CommonElevationBehavior,MDFloatLayout):
     Letter_grade=StringProperty()
     TUG_count=StringProperty()
     Contribution=StringProperty()
+
     def Navigate(self):
         screen_manager.transition = FadeTransition()
         screen_manager.current = "AssessmentSummary"
@@ -115,26 +127,62 @@ class OverviewCard(CommonElevationBehavior,MDFloatLayout):
     def add_categmary(self,catName,catContr):
         screen_manager.get_screen("AssessmentSummary").categName.text =f"{catName}"
         screen_manager.get_screen("AssessmentSummary").categContrib.text =f"{catContr}"
-        pass
+        CourseID =screen_manager.get_screen("overviewscreen").crseid.text
+
+        try:
+            con = sqlite3.connect(f"{CourseID}.db")
+            cursor = con.cursor()
+            cursor.execute(f"SELECT ID,TITTLE,WEIGHT,MARK,CONTRIB FROM {catName}")
+            arr = cursor.fetchall()
+            for i in arr:
+                weght =str(i[2])
+                mark=str(i[3])
+                contrib=str(i[4])
+                add_test =(AssessmentCard(testpk=i[0],testName=i[1],testWeight= weght,testMark = mark,testContrib=contrib))
+                screen_manager.get_screen("AssessmentSummary").assessmnt_list.add_widget(add_test)
+
+            cursor.execute("SELECT WEIGHT FROM CATEGORY WHERE TITTLE=?",(catName,))
+            categ = cursor.fetchone()
+            for c in categ:
+                screen_manager.get_screen("AssessmentSummary").categWeight.text=str(c)
+
+            screen_manager.transition = FadeTransition()
+            screen_manager.current = "AssessmentSummary"
+        except Exception as e:
+            Snackbar(text="INDE:1:Assessment summary error",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                    font_size ="15dp").open() # type: ignore
+            pass
 
 
 class CourseCard(CommonElevationBehavior,MDFloatLayout):
-    # state a course_key which we shall use link the list items with the database primary keys
+    # state a course_key which we shall use link the card with the database item primary keys
     def __init__(self, course_key=None, **kwargs):
         super().__init__(**kwargs)
         self.course_key = course_key
     def navigate(self):
-        self.add_Overview()
         screen_manager.transition = FadeTransition()
         screen_manager.current = "overviewscreen"
         #screen_manager.current = "addAssesment"
         pass
 
-    def add_Overview(self):
-        tugcount = str(5)+" TUG"
-        contrib= str(40)
-        add_categ =(OverviewCard(categ_key=0,Category="GROUPWORK",Letter_grade="B+",TUG_count=tugcount,Contribution=contrib))
-        screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
+    def add_Overview(self,CourseID):
+        tugcount = str(5)+" Tug"
+        contrib= str(29)
+        try:
+            con = sqlite3.connect(f"{CourseID}.db")
+            cursor = con.cursor()
+            cursor.execute("SELECT ID,TITTLE,WEIGHT FROM CATEGORY")#LATER SELECT FROM SUMMARY
+            arr = cursor.fetchall()
+            for i in arr:
+                add_categ =(OverviewCard(categ_key=i[0],Category=i[1],Letter_grade="B+",TUG_count=tugcount,Contribution=contrib))
+                screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
+        except Exception as e:
+            Snackbar(text=f"{e}",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                    font_size ="15dp").open() # type: ignore
+            print(e)
+            pass
 
     crsaverage = NumericProperty(78)
     CourseID = StringProperty()
@@ -379,7 +427,7 @@ class MainApp(MDApp):
         '''Open time picker dialog.'''       
         previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
         time_dialog = MDTimePicker()
-        time_dialog.set_time(previous_time)
+        time_dialog.set_time(previous_time)#type: ignore
         time_dialog.bind(time=self.get_time) #type: ignore
         time_dialog.open() # type: ignore
     def get_time2(self,instance,time):
@@ -400,8 +448,7 @@ class MainApp(MDApp):
         d = random.choice(colors)
         return d
     def Courseschooser(self):
-        pigments =[(121/255,126/255,246/255,1),(74/255,222/255,222/255,1),
-                  (26/255,167/255,236/255,1),(130/255,215/255,255/255,1)]
+        pigments =[(26/255,167/255,236/255,1),(130/255,215/255,255/255,1)]
         p =random.choice(pigments)
         return p
 
@@ -454,6 +501,9 @@ class MainApp(MDApp):
 #clear overview screen
     def clearOverview(self):
         screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
+        pass
+    def clearAssmary(self):
+        screen_manager.get_screen("AssessmentSummary").assessmnt_list.clear_widgets()
         pass
 
 #clear input fields
@@ -775,7 +825,7 @@ class MainApp(MDApp):
                     try: 
                         ass_mark =float(ass_mark)
                         ass_contr=float(ass_contr)
-                        if  ass_mark<100.01 and ass_contr<100.01:
+                        if  ass_mark<100.0000000000001 and ass_mark>0.0 and ass_contr<100.0000000000001 and ass_contr>0.0:
                             # adding COURSE to database
                             con = sqlite3.connect(f'{ass_courseid}.db')
                             cursor = con.cursor()
@@ -787,19 +837,31 @@ class MainApp(MDApp):
                                 cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,CONTRIB) VALUES(?,?,?,?)",data)
                                 con.commit()
                                 screen_manager.transition = FadeTransition()
-                                screen_manager.current = "CoursesScreen"
+                                screen_manager.current = "AssessmentSummary"
                             except Exception:
                                 Snackbar(text="Category not in Course!",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
                                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                                         font_size ="15dp").open()# type: ignore
                                 pass
                                 
-                        if ass_mark >=101.01:
+                        elif ass_mark >100.0:
                             Snackbar(text="Mark greater than 100",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
                                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                                     font_size ="15dp").open() # type: ignore                    
-                        elif ass_contr >=100.01:
-                            Snackbar(text="Contribution empty default-100",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
+                        elif ass_contr >100.0:
+                            Snackbar(text="Contribution greater than high default-100",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
+                                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                                    font_size ="15dp").open() # type: ignore
+                        elif ass_mark <0.0:
+                            Snackbar(text="Mark less than Zero",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
+                                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                                    font_size ="15dp").open() # type: ignore                    
+                        elif ass_contr <0.0:
+                            Snackbar(text="Contribution less than low default-0.0",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
+                                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                                    font_size ="15dp").open() # type: ignore
+                        else:
+                            Snackbar(text="INDE:3: Unexpected Assessment",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
                                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                                     font_size ="15dp").open() # type: ignore
                     except Exception:
@@ -831,9 +893,16 @@ class MainApp(MDApp):
         pass
 
 
-
-#display TASKS from databse
-    def display_task_complete(self):
+""" Courseview card takes courID uses it to acces
+databse and displays Overviw(Summary) 
+When courseOverviw card clicked
+    GET categName from card,contrib display AssesSummary
+    in Function get
+        GET screen_manager CourseID
+        use ID and CategName access database """
+    
+""" #display TASKS from databse
+        def all_assINcateg(self):
         database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
         arr =database.cursor.fetchall()
         for i in arr:
@@ -841,8 +910,8 @@ class MainApp(MDApp):
                                 task_time2=i[5]))                                                             
             add_task.ids.check.active = True
             if add_task.ids.pk !=i[0]:
-                screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
-                
+                screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task) """
+
 
 if __name__ == "__main__":   
    

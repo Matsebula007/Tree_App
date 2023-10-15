@@ -2,13 +2,13 @@
     md_bg_color:244/255,249/255,253/255,.4
     canvas.before:
         Color:
-            rgba:root.bar_color +[0.3]
+            rgba:root.bar_color +[0.2]
         Line:
             width:8
             ellipse:(self.x,self.y,self.width,self.height,0,360)
     canvas.after:
         Color:
-            rgba:root.bar_color +[0.8]
+            rgba:root.bar_color +[0.5]
         Line:
             width:8
             ellipse:(self.x,self.y,self.width,self.height,0,root.set_value*3.6)
@@ -40,6 +40,7 @@
         on_release:
             app.get_id(cid.text,crsecr.text)
             root.navigate()
+            root.add_Overview(cid.text)
 
     #card primary key holder
     MDLabel:
@@ -129,7 +130,7 @@
             pos_hint: {"center_x": .64,"center_y": .8}
             canvas:
                 Color:
-                    rgba:(30/255,47/255,151/255,1)
+                    rgba:(30/255,47/255,151/255,.8)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
@@ -153,7 +154,7 @@
             pos_hint: {"center_x":.86,"center_y": .8}
             canvas:
                 Color:
-                    rgba:(30/255,47/255,151/255,1)
+                    rgba:(30/255,47/255,151/255,.8)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
@@ -183,7 +184,10 @@ MDScreen:
     MDFloatLayout:
         MDLabel:
             text:"Your courses"
+            text_color: 245/255,250/255,255/255,1 
             pos_hint: {"center_x":.55,"center_y": .96}
+            foreground_color: 1/255,1/255,1/255,.8
+            background_color: 0,0,0,0
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"28dp"  
         MDLabel:

@@ -1,3 +1,70 @@
+<AssessmentCard>
+    id: assessmnt_card
+    elevation: 0
+    radius:[8]
+    size_hint:1,None
+    height:dp(140)
+    assmtContr:assmtContr
+    assmtMark:assmtMark
+    assmtName:assmtName
+    testpk:testpk
+    
+    MDLabel:
+        id:testpk
+
+    MDFloatLayout:
+        size_hint:1,1
+        pos_hint: {'center_x':.5,'center_y':.5}
+        canvas:
+            Color:
+                rgba:app.Courseschooser()
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+        MDLabel:
+            id:assmtName
+            text:root.testName
+            size_hint:.96,.1
+            pos_hint: {'center_x':.5,'center_y': .84}
+            foreground_color: 1/255,1/255,1/255,1
+            background_color: 0,0,0,0
+            padding:6
+            font_name:'assets/fonts/Poppins-Bold.ttf'
+            font_size:"17dp"
+        
+        MDLabel:
+            id:assmtMark
+            text:root.testMark
+            size_hint:.8,.1
+            pos_hint: {'center_x':.86,'center_y': .68}
+            foreground_color: 1/255,1/255,1/255,1
+            background_color: 0,0,0,0
+            padding:8
+            font_name:'assets/fonts/CroissantOne-Regular.ttf'
+            font_size:"16dp"
+        
+        MDLabel:
+            id:assmtWeight
+            text:root.testWeight
+            size_hint:.8,.1
+            pos_hint: {'center_x':.5,'center_y': .38}
+            foreground_color: 1/255,1/255,1/255,1
+            background_color: 0,0,0,0
+            padding:8
+            font_name:'assets/fonts/CroissantOne-Regular.ttf'
+            font_size:"16dp"
+        MDLabel:
+            id:assmtContr
+            text:root.testContrib
+            size_hint:.8,.1
+            pos_hint: {'center_x':.5,'center_y': .2}
+            foreground_color: 1/255,1/255,1/255,1
+            background_color: 0,0,0,0
+            padding:8
+            font_name:'assets/fonts/CroissantOne-Regular.ttf'
+            font_size:"16dp"
+
 
 <AssesSummary>:
     md_bg_color: 244/255,249/255,253/255,1
@@ -8,9 +75,10 @@
     categWeight:categWeight
     categContrib:categContrib
     avgbar:avgbar
+    assessmnt_list:assessmnt_list
     
 
-    #home header bar
+    #header bar
     MDFloatLayout:
     
         MDIconButton:
@@ -22,6 +90,7 @@
             on_release:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "overviewscreen"
+                app.clearAssmary()
     
         #Course ID label
         MDLabel:
@@ -41,11 +110,11 @@
             font_size: "18dp"
 
     MDFloatLayout:
-        size_hint:.98,.28
-        pos_hint: {"center_x": .49,"center_y": .76}
+        size_hint:.96,.28
+        pos_hint: {"center_x": .5,"center_y": .76}
         canvas:
             Color:
-                rgba:(238/255,238/255,238/255,.2)
+                rgba:(244/255,249/255,253/255,.8)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
@@ -53,49 +122,49 @@
         MDLabel:
             id: categName
             text:""
-            size_hint: .34,.4
-            pos_hint: {"center_x": .18,"center_y": .8}
-            foreground_color: 1/255,1/255,1/255,1
+            size_hint: .6,.2
+            pos_hint: {"center_x": .32,"center_y": .86}
+            foreground_color: 1,1,1,1
             background_color: 0,0,0,0
-            padding:8
-            font_name:'assets/fonts/Poppins-Bold.ttf'
-            font_size:"18dp"
+            padding:4
+            font_name:'assets/fonts/Oxygen-Bold.ttf'
+            font_size:"20dp"
 
         #Tug weight
         MDFloatLayout:
-            size_hint:.28,.7
-            pos_hint: {"center_x": .46,"center_y": .6}
+            size_hint:.27,.5
+            pos_hint: {"center_x": .46,"center_y": .5}
             canvas:
                 Color:
-                    rgba:app.Courseschooser()
+                    rgba:(30/255,47/255,151/255,.5)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
                     radius:[15]
             MDLabel:
                 text:"Weight"
-                size_hint: 1,.2
-                pos_hint: {"center_x": .5,"center_y": .82}
+                size_hint:1,.2
+                pos_hint: {"center_x": .54,"center_y": .82}
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
-                padding:6
+                padding:2
                 font_name:'assets/fonts/Poppins-Bold.ttf'
-                font_size:"18dp"
+                font_size:"17dp"
             MDLabel:
                 id: categWeight
-                text:"50"
-                size_hint: 1,.8
-                pos_hint: {"center_x": .52,"center_y": .4}
+                text:""
+                size_hint: 1,.5
+                pos_hint: {"center_x": .55,"center_y": .4}
                 foreground_color: 1/255,1/255,1/255,.8
                 background_color: 0,0,0,0
-                padding:8
+                padding:2
                 font_name:'assets/fonts/CroissantOne-Regular.ttf'
-                font_size:"48dp"
+                font_size:"38dp"
 
         #Tug Contribution
         MDFloatLayout:
-            size_hint:.38,.94
-            pos_hint: {"center_x": .8,"center_y": .5}
+            size_hint:.37,.94
+            pos_hint: {"center_x": .81,"center_y": .5}
             canvas:
                 Color:
                     rgba:app.Courseschooser()
@@ -109,30 +178,45 @@
                 pos_hint: {"center_x":.5,"center_y": .84}
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
-                padding:6
+                padding:2
                 font_name:'assets/fonts/Poppins-Bold.ttf'
-                font_size:"17dp"
+                font_size:"16dp"
             MDLabel:
                 id: categContrib
                 text:""
-                size_hint:1,.8
-                pos_hint: {"center_x": .52,"center_y": .4}
-                foreground_color: 1/255,1/255,1/255,.8
-                background_color: 0,0,0,0
-                padding:5
+                size_hint:1,.5
+                pos_hint: {"center_x": .6,"center_y": .4}
+                padding:2
                 font_name:'assets/fonts/CroissantOne-Regular.ttf'
                 font_size:"60dp"
+
         MDFloatLayout:
+            id:avgbar
+            size_hint:.24,.04
+            pos_hint:{"center_x":.16, "center_y":.7}
             canvas:
                 Color:
-                    rgba:(30/255,47/255,151/255,.8)
+                    rgba:(245/255,83/255,133/255,1)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
                     radius:[2]
-            id:avgbar
-            size_hint:.28,.04
-            pos_hint:{"center_x":.16, "center_y":.58}
+                    
+        MDFloatLayout:
+            pos_hint: {'center_x':.17,'center_y':.4}
+            size_hint:.3,.4
+            MDLabel:
+                id:categavar
+                text: "70"
+                color:(35/255,209/255,139/255,1)
+                pos_hint: {'center_x':.5,'center_y':.5}
+                foreground_color: 1/255,1/255,1/255,1
+                background_color: 0,0,0,0
+                padding:2
+                font_name:'assets/fonts/CroissantOne-Regular.ttf'
+                font_size:"60dp"
+       
+            
             
 
     HoverButton:
@@ -141,7 +225,7 @@
         font_name: 'assets/fonts/JosefinSans-Bold.ttf'
         font_size: "32dp"
         background_color:1,1,1,0
-        pos_hint: {"center_x":.45 ,"center_y":.66}
+        pos_hint: {"center_x":.45 ,"center_y":.65}
         color: 1,1,1,1     
         canvas.before:
             Color:
@@ -155,7 +239,32 @@
             app.clear_Add_assesmnt()
             root.manager.transition = FadeTransition()
             root.manager.current = "addAssesment"
-  
+    
+
+    #Assessment summary scroll
+    MDFloatLayout:
+        size_hint:.99,.52
+        pos_hint:{"center_x":.5,"center_y": .36}
+        canvas:
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[10]    
+        ScrollView:
+            do_scroll_y:True
+            do_scroll_x:False
+            size_hint_y:1
+            pos_hint:{"center_x":.5,"center_y": .5}
+            bar_width:0
+            GridLayout:
+                orientation: "lr-tb"
+                id: assessmnt_list
+                cols: 2
+                height:self.minimum_height
+                row_default_height:80
+                size_hint_y:None
+                padding:8,8
+                spacing:10,10
     
                 
 #navigation menu
@@ -177,6 +286,7 @@
             text_color: 1,1,1,1
             on_press:
                 app.clearOverview()
+                app.clearAssmary()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
 
@@ -187,6 +297,7 @@
             text_color: 1,1,1,1
             on_press:
                 app.clearOverview()
+                app.clearAssmary()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "todoScreen" 
         
@@ -206,6 +317,7 @@
                 theme_text_color:"Custom"
                 text_color: 1,1,1,1
                 on_press:
+                    app.clearAssmary()
                     root.manager.transition = FadeTransition()
                     root.manager.current =  "overviewscreen"
                     
@@ -216,5 +328,6 @@
             text_color: 1,1,1,1
             on_press:
                 app.clearOverview()
+                app.clearAssmary()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "AccountMenu"

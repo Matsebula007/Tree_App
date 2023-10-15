@@ -16,6 +16,7 @@
         on_release:
             root.Navigate()
             root.add_categmary(cat_name.text,contrib.text)
+
     #card primary key holder
     MDLabel:
         id:categ_key
@@ -37,18 +38,17 @@
         MDLabel:
             id:cat_name
             text:root.Category
-            markup: True
             font_name: 'assets/fonts/Poppins-Bold.ttf'
-            font_size:"18sp"
+            font_size:"16sp"
             size_hint_x:1
-            size_hint_y:.2
-            pos_hint:{"center_x":.52,"center_y": .82}
+            size_hint_y:.1
+            pos_hint:{"center_x":.525,"center_y": .84}
         
         #Category letter grade
         MDLabel:
             id:let_grade
             text:root.Letter_grade
-            markup: True
+            color:(245/255,83/255,133/255,1)
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"38sp"
             size_hint_x:.4
@@ -59,7 +59,6 @@
         MDLabel:
             id:tug_count
             text:root.TUG_count
-            markup: True
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"18sp"
             size_hint_x:.4
@@ -69,7 +68,6 @@
         #Contribution Header
         MDLabel:
             text:"Contribution"
-            markup: True
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"18sp"
             size_hint_x:.88
@@ -80,7 +78,6 @@
         MDLabel:
             id:contrib
             text:root.Contribution
-            markup: True
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"30sp"
             size_hint_x:.4
