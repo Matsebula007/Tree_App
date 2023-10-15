@@ -30,7 +30,7 @@ class HoverButton(Button,HoverBehavior):
     background =ListProperty((30/255,47/255,151/255,.4))
     def on_enter(self):
         self.background = ((26/255,167/255,236/255,1))
-        Animation(size_hint =(.28,.05),d=0.3).start(self)
+        Animation(size_hint =(.24,.05),d=0.3).start(self)
     def on_leave(self):
         self.background = ((30/255,47/255,151/255,.4))
         Animation(size_hint =(.2,.046),d=0.1).start(self)
