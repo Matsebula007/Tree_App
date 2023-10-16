@@ -68,7 +68,7 @@
 
 
 <AssesSummary>:
-    md_bg_color: 244/255,249/255,253/255,1
+    md_bg_color: 244/255,249/255,253/255,.8
     name:"AssessmentSummary"
     crseid:crseid
     crsecr:crsecr
@@ -114,13 +114,6 @@
     MDFloatLayout:
         size_hint:.96,.28
         pos_hint: {"center_x": .49,"center_y": .76}
-        canvas:
-            Color:
-                rgba:(244/255,249/255,253/255,.8)
-            RoundedRectangle:
-                size:self.size
-                pos:self.pos
-                radius:[20]
         MDLabel:
             id: categName
             text:""
@@ -201,7 +194,7 @@
             size_hint:.4,.4
             MDLabel:
                 id:categavar
-                text: "47.9"
+                text: "0.0"
                 color:app.avg_color(categavar.text)
                 pos_hint: {'center_x':.55,'center_y':.5}
                 size_hint: 1, 1
@@ -252,10 +245,12 @@
         size_hint:.99,.52
         pos_hint:{"center_x":.5,"center_y": .36}
         canvas:
+            Color:
+                rgba:(244/255,249/255,253/255,1)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[15]    
+                radius:[20]    
         ScrollView:
             do_scroll_y:True
             do_scroll_x:False

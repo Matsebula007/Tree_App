@@ -160,6 +160,7 @@ MDScreen:
                     radius:[15]
             on_release:
                 app.add_assessment(ass_courseid.text,ass_mark.text,ass_contr.text,ass_category.text,ass_name.text)
+                app.update_assessment(ass_courseid.text)
 #navigation menu
     MDFloatLayout:
         size_hint:.98,.1

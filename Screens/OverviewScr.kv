@@ -16,7 +16,7 @@
         pos_hint: {"center_x":.5,"center_y":.5}  
         on_release:
             root.Navigate()
-            root.add_categmary(cat_name.text,contrib.text)
+            root.add_categmary(cat_name.text,contrib.text,grade.text)
 
     #card primary key holder
     MDLabel:
@@ -49,17 +49,26 @@
         MDLabel:
             id:grade
             text:root.Grade
-            color:(1/255,1/255,1/255,1)
+            color:"#EFF7F6"
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
-            font_size:"26sp"
+            font_size:"34sp"
             size_hint_x:.8
             size_hint_y:.36
-            pos_hint:{"center_x":.6,"center_y": .56}
+            pos_hint:{"center_x":.5,"center_y": .56}
+        MDLabel:
+            text:"Avg"
+            color:"#EFF7F6"
+            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
+            font_size:"16sp"
+            size_hint_x:.3
+            size_hint_y:.2
+            pos_hint:{"center_x":.78,"center_y": .52}
 
         #TUG count
         MDLabel:
             id:tug_count
             text:root.TUG_count
+            color:(30/255,47/255,151/255,1)
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"18sp"
             size_hint_x:.4
@@ -85,7 +94,7 @@
             size_hint_x:.9
             size_hint_y:.28
             padding:10,1
-            pos_hint:{"center_x":.55,"center_y": .16}
+            pos_hint:{"center_x":.5,"center_y": .16}
 
 <OverviewScreen>
     name:"overviewscreen"
@@ -107,8 +116,7 @@
                 root.manager.transition = FadeTransition()
                 root.manager.current = "CoursesScreen"
 
-    
-    #Course ID label
+        #Course ID label
         MDLabel:
             id:crseid
             text:""
@@ -116,18 +124,19 @@
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "32dp"
     
-    #Course Credit label
+        #Course Credit label
         MDLabel:
             id:crsecr
             text:""
+            color:(30/255,47/255,151/255,1)
             size_hint:.3,.8
             pos_hint: {"center_x": .94,"center_y": .95}
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size: "18dp"
 
     MDFloatLayout:
-        size_hint:.98,.04
-        pos_hint: {"center_x": .5,"center_y": .91}
+        size_hint:.98,.08
+        pos_hint: {"center_x": .5,"center_y": .86}
         canvas:
             Color:
                 rgba:(238/255,238/255,238/255,.2)
@@ -137,14 +146,14 @@
                 radius:[10]
         MDLabel:
             id: overview
-            text:" Overview"
-            size_hint: 1,1
+            text:"Course Overview"
+            size_hint:.8,1
             pos_hint: {"center_x": .55,"center_y": .5}
             foreground_color: 1/255,1/255,1/255,.8
             background_color: 0,0,0,0
             padding:10
             font_name:'assets/fonts/Poppins-Bold.ttf'
-            font_size:"18dp"
+            font_size:"22dp"
 
         MDIconButton:
             icon:"chevron-right"
@@ -157,14 +166,15 @@
                 root.manager.current = "AssessmentSummary"
     #Category summary scroll
     MDFloatLayout:
-        size_hint:.98,.78
-        pos_hint:{"center_x":.5,"center_y": .5}
-        md_bg_color:244/255,249/255,253/255,1
+        size_hint:.98,.72
+        pos_hint:{"center_x":.5,"center_y": .46}
         canvas:
+            Color:
+                rgba:(244/255,249/255,253/255,1)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[15]    
+                radius:[30]    
         ScrollView:
             do_scroll_y:True
             do_scroll_x:False

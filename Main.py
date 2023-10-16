@@ -125,9 +125,10 @@ class OverviewCard(CommonElevationBehavior,MDFloatLayout):
         screen_manager.transition = FadeTransition()
         screen_manager.current = "AssessmentSummary"
 
-    def add_categmary(self,catName,catContr):
+    def add_categmary(self,catName,catContr,Grade):
         screen_manager.get_screen("AssessmentSummary").categName.text =f"{catName}"
         screen_manager.get_screen("AssessmentSummary").categContrib.text =f"{catContr}"
+        screen_manager.get_screen("AssessmentSummary").categavar.text =f"{Grade}"
         CourseID =screen_manager.get_screen("overviewscreen").crseid.text
 
         try:
@@ -175,16 +176,15 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
             cursor.execute("SELECT ID,CATEGORY,MARK,CAT_CONTRIB,TUG_COUNT FROM SUMMARY")
             livCatar = cursor.fetchall()
             for cat in livCatar:
-                grade = str(cat[2])+"%"
+                grade = str(cat[2])
                 contrib= str(cat[3])
                 tugcount = str(cat[4])+" Tug"
                 add_categ =(OverviewCard(categ_key=cat[0],Category=cat[1],Grade=grade,Contribution=contrib,TUG_count=tugcount))
                 screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
         except Exception as e:
-            Snackbar(text=f"{e}",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+            Snackbar(text=f"IDE:Ovev:1:Hot Overview ",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                     font_size ="15dp").open() # type: ignore
-            print(e)
             pass
         #add categories with zero assessments
         try:
@@ -199,16 +199,15 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
             for dcateg in deadCatar:
                 for deadcat in dcateg:
                     if deadcat not in liveCateg:
-                        grade = str(0)+"%"
+                        grade = str(0)
                         contrib= str(0)
                         tugcount = str(0)+" Tug"
                         add_categ =(OverviewCard(categ_key=0,Category=deadcat,Grade=grade,Contribution=contrib,TUG_count=tugcount))
                         screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
         except Exception as e:
-            Snackbar(text=f"{e}",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+            Snackbar(text="IDE:Ovev:2:Hot Overview ",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                     font_size ="15dp").open() # type: ignore
-            print(e)
             pass
 
     crsavg = NumericProperty()
@@ -281,6 +280,7 @@ class MainApp(MDApp):
         month = str(datetime.now().strftime("%b"))
         day = str(datetime.now().strftime("%d"))
         screen_manager.get_screen("todoScreen").date_text.text = f"{days[wd]}, {day} {month}"
+        #updates course summary large Operation  
         self.summariseCourse()
        
         try:
@@ -847,10 +847,8 @@ class MainApp(MDApp):
             pass
 
 #course summary calculations
-    def summariseCourse(self):
-            
+    def summariseCourse(self):    
         try:
-           
             database.cursor.execute("SELECT COURSE_ID FROM COURSES")
             arr =database.cursor.fetchall()
             takenC=[]
@@ -872,10 +870,10 @@ class MainApp(MDApp):
                                 if icount>0:
                                     cursor.execute(f"INSERT OR REPLACE INTO SUMMARY(CATEGORY) VALUES(?)",(categ_name,))
                                     con.commit()
-                                    cursor.execute(f"SELECT SUM(CONTRIB) FROM {categ_name} WHERE ID IS NOT NULL")
+                                    cursor.execute(f"SELECT SUM(CONTRIB) FROM {categ_name} WHERE  CONTRIB>0.0")
                                     sumarray = cursor.fetchone()
                                     for sumContrb in sumarray:
-                                        cursor.execute(f"SELECT COUNT(TITTLE) FROM {categ_name} WHERE ID IS NOT NULL")
+                                        cursor.execute(f"SELECT COUNT(TITTLE) FROM {categ_name} WHERE CONTRIB>0.0")
                                         assarray = cursor.fetchone()
                                         for ass_count in assarray:
                                             cursor.execute(f"UPDATE SUMMARY SET TUG_COUNT ={ass_count} WHERE CATEGORY =?",(categ_name,))
@@ -951,9 +949,8 @@ class MainApp(MDApp):
 
 #add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
-
         try: 
-            if  ass_name !=""and ass_category!="" and ass_mark!="" and ass_contr!="":
+            if  ass_name !=""and ass_mark!="" and ass_contr!="":
                 assNm = str(ass_name)
                 ass_name =assNm.replace(" ","")
                 con = sqlite3.connect(f'{ass_courseid}.db')
@@ -964,36 +961,26 @@ class MainApp(MDApp):
                 for asnm in arr:
                     for i in asnm:
                         takenAss.append(i)    
-
                 if ass_name in takenAss:
                     Snackbar(text="Assessment already Exists",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore
                     
                 elif ass_name not in takenAss:
-                    
                     try: 
                         ass_mark =float(ass_mark)
                         ass_contr=float(ass_contr)
-                        if  ass_mark<100.0000000000001 and ass_mark>0.0 and ass_contr<100.0000000000001 and ass_contr>0.0:
+                        if  ass_mark<100.0000000000001 and ass_mark>-0.01 and ass_contr<100.0000000000001 and ass_contr>-0.01:
                             # adding COURSE to database
                             con = sqlite3.connect(f'{ass_courseid}.db')
                             cursor = con.cursor()
                         
                             ass_weight = ass_mark*(ass_contr/100.0)
                             data=ass_name,ass_contr,ass_mark,ass_weight
-                                
-                            try:
-                                cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,CONTRIB) VALUES(?,?,?,?)",data)
-                                con.commit()
-                                screen_manager.transition = FadeTransition()
-                                screen_manager.current = "AssessmentSummary"
-                            except Exception:
-                                Snackbar(text="Category not in Course!",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
-                                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
-                                        font_size ="15dp").open()# type: ignore
-                                pass
-                                
+
+                            cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,CONTRIB) VALUES(?,?,?,?)",data)
+                            con.commit()
+                                    
                         elif ass_mark >100.0:
                             Snackbar(text="Mark greater than 100",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
                                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
@@ -1019,14 +1006,30 @@ class MainApp(MDApp):
                                 size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                                 font_size ="15dp").open() # type: ignore
                         pass
+
+                    try:
+                        ass_mark =float(ass_mark)
+                        ass_contr=float(ass_contr)
+                        ass_weight = (ass_mark*ass_contr)/100.0
+
+                        ass_contr=str(ass_contr)
+                        ass_mark=str(ass_mark)
+                        ass_contr=str(ass_contr)
+                        ass_weight=str(ass_weight)
+                        add_test =(AssessmentCard(testpk=0,testName=ass_name,testWeight= ass_contr,testMark = ass_mark,testContrib=ass_weight))
+                        screen_manager.get_screen("AssessmentSummary").assessmnt_list.add_widget(add_test)
+                        screen_manager.transition = FadeTransition()
+                        screen_manager.current = "AssessmentSummary"
+
+                    except Exception:
+                        Snackbar(text="INDE:0:View update error",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                                font_size ="15dp").open() # type: ignore
+                        pass
             elif ass_name =="":
-                            Snackbar(text="Assessment name empty",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
-                                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
-                                    font_size ="15dp").open() # type: ignore
-            elif ass_category=="":
-                Snackbar(text="Long press to select category",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
+                Snackbar(text="Assessment name empty",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
-                        font_size ="15dp").open() # type: ignore   
+                        font_size ="15dp").open() # type: ignore 
             elif ass_mark =="":
                 Snackbar(text="Mark empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
@@ -1034,15 +1037,105 @@ class MainApp(MDApp):
             elif ass_contr =="":
                 Snackbar(text="Contribution empty default-100",snackbar_x ="10dp",snackbar_y ="17dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
-                        font_size ="15dp").open() # type: ignore   
-                
+                        font_size ="15dp").open() # type: ignore          
         except Exception:
-            Snackbar(text="INDE:1:Course has no Categories",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
+            Snackbar(text="INDE:1:Add assessment error",snackbar_x ="10dp",snackbar_y ="7dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                     font_size ="15dp").open() # type: ignore
         pass
 
-
+# Update assessment 
+    def update_assessment(self,CourseID):
+        try:
+               
+            if CourseID !="":
+                con = sqlite3.connect(f"{CourseID}.db")
+                cursor = con.cursor()
+                cursor.execute("SELECT TITTLE FROM CATEGORY")
+                array = cursor.fetchall()
+                for i in array:
+                    for categ_name in i:
+                        cursor.execute(f"SELECT COUNT(*) FROM ( SELECT 0 FROM {categ_name} LIMIT 1)")
+                        count = cursor.fetchone()
+                        try:
+                            for icount in count:
+                                if icount>0:
+                                    cursor.execute(f"INSERT OR REPLACE INTO SUMMARY(CATEGORY) VALUES(?)",(categ_name,))
+                                    con.commit()
+                                    cursor.execute(f"SELECT SUM(CONTRIB) FROM {categ_name} WHERE ID IS NOT NULL")
+                                    sumarray = cursor.fetchone()
+                                    for sumContrb in sumarray:
+                                        cursor.execute(f"SELECT COUNT(TITTLE) FROM {categ_name} WHERE CONTRIB>0.0")
+                                        assarray = cursor.fetchone()
+                                        for ass_count in assarray:
+                                            cursor.execute(f"UPDATE SUMMARY SET TUG_COUNT ={ass_count} WHERE CATEGORY =?",(categ_name,))
+                                            con.commit()
+                                            sumContrb =float(sumContrb)
+                                            if sumContrb>100.0000000000001:
+                                                ass_count =float(ass_count)
+                                                finalMark =sumContrb/ass_count
+                                                mark_formt = "{:.1f}".format(finalMark)
+                                                cursor.execute(f"UPDATE SUMMARY SET MARK ={mark_formt} WHERE CATEGORY =?",(categ_name,))
+                                                con.commit()
+                                            if sumContrb<100.0:
+                                                cursor.execute(f"UPDATE SUMMARY SET MARK ={sumContrb} WHERE CATEGORY =?",(categ_name,))
+                                                con.commit()
+                        except Exception:
+                            Snackbar(text="INDE:CAL:1:error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                                font_size ="15dp").open() # type: ignore
+                            pass
+                        
+                        try:
+                            cursor.execute(f"SELECT COUNT(*) FROM ( SELECT 0 FROM {categ_name} LIMIT 1)")
+                            count = cursor.fetchone()
+                            for icount in count:
+                                if icount>0:
+                                    cursor.execute("SELECT WEIGHT FROM CATEGORY WHERE TITTLE =?",(categ_name,))
+                                    cArray = cursor.fetchone()
+                                    for ca in cArray:
+                                        ca=float(ca)
+                                        cursor.execute(f"SELECT MARK FROM SUMMARY WHERE CATEGORY =?",(categ_name,))
+                                        markar = cursor.fetchone()
+                                        for mark in markar:
+                                            mark=float(mark)
+                                            cat_contrib = (mark*ca)/100.0
+                                            contr_fmt = "{:.1f}".format(cat_contrib)
+                                            cursor.execute(f"UPDATE SUMMARY SET CAT_CONTRIB ={contr_fmt} WHERE CATEGORY =?",(categ_name,))
+                                            con.commit()
+                        except Exception :
+                            Snackbar(text="INDE:CAL:2:error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                                font_size ="15dp").open() # type: ignore
+                        try:
+                            cursor.execute(f"SELECT COUNT(*) FROM ( SELECT 0 FROM {categ_name} LIMIT 1)")
+                            count = cursor.fetchone()
+                            for icount in count:
+                                if icount>0:
+                                    cursor.execute("SELECT SUM(CAT_CONTRIB) FROM SUMMARY WHERE ID IS NOT NULL")
+                                    cArray = cursor.fetchone()
+                                    for ca in cArray:
+                                        ca=float(ca)
+                                        database.cursor.execute(f"UPDATE COURSES SET CA={ca} WHERE COURSE_ID=?",(CourseID,))
+                                        database.con.commit()
+                                        database.cursor.execute(f"SELECT CA_R FROM COURSES WHERE COURSE_ID=?",(CourseID,))
+                                        ratioArr =database.cursor.fetchone()
+                                        for ratio in ratioArr:
+                                            ratio =float(ratio)
+                                            basis= (ratio*ca)/100.0
+                                            basisFmt = "{:.1f}".format(basis)
+                                            database.cursor.execute(f"UPDATE COURSES SET BASIS={basisFmt} WHERE COURSE_ID=?",(CourseID,))
+                                            database.con.commit()
+                        except Exception:
+                            Snackbar(text="INDE:CAL:3:error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                                font_size ="15dp").open() # type: ignore
+                            pass
+        except Exception as e:
+            Snackbar(text="INDE:0:View update error",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                    font_size ="15dp").open() # type: ignore
+            pass
 
 if __name__ == "__main__":   
    

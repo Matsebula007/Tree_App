@@ -1,17 +1,17 @@
 #: import FadeTransition kivy.uix.screenmanager.FadeTransition
 <CircularProgressBar>
-    md_bg_color:244/255,249/255,253/255,.4
+    #md_bg_color:244/255,249/255,253/255,.4
     canvas.before:
         Color:
-            rgba:root.bar_color +[0.2]
+            rgba:(244/255,249/255,253/255,.2)
         Line:
-            width:8
+            width:6
             ellipse:(self.x,self.y,self.width,self.height,0,360)
     canvas.after:
         Color:
-            rgba:root.bar_color +[0.5]
+            rgba:(244/255,249/255,253/255,.4)
         Line:
-            width:8
+            width:6
             ellipse:(self.x,self.y,self.width,self.height,0,root.set_value*3.6)
 
     MDLabel:
@@ -111,6 +111,7 @@
                     radius:[10]
             MDLabel:
                 text:"Basis"
+                color:(244/255,249/255,253/255,1)
                 font_name: 'assets/fonts/CroissantOne-Regular.ttf'
                 font_size:"26sp"
                 padding:1,0
@@ -120,6 +121,7 @@
             MDLabel:
                 id:basis
                 text:root.Basis
+                #color:(30/255,47/255,151/255,1)
                 font_name: 'assets/fonts/CroissantOne-Regular.ttf'
                 font_size:"48sp"
                 padding:1,0
@@ -184,13 +186,11 @@ MDScreen:
     crtot:crtot
 
     #your courses
-    MDFloatLayout:
+    MDFloatLayout
         MDLabel:
             text:"Your courses"
-            text_color: 245/255,250/255,255/255,1 
+            color:(0/255,0/255,0/255,1)
             pos_hint: {"center_x":.55,"center_y": .96}
-            foreground_color: 1/255,1/255,1/255,.8
-            background_color: 0,0,0,0
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size:"28dp"  
         MDLabel:
@@ -226,10 +226,12 @@ MDScreen:
         size_hint:.99,.8
         pos_hint:{"center_x":.5,"center_y": .5} 
         canvas:
+            Color:
+                rgba:(244/255,249/255,253/255,1)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[15]   
+                radius:[20]   
         ScrollView:
             do_scroll_y:True
             do_scroll_x:False
@@ -293,9 +295,9 @@ MDScreen:
                 theme_text_color:"Custom"
                 color:(30/255,47/255,151/255,1)
                 on_press:
-                    #app.summariseCourse()
                     root.manager.transition = FadeTransition()
                     root.manager.current = "CoursesScreen"
+                    
         
         MDIconButton:
             icon: "account"

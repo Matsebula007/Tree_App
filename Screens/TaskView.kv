@@ -228,7 +228,7 @@ MDScreen:
                 color:(30/255,47/255,151/255,1)
                 on_press:
                     root.manager.transition = FadeTransition()
-                    root.manager.current = "todoScreen" 
+                    root.manager.current = "add_todo" 
         
         MDIconButton:
             icon: "library"
@@ -236,7 +236,6 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                #app.summariseCourse()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "CoursesScreen"
         
