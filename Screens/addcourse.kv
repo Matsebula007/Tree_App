@@ -4,6 +4,12 @@ MDScreen:
     md_bg_color: 244/255,249/255,253/255,1
    
    #keywords
+    courseID:courseID
+    ex_ratio:ex_ratio
+    ca_ratio:ca_ratio
+    c_credit:c_credit
+    
+
     testCat:testCat
     tcheck:tcheck
     testW:testW
@@ -72,7 +78,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id: CourseID
+                id: courseID
                 hint_text:"PHY411"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .48}
@@ -96,7 +102,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id: C_Credit
+                id: c_credit
                 hint_text:"Credits"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
@@ -120,7 +126,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id:CA_ratio
+                id:ca_ratio
                 hint_text:"CA Weight"
                 size_hint: 1,None
                 pos_hint: {"center_x": .5,"center_y": .5}
@@ -145,7 +151,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id:Ex_ratio
+                id:ex_ratio
                 hint_text:"Exam Weight"
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}

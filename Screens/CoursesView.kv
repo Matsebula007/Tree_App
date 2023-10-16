@@ -33,6 +33,7 @@
     cid:cid
     crsecr:crsecr
     caBar:caBar
+    basis:basis
 
     #to Overview more on course button
     Button:
@@ -96,7 +97,7 @@
                 id:caBar
                 size_hint:None,None
                 size:85,85
-                value:root.crsaverage
+                value:root.crsavg
                 pos_hint:{"center_x":.5,"center_y": .5}
 
         #Basis settings 
@@ -117,11 +118,12 @@
                 size_hint_y:.8
                 pos_hint:{"center_x":.5,"center_y": .8}
             MDLabel:
-                text:"39"
+                id:basis
+                text:root.Basis
                 font_name: 'assets/fonts/CroissantOne-Regular.ttf'
                 font_size:"48sp"
                 padding:1,0
-                size_hint_x:.7
+                size_hint_x:.8
                 size_hint_y:.8
                 pos_hint:{"center_x":.5,"center_y": .3}
 
@@ -217,6 +219,7 @@ MDScreen:
         on_release:
             root.manager.transition = FadeTransition()
             root.manager.current = "addCourse"
+            app.clear_Add_COURSE()
        
    #Course view
     MDFloatLayout:

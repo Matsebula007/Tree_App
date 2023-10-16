@@ -7,7 +7,7 @@
     size_hint:.5,None
     height:dp(180)
     categ_key:categ_key
-    let_grade:let_grade
+    grade:grade
     tug_count:tug_count
     contrib:contrib
     cat_name:cat_name
@@ -43,18 +43,18 @@
             font_size:"16sp"
             size_hint_x:1
             size_hint_y:.1
-            pos_hint:{"center_x":.525,"center_y": .84}
+            pos_hint:{"center_x":.525,"center_y": .78}
         
         #Category letter grade
         MDLabel:
-            id:let_grade
-            text:root.Letter_grade
+            id:grade
+            text:root.Grade
             color:(1/255,1/255,1/255,1)
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
-            font_size:"38sp"
-            size_hint_x:.4
+            font_size:"26sp"
+            size_hint_x:.8
             size_hint_y:.36
-            pos_hint:{"center_x":.28,"center_y": .6}
+            pos_hint:{"center_x":.6,"center_y": .56}
 
         #TUG count
         MDLabel:
@@ -64,7 +64,7 @@
             font_size:"18sp"
             size_hint_x:.4
             size_hint_y:.28
-            pos_hint:{"center_x":.75,"center_y": .68}
+            pos_hint:{"center_x":.8,"center_y": .9}
 
         #Contribution Header
         MDLabel:
@@ -73,7 +73,7 @@
             font_size:"18sp"
             size_hint_x:.88
             size_hint_y:.2
-            pos_hint:{"center_x":.5,"center_y": .38}
+            pos_hint:{"center_x":.5,"center_y": .3}
 
         #Contribution
         MDLabel:
@@ -85,7 +85,7 @@
             size_hint_x:.9
             size_hint_y:.28
             padding:10,1
-            pos_hint:{"center_x":.55,"center_y": .2}
+            pos_hint:{"center_x":.55,"center_y": .16}
 
 <OverviewScreen>
     name:"overviewscreen"
