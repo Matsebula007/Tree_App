@@ -82,9 +82,8 @@ def summaryCal(CourseID):
                                     if summContr<100.0:
                                         cursor.execute(f"UPDATE SUMMARY SET MARK ={summContr} WHERE CATEGORY =?",(categ,))
                                         con.commit()
-                except Exception as e:
-                    print(e)
-                    print(" MARK CALCULATION ERROR")
+                except Exception:
+                    pass
                 
                 try:
                     cursor.execute(f"SELECT COUNT(*) FROM ( SELECT 0 FROM {categ} LIMIT 1)")
@@ -104,23 +103,7 @@ def summaryCal(CourseID):
                                     cursor.execute(f"UPDATE SUMMARY SET CAT_CONTRIB ={contr_fmt} WHERE CATEGORY =?",(categ,))
                                     con.commit()
                 except Exception as e:
-                    print(f"Contribution error {e}")
                     pass
-
-                cursor.execute(f"SELECT COUNT(*) FROM ( SELECT 0 FROM {categ} LIMIT 1)")
-                count = cursor.fetchone()
-                for icount in count:
-                    if icount>0:
-                        cursor.execute(f"SELECT MARK FROM SUMMARY WHERE CATEGORY =?",(categ,))
-                        markar = cursor.fetchone()
-                        print(markar)
-                        for Mark in markar:
-                            mark=float(Mark)
-                            grade_point=letter_grade(mark)
-                            print(grade_point)
-                            cursor.execute(f"UPDATE SUMMARY SET LETGRADE ={grade_point}")
-                            con.commit()
-    
     else:pass
 
 if __name__=="__main__":

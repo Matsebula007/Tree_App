@@ -196,7 +196,8 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
 
 class OverviewScreen(MDScreen,MDFloatLayout):
     #Category to overview
-    def on_enter(self):
+    def on_pre_enter(self):
+        MainApp.summariseCourse(MainApp)
         pass
     def on_leave(self,*args):
         pass      
@@ -253,6 +254,7 @@ class MainApp(MDApp):
         month = str(datetime.now().strftime("%b"))
         day = str(datetime.now().strftime("%d"))
         screen_manager.get_screen("todoScreen").date_text.text = f"{days[wd]}, {day} {month}"
+        #self.summariseCourse()
        
         try:
             completed_tasks, uncomplete_tasks = self.get_tasks()
@@ -533,6 +535,11 @@ class MainApp(MDApp):
         screen_manager.get_screen("addAssesment").ass_mark.text=""
         screen_manager.get_screen("addAssesment").ass_name.text=""
         pass
+    def clear_Add_COURSE(self):
+        screen_manager.get_screen("addCourse").ass_contr.text=""
+        screen_manager.get_screen("addCourse").ass_mark.text=""
+        screen_manager.get_screen("addCourse").ass_name.text=""
+        pass
 
 #update TASK and HOME view 
     def update_task(self,tittle):
@@ -636,7 +643,7 @@ class MainApp(MDApp):
 #adding new course to course view
     def update_Course(self,Course_ID):
         courID = str(Course_ID)
-        CourseID =courID.replace(" ","")
+        CourseID =courID.replace(" ","") # type: ignore
         CourseID = CourseID.upper()
         try:
             database.cursor.execute("SELECT ID,CREDIT,CA_R,EX_R FROM COURSES WHERE COURSE_ID=?",(CourseID,))
@@ -690,7 +697,7 @@ class MainApp(MDApp):
                                     cursor = con.cursor() # type: ignore
                                     cursor.execute("CREATE TABLE CATEGORY(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL UNIQUE,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0)")
                                     con.commit()
-                                    cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT NOT NULL UNIQUE,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTRIB DECIMAL,LETGRADE TEXT,TUG_COUNT DECIMAL, FOREIGN KEY(CATEGORY) REFERENCES CATEGORY(TITTLE))")
+                                    cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT NOT NULL UNIQUE,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTRIB DECIMAL,TUG_COUNT DECIMAL, FOREIGN KEY(CATEGORY) REFERENCES CATEGORY(TITTLE))")
                                     con.commit()
 
                                     if tcheck.active == True and testW !="":     
@@ -809,8 +816,81 @@ class MainApp(MDApp):
 
 #course summary calculations
     def summariseCourse(self):
-        print("Calculations")
-        pass
+            
+        try:
+           
+            database.cursor.execute("SELECT COURSE_ID FROM COURSES")
+            arr =database.cursor.fetchall()
+            takenC=[]
+            for crse in arr:
+                for i in crse:
+                    takenC.append(i)    
+            for CourseID in takenC:
+                con = sqlite3.connect(f"{CourseID}.db")
+                cursor = con.cursor()
+                cursor.execute("SELECT TITTLE FROM CATEGORY")
+                array = cursor.fetchall()
+                
+                for i in array:
+                    for categ in i:
+                        cursor.execute(f"SELECT COUNT(*) FROM ( SELECT 0 FROM {categ} LIMIT 1)")
+                        count = cursor.fetchone()
+                        try:
+                            for icount in count:
+                                if icount>0:
+                                    cursor.execute(f"INSERT OR REPLACE INTO SUMMARY(CATEGORY) VALUES(?)",(categ,))
+                                    con.commit()
+                                    cursor.execute(f"SELECT SUM(CONTRIB) FROM {categ} WHERE ID IS NOT NULL")
+                                    summCon = cursor.fetchone()
+                                    for summContr in summCon:
+                                        cursor.execute(f"SELECT COUNT(TITTLE) FROM {categ} WHERE ID IS NOT NULL")
+                                        ass_cnt = cursor.fetchone()
+                                        for ass_count in ass_cnt:
+                                            cursor.execute(f"UPDATE SUMMARY SET TUG_COUNT ={ass_count} WHERE CATEGORY =?",(categ,))
+                                            con.commit()
+                                            summContr =float(summContr)
+                                            if summContr>100.00000001:
+                                                ass_count =float(ass_count)
+                                                finalMark =summContr/ass_count
+                                                mark_formt = "{:.1f}".format(finalMark)
+                                                cursor.execute(f"UPDATE SUMMARY SET MARK ={mark_formt} WHERE CATEGORY =?",(categ,))
+                                                con.commit()
+                                            if summContr<100.0:
+                                                cursor.execute(f"UPDATE SUMMARY SET MARK ={summContr} WHERE CATEGORY =?",(categ,))
+                                                con.commit()
+                        except Exception:
+                            Snackbar(text="INDE:CAL:3:error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                                font_size ="15dp").open() # type: ignore
+                            pass
+                        
+                        try:
+                            cursor.execute(f"SELECT COUNT(*) FROM ( SELECT 0 FROM {categ} LIMIT 1)")
+                            count = cursor.fetchone()
+                            for icount in count:
+                                if icount>0:
+                                    cursor.execute("SELECT WEIGHT FROM CATEGORY WHERE TITTLE =?",(categ,))
+                                    weighty = cursor.fetchone()
+                                    for weight in weighty:
+                                        weight=float(weight)
+                                        cursor.execute(f"SELECT MARK FROM SUMMARY WHERE CATEGORY =?",(categ,))
+                                        markar = cursor.fetchone()
+                                        for mark in markar:
+                                            mark=float(mark)
+                                            cat_contrib = (mark*weight)/100.0
+                                            contr_fmt = "{:.1f}".format(cat_contrib)
+                                            cursor.execute(f"UPDATE SUMMARY SET CAT_CONTRIB ={contr_fmt} WHERE CATEGORY =?",(categ,))
+                                            con.commit()
+                        except Exception as e:
+                            Snackbar(text="INDE:CAL:2:error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                                font_size ="15dp").open() # type: ignore
+                            pass
+        except Exception:
+            Snackbar(text="INDE:CAL: Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                    font_size ="15dp").open() # type: ignore
+            pass
 
 #add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
@@ -906,25 +986,6 @@ class MainApp(MDApp):
         pass
 
 
-""" Courseview card takes courID uses it to acces
-databse and displays Overviw(Summary) 
-When courseOverviw card clicked
-    GET categName from card,contrib display AssesSummary
-    in Function get
-        GET screen_manager CourseID
-        use ID and CategName access database """
-    
-""" #display TASKS from databse
-        def all_assINcateg(self):
-        database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed=1")
-        arr =database.cursor.fetchall()
-        for i in arr:
-            add_task =(TodoCard(pk=i[0],tittle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],
-                                task_time2=i[5]))                                                             
-            add_task.ids.check.active = True
-            if add_task.ids.pk !=i[0]:
-                screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task) """
-
 
 if __name__ == "__main__":   
    
@@ -932,7 +993,7 @@ if __name__ == "__main__":
     
      
     """ database.cursor.execute("DROP TABLE TASK") 
-    for it in range(37,56,1):
+    for it in range(33,61,1):
         database.cursor.execute(f"DELETE FROM COURSES WHERE ID ={it}")
         database.con.commit()
         

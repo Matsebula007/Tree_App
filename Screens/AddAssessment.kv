@@ -160,7 +160,6 @@ MDScreen:
                     radius:[15]
             on_release:
                 app.add_assessment(ass_courseid.text,ass_mark.text,ass_contr.text,ass_category.text,ass_name.text)
-                
 #navigation menu
     MDFloatLayout:
         size_hint:.98,.1
@@ -208,10 +207,9 @@ MDScreen:
                 pos_hint: {"center_x":.5 ,"center_y":.5}
                 theme_text_color:"Custom"
                 color:(30/255,47/255,151/255,1)
-                on_press:
+                on_release:
                     root.manager.transition = FadeTransition()
                     root.manager.current = "AssessmentSummary"
-                    
         MDIconButton:
             icon: "account"
             pos_hint: {"center_x":.8 ,"center_y":.5}
