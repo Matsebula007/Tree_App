@@ -1,55 +1,50 @@
 
 
-def letter_point_Ass(mark):
+def letter_point_Ass(mark_in):
     """functoin
 
     Args:
         mark (number): an interger to be turned to a grade point    
 
     Returns:
-        float: a grade point corresponding to the entered mark
+        float: a grade point candresponding to the entered mark
     """    """"""
-    if mark <= 34:
+    
+    mark = float(mark_in)
+    if mark < 35.0:
         grade_point =  "F"
-        return grade_point
-    elif mark == 34 or mark <= 39:
+    elif mark > 35.0 and mark < 40.0:
         grade_point =  "F+"
-        return grade_point
-    elif mark == 40 or mark <= 44:
+    elif mark > 40.0 and mark < 45.0:
         grade_point =  "E"
-        return grade_point
-    elif mark == 45 or mark <= 49:
+    elif mark > 45.0 and mark < 50.0:
         grade_point =  "E+"
-        return grade_point
-    elif mark == 50 or mark <= 54:
-        grade_point = 2.0
-        return grade_point
-    elif mark == 55 or mark <= 59:
+    elif mark > 50.0 and mark < 55.0:
+        grade_point = "D"
+    elif mark > 55.0 and mark < 60.0:
         grade_point =  "D+"
-        return grade_point
-    elif mark == 60 or mark <= 64:
+    elif mark > 60.0 and mark < 65.0:
         grade_point =  "C"
-        return grade_point
-    elif mark == 65 or mark <= 69:
+    elif mark >65.0 and mark < 70.0:
         grade_point =  "C+"
-        return grade_point
-    elif mark == 70 or mark <= 74:
+    elif mark > 70.0 and mark < 75.0:
         grade_point =  "B"
-        return grade_point
-    elif mark == 75 or mark <= 79:
+    elif mark > 75.0 and mark < 80.0:
         grade_point =  "B+"
-        return grade_point
-    elif mark == 80 or mark <= 84:
+    elif mark > 80.0 and mark < 85.0:
         grade_point =  "A-"
-        return grade_point
-    elif mark > 85 or mark <= 89:
+    elif mark > 85.0 and mark < 90.0:
         grade_point =  "A"
-        return grade_point
-    elif mark == 90 or mark <= 100:
+    elif mark > 90.0 and mark < 101.0:
         grade_point = "A+"
-        return grade_point
     else:
-        grade_point =  "F"
-        
-        return grade_point
+        grade_point = "U"
 
+
+    print (grade_point)
+
+
+if __name__ =="__main__":
+
+   
+    pass

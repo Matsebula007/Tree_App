@@ -2,7 +2,7 @@ from kivy.core.window import Window
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager ,FadeTransition,Screen
+from kivy.uix.screenmanager import ScreenManager ,FadeTransition
 from kivy.properties import StringProperty,ListProperty,NumericProperty
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.pickers import MDTimePicker
@@ -260,7 +260,7 @@ class MainApp(MDApp):
             toschedule = self.get_schedule()
             if completed_tasks != []:
                 for i in completed_tasks: 
-                    add_task =(TodoCard(pk=i[0],tittle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5]))
+                    add_task =(TodoCard(pk=i[0],tittle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5])) # type: ignore
                     add_task.ids.check.active = True 
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
             if uncomplete_tasks != []:
@@ -680,17 +680,17 @@ class MainApp(MDApp):
                             
                         try:
                             #create databse for course and initialize tables of categories
-                            con = sqlite3.connect(f'{CourseID}.db')
-                            cursor = con.cursor() # type: ignore
                             CA_ratio=float(CA_ratio)
                             Ex_ratio=float(Ex_ratio)
                             totalRatio=(CA_ratio+Ex_ratio)
                             
                             if totalRatio ==100.0:
                                 try:
-                                    cursor.execute("CREATE TABLE CATEGORY(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0)")
+                                    con = sqlite3.connect(f'{CourseID}.db')
+                                    cursor = con.cursor() # type: ignore
+                                    cursor.execute("CREATE TABLE CATEGORY(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL UNIQUE,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0)")
                                     con.commit()
-                                    cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT NOT NULL,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTRIB DECIMAL,LETGRADE TEXT,TUG_COUNT DECIMAL)")
+                                    cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT NOT NULL UNIQUE,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTRIB DECIMAL,LETGRADE TEXT,TUG_COUNT DECIMAL, FOREIGN KEY(CATEGORY) REFERENCES CATEGORY(TITTLE))")
                                     con.commit()
 
                                     if tcheck.active == True and testW !="":     
