@@ -1,33 +1,34 @@
-#pylint: disable=no-name-in-module
-#pylint: disable=broad-exception-caught
+# pylint: disable=no-name-in-module
+# pylint: disable=trailing-whitespace
+# pylint: disable=broad-exception-caught
+# pylint: disable=line-too-long
 
-from kivy.core.window import Window
-from kivy.lang import Builder
-from kivymd.app import MDApp
-from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager ,FadeTransition
-from kivy.properties import StringProperty,ListProperty,NumericProperty
-from kivymd.uix.pickers import MDDatePicker
-from kivymd.uix.pickers import MDTimePicker
-from kivy.clock import Clock
 
-from datetime import date ,datetime
-from kivymd.uix.behaviors import CommonElevationBehavior
-from kivymd.uix.floatlayout import MDFloatLayout
-from kivymd.uix.behaviors import HoverBehavior
-from kivy.uix.button import Button
-from kivy.animation import Animation
-from kivy.uix.anchorlayout import AnchorLayout
-from kivymd.uix.snackbar import Snackbar
-from kivy.metrics import dp
 import random
 import sqlite3
+from datetime import date, datetime
+
+from kivy.animation import Animation
+from kivy.clock import Clock
+from kivy.core.window import Window
+from kivy.lang import Builder
+from kivy.metrics import dp
+from kivy.properties import ListProperty, NumericProperty, StringProperty
+from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.button import Button
+from kivy.uix.screenmanager import FadeTransition, ScreenManager
+from kivymd.app import MDApp
+from kivymd.uix.behaviors import CommonElevationBehavior, HoverBehavior
+from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.pickers import MDDatePicker, MDTimePicker
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.snackbar import Snackbar
 
 
 class Database(): 
     """_summary_
     """    
-    con = sqlite3.connect('user_database.db')
+    con = sqlite3.connect('db/user_database.db')
     cursor = con.cursor()
     
 class HoverButton(Button,HoverBehavior):
@@ -62,11 +63,11 @@ class CircularProgressBar(AnchorLayout):
     def __init__(self,**kwargs):
         super(CircularProgressBar,self).__init__(**kwargs)
         Clock.schedule_once(self.animate,0)
-    def animate(self):
+    def animate(self,*args):
         """_summary_
         """        
         Clock.schedule_interval(self.percent_counter,self.duration/self.value)
-    def percent_counter(self):
+    def percent_counter(self,*args):
         """_summary_
         """        
         if self.counter < self.value:
@@ -325,18 +326,18 @@ class MainApp(MDApp):
         """        
         global screen_manager
         screen_manager = ScreenManager()
-        screen_manager.add_widget(Builder.load_file("Screens/main.kv"))
-        screen_manager.add_widget(Builder.load_file("Screens/login.kv"))  
-        screen_manager.add_widget(Builder.load_file("Screens/signUp.kv")) 
-        screen_manager.add_widget(Builder.load_file('Screens/homeScreen.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/taskView.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/addTask.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/coursesView.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/addcourse.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/addAssessment.kv'))
-        screen_manager.add_widget(Builder.load_file('Screens/accountScreen.kv'))
-        Builder.load_file('Screens/overviewScreen.kv')
-        Builder.load_file('Screens/assesSummary.kv')
+        screen_manager.add_widget(Builder.load_file("screens/home.kv"))
+        screen_manager.add_widget(Builder.load_file("screens/login.kv"))  
+        screen_manager.add_widget(Builder.load_file("screens/signUp.kv")) 
+        screen_manager.add_widget(Builder.load_file('screens/homeScreen.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/taskView.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/addTask.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/coursesView.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/addcourse.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/addAssessment.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/accountScreen.kv'))
+        Builder.load_file('screens/overviewScreen.kv')
+        Builder.load_file('screens/assesSummary.kv')
         screen_manager.add_widget(AssesSummary(name="AssessmentSummary"))
         screen_manager.add_widget(OverviewScreen(name='overviewscreen'))
 
