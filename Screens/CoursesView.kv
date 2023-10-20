@@ -55,7 +55,7 @@
         pos_hint: {"center_x": .5,"center_y": .5}
         canvas:
             Color:
-                rgba:app.Courseschooser()
+                rgba:app.courseschooser()
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
@@ -219,7 +219,7 @@ MDScreen:
         on_release:
             root.manager.transition = FadeTransition()
             root.manager.current = "addCourse"
-            app.clear_Add_COURSE()
+            app.clear_add_course()
        
    #Course view
     MDFloatLayout:

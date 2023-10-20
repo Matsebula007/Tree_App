@@ -18,7 +18,7 @@
         pos_hint: {'center_x':.5,'center_y':.5}
         canvas:
             Color:
-                rgba:app.Courseschooser()
+                rgba:app.courseschooser()
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
@@ -92,7 +92,7 @@
             on_release:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "overviewscreen"
-                app.clearAssmary()
+                app.clear_assessmary()
     
         #Course ID label
         MDLabel:
@@ -235,7 +235,7 @@
                 radius:[7.5]
         on_release:
             app.getCateg(categName.text)
-            app.clear_Add_assesmnt()
+            app.clear_add_assesmnt()
             root.manager.transition = FadeTransition()
             root.manager.current = "addAssesment"
     
@@ -287,8 +287,8 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                app.clearOverview()
-                app.clearAssmary()
+                app.clear_overview()
+                app.clear_assessmary()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
 
@@ -298,8 +298,8 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                app.clearOverview()
-                app.clearAssmary()
+                app.clear_overview()
+                app.clear_assessmary()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "todoScreen" 
         
@@ -319,7 +319,7 @@
                 theme_text_color:"Custom"
                 color:(30/255,47/255,151/255,1)
                 on_press:
-                    app.clearAssmary()
+                    app.clear_assessmary()
                     root.manager.transition = FadeTransition()
                     root.manager.current =  "overviewscreen"
                     
@@ -329,7 +329,7 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                app.clearOverview()
-                app.clearAssmary()
+                app.clear_overview()
+                app.clear_assessmary()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "AccountMenu"

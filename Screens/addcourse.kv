@@ -641,12 +641,8 @@ MDScreen:
             font_size: "18dp"
             color: 1,1,1,1
             on_release:
-                app.add_course(tcheck,testW.text,acheck,assW.text,pcheck,preseW.text,qcheck,quizW.text,lcheck,labW.text,gcheck,groupW.text,ccheck,clswrkW.text,ocheck,otherW.text,CourseID.text,C_Credit.text,CA_ratio.text,Ex_ratio.text)
-                app.update_Course(CourseID.text)
-    
-                #bug clears everything on error prompt
-                #description.text=""
-                
+                app.add_course(tcheck,testW.text,acheck,assW.text,pcheck,preseW.text,qcheck,quizW.text,lcheck,labW.text,gcheck,groupW.text,ccheck,clswrkW.text,ocheck,otherW.text,courseID.text,c_credit.text,ca_ratio.text,ex_ratio.text)
+                app.update_course(courseID.text)
             canvas.before:
                 Color:
                     rgba:(30/255,47/255,151/255,1)

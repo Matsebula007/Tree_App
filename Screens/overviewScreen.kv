@@ -29,7 +29,7 @@
         pos_hint: {"center_x": .5,"center_y": .5}
         canvas:
             Color:
-                rgba:app.Noteschooser()
+                rgba:app.noteschooser()
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
@@ -112,7 +112,7 @@
             theme_text_color:'Custom'
             color:(30/255,47/255,151/255,1)
             on_release:
-                app.clearOverview()
+                app.clear_overview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "CoursesScreen"
 
@@ -155,15 +155,6 @@
             font_name:'assets/fonts/Poppins-Bold.ttf'
             font_size:"22dp"
 
-        MDIconButton:
-            icon:"chevron-right"
-            user_font: "40dp"
-            pos_hint:{"center_x":.96,"center_y":.5}
-            theme_text_color:'Custom'
-            text_color:  12/255,12/255,13/255,1
-            on_release:
-                root.manager.transition = FadeTransition()
-                root.manager.current = "AssessmentSummary"
     #Category summary scroll
     MDFloatLayout:
         size_hint:.98,.72
@@ -211,7 +202,7 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                app.clearOverview()
+                app.clear_overview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
 
@@ -221,7 +212,7 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                app.clearOverview()
+                app.clear_overview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "todoScreen" 
         
@@ -241,7 +232,7 @@
                 theme_text_color:"Custom"
                 color:(30/255,47/255,151/255,1)
                 on_press:
-                    app.clearOverview()
+                    app.clear_overview()
                     root.manager.transition = FadeTransition()
                     root.manager.current = "CoursesScreen"
                     
@@ -251,6 +242,6 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                app.clearOverview()
+                app.clear_overview()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "AccountMenu"

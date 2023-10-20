@@ -1,4 +1,9 @@
 {
     "python.analysis.typeCheckingMode": "basic",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
+    "editor.formatOnSaveMode": "file",
+    "editor.formatOnPaste":true,
     "materialkv.pythonFile": "main.py"
 }
