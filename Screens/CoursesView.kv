@@ -5,13 +5,13 @@
         Color:
             rgba:(244/255,249/255,253/255,.2)
         Line:
-            width:6
+            width:8
             ellipse:(self.x,self.y,self.width,self.height,0,360)
     canvas.after:
         Color:
             rgba:(244/255,249/255,253/255,.4)
         Line:
-            width:6
+            width:8
             ellipse:(self.x,self.y,self.width,self.height,0,root.set_value*3.6)
 
     MDLabel:
@@ -85,7 +85,7 @@
 
         #CA CircularProgressBar settings 
         MDFloatLayout:
-            size_hint:.36,.5
+            size_hint:.36,.6
             pos_hint: {"center_x": .22,"center_y": .32}
             canvas:
                 RoundedRectangle:
@@ -262,7 +262,8 @@ MDScreen:
                 
         MDIconButton:
             icon: "home"
-            pos_hint: {"center_x":.2 ,"center_y":.5}
+            icon_size:dp(30)
+            pos_hint: {"center_x":.14 ,"center_y":.5}
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
@@ -271,7 +272,8 @@ MDScreen:
 
         MDIconButton:
             icon: "view-agenda"
-            pos_hint: {"center_x":.4 ,"center_y":.5}
+            icon_size:dp(30)
+            pos_hint: {"center_x":.38 ,"center_y":.5}
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
@@ -280,7 +282,7 @@ MDScreen:
         
         MDFloatLayout:
             size_hint:.2,.8
-            pos_hint: {"center_x": .6,"center_y": .5}
+            pos_hint: {"center_x": .62,"center_y": .5}
             canvas:
                 Color:
                     rgba:(30/255,47/255,151/255,.2)
@@ -290,6 +292,7 @@ MDScreen:
                     radius:[20]
             MDIconButton:
                 icon: "library"
+                icon_size:dp(30)
                 pos_hint: {"center_x":.5 ,"center_y":.5}
                 theme_text_color:"Custom"
                 color:(30/255,47/255,151/255,1)
@@ -300,7 +303,8 @@ MDScreen:
         
         MDIconButton:
             icon: "account"
-            pos_hint: {"center_x":.8 ,"center_y":.5}
+            icon_size:dp(30)
+            pos_hint: {"center_x":.86 ,"center_y":.5}
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:

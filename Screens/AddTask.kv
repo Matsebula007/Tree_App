@@ -11,7 +11,7 @@ MDScreen:
     MDFloatLayout:
         MDIconButton:
             icon:"chevron-left"
-            user_font: "40dp"
+            icon_size:dp(30)
             pos_hint:{"center_y":.95}
             theme_text_color:'Custom'
             color:(30/255,47/255,151/255,1)
@@ -88,7 +88,7 @@ MDScreen:
             TextInput:
                 id:task_date
                 hint_text:"Date"
-                size_hint: .8,None
+                size_hint: .8,1
                 pos_hint: {"center_x": .5,"center_y": .5}
                 multiline:True
                 cursor_width: "2dp"
@@ -99,6 +99,7 @@ MDScreen:
                 font_size:"18dp"
             MDIconButton:
                 icon: 'calendar'
+                icon_size:dp(30)
                 pos_hint:{"center_x":.9,"center_y": .5}
                 on_release: app.show_date_picker()
                 padding: '10dp'
@@ -132,6 +133,7 @@ MDScreen:
                 icon: 'clock'
                 pos_hint:{"center_x":.8,"center_y": .3}
                 on_release: app.show_time_picker()
+                icon_size:dp(30)
                 padding: '10dp'
         #To
         MDFloatLayout:
@@ -159,6 +161,7 @@ MDScreen:
                 font_size:"18dp"
             MDIconButton:
                 icon: 'clock'
+                icon_size:dp(30)
                 pos_hint:{"center_x":.8,"center_y": .3}
                 on_release: app.show_time_picker2()
                 padding: '10dp'
@@ -200,7 +203,8 @@ MDScreen:
 
         MDIconButton:
             icon: "home"
-            pos_hint: {"center_x":.2 ,"center_y":.5}
+            icon_size:dp(30)
+            pos_hint: {"center_x":.14 ,"center_y":.5}
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
@@ -209,7 +213,7 @@ MDScreen:
 
         MDFloatLayout:
             size_hint:.2,.8
-            pos_hint: {"center_x": .4,"center_y": .5}
+            pos_hint: {"center_x": .38,"center_y": .5}
             canvas:
                 Color:
                     rgba:(30/255,47/255,151/255,.4)
@@ -219,6 +223,7 @@ MDScreen:
                     radius:[20]
             MDIconButton:
                 icon: "view-agenda"
+                icon_size:dp(30)
                 pos_hint: {"center_x":.5,"center_y":.5}
                 theme_text_color:"Custom"
                 color:(30/255,47/255,151/255,1)
@@ -229,7 +234,8 @@ MDScreen:
         
         MDIconButton:
             icon: "library"
-            pos_hint: {"center_x":.6 ,"center_y":.5}
+            icon_size:dp(30)
+            pos_hint: {"center_x":.62 ,"center_y":.5}
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
@@ -238,7 +244,8 @@ MDScreen:
                     
         MDIconButton:
             icon: "account"
-            pos_hint: {"center_x":.8 ,"center_y":.5}
+            icon_size:dp(30)
+            pos_hint: {"center_x":.86 ,"center_y":.5}
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
