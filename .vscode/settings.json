@@ -5,5 +5,6 @@
     },
     "editor.formatOnSaveMode": "file",
     "editor.formatOnPaste":true,
-    "materialkv.pythonFile": "main.py"
+    "materialkv.pythonFile": "main.py",
+    "python.analysis.autoImportCompletions": true
 }

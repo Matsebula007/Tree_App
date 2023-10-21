@@ -161,17 +161,17 @@ MDScreen:
             on_release:
                 app.add_assessment(ass_courseid.text,ass_mark.text,ass_contr.text,ass_category.text,ass_name.text)
                 app.update_assessment(ass_courseid.text)
+                app.summariseCourse()
 #navigation menu
     MDFloatLayout:
-        size_hint:.98,.1
-        pos_hint: {"center_x": .5,"center_y": .06}
+        size_hint:1,.1
+        pos_hint: {"center_x": .5,"center_y": .05}
         canvas:
             Color:
                 rgba:(0/255,0/255,0/255,1)
-            RoundedRectangle:
+            Rectangle:
                 size:self.size
                 pos:self.pos
-                radius:[15]
 
         MDIconButton:
             icon: "home"

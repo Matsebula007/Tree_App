@@ -592,8 +592,8 @@ class MainApp(MDApp):
             value (_type_): _description_
             date_range (_type_): _description_
         """        
-        date = value.strftime('%A %d %B')
-        screen_manager.get_screen("add_todo").task_date.text = str(date)
+        value = value.strftime('%A %d %B')
+        screen_manager.get_screen("add_todo").task_date.text = str(value)
     def on_cancel(self):
         """_summary_
         """        
@@ -613,8 +613,8 @@ class MainApp(MDApp):
             instance (_type_): _description_
             time (_type_): _description_
         """        
-        Time= time.strftime('%H:%M')
-        screen_manager.get_screen("add_todo").task_time.text = str(Time)      
+        time= time.strftime('%H:%M')
+        screen_manager.get_screen("add_todo").task_time.text = str(time)      
     def show_time_picker(self):
         '''Open time picker dialog.'''       
         previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
@@ -629,8 +629,8 @@ class MainApp(MDApp):
             instance (_type_): _description_
             time (_type_): _description_
         """        
-        Time= time.strftime('%H:%M')
-        screen_manager.get_screen("add_todo").task_time2.text = str(Time)
+        time= time.strftime('%H:%M')
+        screen_manager.get_screen("add_todo").task_time2.text = str(time)
     def show_time_picker2(self):
         '''Open time picker dialog.'''
         previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
@@ -903,7 +903,7 @@ class MainApp(MDApp):
             crse= CourseCard(course_key = c[0],CourseID=courseid, C_Credit=cr,CA_ratio=ca,Ex_ratio=ex) #type: ignore
             screen_manager.get_screen("CoursesScreen").course_list.add_widget(crse)
             screen_manager.get_screen("CoursesScreen").crtot.text= self.creditscal()
-       
+            
      
 # add course settings
     def add_course(self,tcheck,test_w,acheck,ass_w,pcheck,prese_w,qcheck,quiz_w,lcheck,lab_w,gcheck,group_w,ccheck,clswrk_w,ocheck,other_w,course_id,credits,ca_rt,ex_rt):
