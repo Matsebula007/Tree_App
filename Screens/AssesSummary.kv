@@ -92,6 +92,7 @@
             on_release:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "overviewscreen"
+                app.update_overviwscreen()
                 app.clear_assessmary()
     
         #Course ID label
@@ -322,6 +323,7 @@
                 color:(30/255,47/255,151/255,1)
                 on_press:
                     app.clear_assessmary()
+                    app.update_overviwscreen()
                     root.manager.transition = FadeTransition()
                     root.manager.current =  "overviewscreen"
                     

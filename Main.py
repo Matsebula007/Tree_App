@@ -1,9 +1,3 @@
-# pylint: disable=no-name-in-module
-# pylint: disable=trailing-whitespace
-# pylint: disable=broad-exception-caught
-# pylint: disable=line-too-long
-
-
 import random
 import sqlite3
 from datetime import date, datetime
@@ -25,8 +19,6 @@ from kivymd.uix.screen import MDScreen
 from kivymd.uix.snackbar import Snackbar
 
 Window.softinput_mode ="below_target"
-
-
 
 class Database(): 
     """_summary_
@@ -303,6 +295,7 @@ class OverviewScreen(MDScreen,MDFloatLayout):
         MDFloatLayout (_type_): _description_
     """    
     pass
+
 
 class AssesSummary(MDScreen,MDFloatLayout):
     """_summary_
@@ -790,6 +783,11 @@ class MainApp(MDApp):
         screen_manager.get_screen("addCourse").c_credit.text=""
         pass
 
+
+    def update_overviwscreen(self):
+        screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
+        course_id =screen_manager.get_screen("overviewscreen").crseid.text
+        CourseCard.add_Overview(course_id)
 #update TASK and HOME view 
     def update_task(self,tittle):
         """_summary_
@@ -1223,12 +1221,6 @@ class MainApp(MDApp):
                                 size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                                 font_size ="15dp").open() # type: ignore
                     try:
-                        cursor.execute("SELECT WEIGHT FROM SUMMARY WHERE CATEGORY=?",(ass_category,))
-                        categ_contrarr=cursor.fetchall()
-                        for cat_contrib in categ_contrarr:
-                            for c_contrib in cat_contrib:
-                                c_contrib=str(c_contrib)
-                                screen_manager.get_screen("AssessmentSummary").categavar.text=c_contrib
                         
                         ass_mark =float(ass_mark)
                         ass_contr=float(ass_contr)
@@ -1324,6 +1316,8 @@ class MainApp(MDApp):
                                             contr_fmt = "{:.1f}".format(cat_contrib)
                                             cursor.execute(f"UPDATE SUMMARY SET CAT_CONTRIB ={contr_fmt} WHERE CATEGORY =?",(categ_name,))
                                             con.commit()
+                                            screen_manager.get_screen("AssessmentSummary").categContrib.text=contr_fmt
+                                            screen_manager.get_screen("AssessmentSummary").categavar.text=str(mark)
                         except Exception :
                             Snackbar(text="INDE:CAL:2:error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                                 size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
