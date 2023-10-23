@@ -50,13 +50,14 @@
         MDCheckbox:
             id:check
             size_hint:None,None
-            size:"48dp","48dp"
+            size:"50dp","50dp"
             pos_hint:{"center_x":.9,"center_y": .8}
             on_active: app.on_complete(task_card,check,description,bar)
         
         #delete button settings
         MDIconButton:
             icon: 'trash-can-outline'
+            icon_size:dp(30)
             theme_text_color: "Custom"
             text_color: 0, 0, 0, .8
             pos_hint:{"center_x":.9,"center_y": .2}
@@ -155,7 +156,7 @@ MDScreen:
                 height:self.minimum_height
                 row_default_height:80
                 size_hint_y:None
-                padding:10,10
+                padding:20,10
                 spacing:10,10
                 
     #top add task button

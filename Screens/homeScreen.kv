@@ -115,7 +115,7 @@ MDScreen:
     
         MDIconButton:
             icon: "menu"
-            user_font: "60dp"
+            icon_size:dp(30)
             pos_hint: {"center_x":.08,"center_y":.97}
             theme_text_color:'Custom'
             text_color: 12/255,12/255,13/255,1
@@ -127,7 +127,7 @@ MDScreen:
         text:"Your schedule"
         font_name:"assets/fonts/JosefinSans-Bold.ttf"
         font_size:"24dp"
-        pos_hint: {"center_x":.55,"center_y": .93}
+        pos_hint: {"center_x":.55,"center_y": .92}
 
     #task view_home
     MDFloatLayout:
@@ -237,7 +237,7 @@ MDScreen:
                 root.manager.current = "CoursesScreen"
         
         MDIconButton:
-            icon: "account"
+            icon: "calendar"
             icon_size:dp(30)
             pos_hint: {"center_x":.86 ,"center_y":.5}
             theme_text_color:"Custom"

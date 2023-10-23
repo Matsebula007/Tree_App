@@ -24,6 +24,9 @@ from kivymd.uix.pickers import MDDatePicker, MDTimePicker
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.snackbar import Snackbar
 
+Window.softinput_mode ="below_target"
+
+
 
 class Database(): 
     """_summary_
@@ -361,7 +364,7 @@ class MainApp(MDApp):
         """        
         taken_courses = Database.cursor.execute("SELECT ID, COURSE_ID,CREDIT,CA_R,EX_R,CA,BASIS FROM COURSES WHERE CA IS NOT NULL").fetchall()
         return taken_courses
-    def get_emptyCourse(self):
+    def get_emptycrse(self):
         """_summary_
 
         Returns:
@@ -395,7 +398,7 @@ class MainApp(MDApp):
         try:
             completed_tasks, uncomplete_tasks = self.get_tasks()
             taken_courses =self.get_courses()
-            empty_course=self.get_emptyCourse()
+            empty_course=self.get_emptycrse()
             toschedule = self.get_schedule()
             if completed_tasks != []:
                 for i in completed_tasks: 
@@ -765,9 +768,9 @@ class MainApp(MDApp):
         """        
         screen_manager.get_screen("add_todo").description.text=""
         screen_manager.get_screen("add_todo").tittle.text=""
-        screen_manager.get_screen("add_todo").task_date.text=""
-        screen_manager.get_screen("add_todo").task_time.text=""
-        screen_manager.get_screen("add_todo").task_time2.text=""
+        screen_manager.get_screen("add_todo").task_date.text="Date"
+        screen_manager.get_screen("add_todo").task_time.text="From"
+        screen_manager.get_screen("add_todo").task_time2.text="To"
         pass
 
     def clear_add_assesmnt(self):
@@ -1220,6 +1223,13 @@ class MainApp(MDApp):
                                 size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                                 font_size ="15dp").open() # type: ignore
                     try:
+                        cursor.execute("SELECT WEIGHT FROM SUMMARY WHERE CATEGORY=?",(ass_category,))
+                        categ_contrarr=cursor.fetchall()
+                        for cat_contrib in categ_contrarr:
+                            for c_contrib in cat_contrib:
+                                c_contrib=str(c_contrib)
+                                screen_manager.get_screen("AssessmentSummary").categavar.text=c_contrib
+                        
                         ass_mark =float(ass_mark)
                         ass_contr=float(ass_contr)
                         ass_weight = (ass_mark*ass_contr)/100.0
@@ -1306,7 +1316,7 @@ class MainApp(MDApp):
                                     cArray = cursor.fetchone()
                                     for ca in cArray:
                                         ca=float(ca)
-                                        cursor.execute(f"SELECT MARK FROM SUMMARY WHERE CATEGORY =?",(categ_name,))
+                                        cursor.execute("SELECT MARK FROM SUMMARY WHERE CATEGORY =?",(categ_name,))
                                         markar = cursor.fetchone()
                                         for mark in markar:
                                             mark=float(mark)
@@ -1329,7 +1339,7 @@ class MainApp(MDApp):
                                         ca=float(ca)
                                         Database.cursor.execute(f"UPDATE COURSES SET CA={ca} WHERE COURSE_ID=?",(course_id,))
                                         Database.con.commit()
-                                        Database.cursor.execute(f"SELECT CA_R FROM COURSES WHERE COURSE_ID=?",(course_id,))
+                                        Database.cursor.execute("SELECT CA_R FROM COURSES WHERE COURSE_ID=?",(course_id,))
                                         ratioArr =Database.cursor.fetchone()
                                         for ratio in ratioArr:
                                             ratio =float(ratio)
