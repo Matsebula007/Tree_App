@@ -99,10 +99,10 @@
             color: 1/255,1/255,1/255,1
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"18sp"
-            padding:1,0
-            size_hint_x:.78
+            padding:8,0
+            size_hint_x:1
             size_hint_y:.4
-            pos_hint:{"center_x":.46,"center_y": .8}
+            pos_hint:{"center_y": .8}
 
         MDLabel:
             id:task_time2
@@ -110,10 +110,10 @@
             color:12/255,12/255,13/255,.5
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"18sp"
-            padding:1,0
-            size_hint_x:.8
+            padding:8,0
+            size_hint_x:1
             size_hint_y:.4
-            pos_hint:{"center_x":.46,"center_y": .2}
+            pos_hint:{"center_y": .2}
 
 MDScreen:
     name: "todoScreen"
@@ -243,7 +243,7 @@ MDScreen:
                 root.manager.current = "CoursesScreen"
         
         MDIconButton:
-            icon: "account"
+            icon: "calendar"
             icon_size:dp(30)
             pos_hint: {"center_x":.86 ,"center_y":.5}
             theme_text_color:"Custom"

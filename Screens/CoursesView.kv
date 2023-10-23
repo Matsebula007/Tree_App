@@ -3,13 +3,13 @@
     #md_bg_color:244/255,249/255,253/255,.4
     canvas.before:
         Color:
-            rgba:(244/255,249/255,253/255,.2)
+            rgba:(244/255,249/255,253/255,.4)
         Line:
             width:12
             ellipse:(self.x,self.y,self.width,self.height,0,360)
     canvas.after:
         Color:
-            rgba:(244/255,249/255,253/255,.4)
+            rgba:(244/255,249/255,253/255,1)
         Line:
             width:12
             ellipse:(self.x,self.y,self.width,self.height,0,root.set_value*3.6)
@@ -25,8 +25,6 @@
 <CourseCard>
     id: course_card
     elevation: 0
-    #md_bg_color:244/255,249/255,253/255,1
-    radius:[8]
     size_hint:1,None
     height:dp(180)
     course_key:course_key
@@ -59,7 +57,7 @@
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
-                radius:[15]
+                radius:[20]
         
         #Course identity
         MDLabel:
@@ -86,7 +84,7 @@
         #CA CircularProgressBar settings 
         MDFloatLayout:
             size_hint:.32,.5
-            pos_hint: {"center_x": .22,"center_y": .32}
+            pos_hint: {"center_x": .3,"center_y": .38}
             canvas:
                 RoundedRectangle:
                     size:self.size
@@ -95,7 +93,8 @@
             
             CircularProgressBar:
                 id:caBar
-                size_hint:1,1
+                size_hint:None,None
+                size:100,100
                 padding:8,10
                 value:root.crsavg
                 pos_hint:{"center_x":.5,"center_y": .5}
@@ -246,7 +245,7 @@ MDScreen:
                 height:self.minimum_height
                 row_default_height:80
                 size_hint_y:None
-                padding:8,10
+                padding:15,15
                 spacing:10,10
   
 #navigation menu                    
@@ -302,7 +301,7 @@ MDScreen:
                     
         
         MDIconButton:
-            icon: "account"
+            icon: "calendar"
             icon_size:dp(30)
             pos_hint: {"center_x":.86 ,"center_y":.5}
             theme_text_color:"Custom"

@@ -90,10 +90,10 @@
             theme_text_color:'Custom'
             color:(30/255,47/255,151/255,1)
             on_release:
-                root.manager.transition = FadeTransition()
-                root.manager.current = "overviewscreen"
                 app.update_overviwscreen()
                 app.clear_assessmary()
+                root.manager.transition = FadeTransition()
+                root.manager.current = "overviewscreen"
     
         #Course ID label
         MDLabel:

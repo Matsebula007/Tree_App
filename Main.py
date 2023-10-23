@@ -335,7 +335,7 @@ class MainApp(MDApp):
         screen_manager.add_widget(AssesSummary(name="AssessmentSummary"))
         screen_manager.add_widget(OverviewScreen(name='overviewscreen'))
 
-        Window.size = [300, 600]
+        Window.size = [350, 650]
         return screen_manager
     
     def get_tasks(self):
@@ -1312,7 +1312,6 @@ class MainApp(MDApp):
                     font_size ="15dp").open() # type: ignore
 
     def close_app(self):
-        MDApp.get_running_app().stop()
         Window.close()
     
 

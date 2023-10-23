@@ -49,11 +49,15 @@ MDScreen:
                 app.close_app()
             canvas.before:
                 Color:
-                #m-bug to fix later color of rect line not on screen 
-                #m-bug fixed indentation issue of line
                     rgba:rgba(52,0,231,255)
                 Line: 
                     width: 1.2
                     rounded_rectangle:self.x,self.y,self.width,self.height,5,5,5,5,100
+        MDLabel:
+            pos_hint: {'center_x': .62,'center_y': .02}
+            size_hint: .7,None
+            text:"(c) 2023 Matsebula007"
+            font_name: "assets/fonts/JosefinSans-SemiBold.ttf"
+            font_size:"12sp"
 
             
