@@ -323,8 +323,6 @@ class MainApp(MDApp):
         global screen_manager
         screen_manager = ScreenManager()
         screen_manager.add_widget(Builder.load_file("screens/home.kv"))
-        screen_manager.add_widget(Builder.load_file("screens/login.kv"))  
-        screen_manager.add_widget(Builder.load_file("screens/signUp.kv")) 
         screen_manager.add_widget(Builder.load_file('screens/homeScreen.kv'))
         screen_manager.add_widget(Builder.load_file('screens/taskView.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addTask.kv'))
@@ -454,100 +452,6 @@ class MainApp(MDApp):
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore
 
-
-# User sign up settings
-    def user_signup(self,user_name,user_email,user_password):
-        """_summary_
-
-        Args:
-            user_name (_type_): _description_
-            user_email (_type_): _description_
-            user_password (_type_): _description_
-        """        
-        user_name = screen_manager.get_screen("SignUp").usr_name.text
-        user_email = screen_manager.get_screen("SignUp").usr_email.text
-        user_password = screen_manager.get_screen("SignUp").usr_pass.text
-
-        try:
-            if user_name !="" and user_email !="" and user_password !="" and len(user_name)<21 and len(user_password)<60:
-                data = (user_name,user_email,user_password)
-                #prevent more user sign up if one user alredy signed up
-                Database.cursor.execute("SELECT UserName,Password FROM LOGIN")
-                arr =Database.cursor.fetchall()
-                for i in arr:
-                    if i[0] =="" and i[1] =="":
-                        Database.cursor.execute("INSERT INTO LOGIN VALUES(?,?,?)",data)
-                        Database.con.commit()
-                        screen_manager.transition = FadeTransition()
-                        screen_manager.current = "Home"
-                    elif i[0] !="" and i[1] !="":
-                        Snackbar(text="Illegal Sign UP !",snackbar_x ="10dp",snackbar_y ="10dp",
-                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                                font_size ="15dp").open()
-            elif user_name =="":
-                Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open()
-            elif user_email =="":
-                Snackbar(text="Email  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open()
-            elif user_password =="":
-                Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open() # type: ignore
-            elif len(user_name)>21:
-                Snackbar(text="Username must<21",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open()
-            elif len(user_password)>61 :
-                Snackbar(text="Password must<61",snackbar_x ="10dp",snackbar_y ="10dp",
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open() # type: ignore
-        except Exception:
-            Snackbar(text="Sign Up Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                    font_size ="15dp").open() # type: ignore
-
-# user login settings
-    def userlogin(self,user_name,user_password):
-        """_summary_
-
-        Args:
-            user_name (_type_): _description_
-            user_password (_type_): _description_
-        """        
-        user_name = screen_manager.get_screen("Login").usr_Username.text
-        user_password = screen_manager.get_screen("Login").usr_password.text
-        try:
-            Database.cursor.execute("SELECT UserName,Password FROM LOGIN")
-            arr =Database.cursor.fetchall()
-            for i in arr:
-                usname = i[0]
-                uspassword = i[1]
-                if user_name !="" and user_password !="" and user_name == usname and user_password == uspassword:
-                    screen_manager.transition = FadeTransition()
-                    screen_manager.current = "Home"
-                elif user_name =="":
-                    Snackbar(text="Username  missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                            font_size ="15dp").open() # type: ignore
-                elif user_password =="":
-                    Snackbar(text="Password missing!",snackbar_x ="10dp",snackbar_y ="10dp",
-                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                            font_size ="15dp").open()
-                elif user_name != usname:
-                    Snackbar(text="Invalid username",snackbar_x ="10dp",snackbar_y ="10dp",
-                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                            font_size ="15dp").open()
-                elif user_password != uspassword:
-                    Snackbar(text="Invalid password",snackbar_x ="10dp",snackbar_y ="10dp",
-                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                            font_size ="15dp").open()
-        except Exception:
-            Snackbar(text="Login Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                    font_size ="15dp").open() # type: ignore
 
 #calculates total credit taken 
     def creditscal(self):
@@ -1406,6 +1310,11 @@ class MainApp(MDApp):
             Snackbar(text="INDE:0:View update error",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                     font_size ="15dp").open() # type: ignore
+
+    def close_app(self):
+        MDApp.get_running_app().stop()
+        Window.close()
+    
 
 if __name__ == "__main__":   
     

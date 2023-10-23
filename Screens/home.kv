@@ -22,14 +22,14 @@ MDScreen:
             size_hint_x: .85
             color: rgba(127,127,127,255)
         Button:
-            text: "LOGIN"
+            text: "HOME"
             size_hint: .66,.065
             pos_hint: {"center_x":.5,"center_y": .18}
             background_color: 0,0,0,0
             font_name: "assets/fonts/JosefinSans-SemiBold.ttf"
             on_press: 
                 root.manager.transition = FadeTransition()
-                root.manager.current = "Login"
+                root.manager.current = "Home"
             canvas.before:
                 Color:
                     rgba:rgba(52,0,231,255)
@@ -38,7 +38,7 @@ MDScreen:
                     pos: self.pos
                     radius: [5]
         Button:
-            text: "SIGN UP"
+            text: "EXIT"
             size_hint: .66,.065
             pos_hint: {"center_x":.5,"center_y": .09}
             color: rgba(52,0,231,255)
@@ -46,7 +46,7 @@ MDScreen:
             font_name: "assets/fonts/JosefinSans-SemiBold.ttf"
             on_press: 
                 root.manager.transition = FadeTransition()
-                root.manager.current = "SignUp"
+                app.close_app()
             canvas.before:
                 Color:
                 #m-bug to fix later color of rect line not on screen 

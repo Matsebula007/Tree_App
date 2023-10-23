@@ -114,13 +114,14 @@ MDScreen:
     MDFloatLayout:
     
         MDIconButton:
-            icon: "menu"
+            icon:"chevron-left"
             icon_size:dp(30)
-            pos_hint: {"center_x":.08,"center_y":.97}
+            pos_hint:{"center_y":.98}
             theme_text_color:'Custom'
-            text_color: 12/255,12/255,13/255,1
+            color:(30/255,47/255,151/255,1)
             on_press:
-                root.manager.current = "AccountMenu"
+                root.manager.transition = FadeTransition()
+                root.manager.current = "main"
     
     #schedule label
     MDLabel:
