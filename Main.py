@@ -787,7 +787,64 @@ class MainApp(MDApp):
     def update_overviwscreen(self):
         screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
         course_id =screen_manager.get_screen("overviewscreen").crseid.text
-        CourseCard.add_Overview(course_id)
+        
+        """_summary_
+
+        Args:
+            course_id (_type_): _description_
+        """        
+        con = sqlite3.connect(f"{course_id}.db")
+        cursor = con.cursor()
+        try:
+            cursor.execute("SELECT ID,CATEGORY,MARK,CAT_CONTRIB,TUG_COUNT FROM SUMMARY")
+            live_categ = cursor.fetchall()
+            for cat in live_categ:
+                grade = str(cat[2])
+                contrib= str(cat[3])
+                tugcount = str(cat[4])+" Tug"
+                add_categ =(OverviewCard(categ_key=cat[0],Category=cat[1],Grade=grade,Contribution=contrib,TUG_count=tugcount))
+                screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
+        except Exception:
+            Snackbar(text="IDE2:Ovev:1:Hot Overview ",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                    font_size ="15dp").open() # type: ignore
+        #add categories with zero assessments
+        try:
+            cursor.execute("SELECT CATEGORY FROM SUMMARY")
+            live_categ = cursor.fetchall()
+            live_cat=[]
+            for categ in live_categ:
+                for cat in categ:
+                    live_cat.append(cat)    
+            cursor.execute("SELECT TITTLE FROM CATEGORY")
+            dead_cat = cursor.fetchall()
+            for dcateg in dead_cat:
+                for deadcat in dcateg:
+                    if deadcat not in live_cat:
+                        grade = str(0)
+                        contrib= str(0)
+                        tugcount = str(0)+" Tug"
+                        add_categ =(OverviewCard(categ_key=0,Category=deadcat,Grade=grade,Contribution=contrib,TUG_count=tugcount))
+                        screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
+        except Exception:
+            Snackbar(text="IDE2:Ovev:2:Hot Overview ",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                    font_size ="15dp").open() # type: ignore
+
+    def update_coursescreen(self):
+        screen_manager.get_screen("CoursesScreen").course_list.clear_widgets()
+        taken_courses =self.get_courses()
+        if taken_courses !=[]:
+                for c in taken_courses:
+                    cred =float(c[2])
+                    cr= str (cred)
+                    ca = str (c[3])
+                    ex = str (c[4])
+                    avg = str(c[5])
+                    bas = str (c[6])
+                    add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=c[5],Basis=bas)
+                    screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
+
 #update TASK and HOME view 
     def update_task(self,tittle):
         """_summary_
@@ -1351,8 +1408,9 @@ class MainApp(MDApp):
                     font_size ="15dp").open() # type: ignore
 
 if __name__ == "__main__":   
-    MainApp().run()
     
-    """ for it in range(75,76,1):
+    MainApp().run()
+    """ for it in range(76,77,1):
         Database.cursor.execute(f"DELETE FROM COURSES WHERE ID ={it}")
         Database.con.commit() """
+    
