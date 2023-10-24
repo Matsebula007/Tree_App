@@ -162,7 +162,7 @@ MDScreen:
             on_release:
                 app.add_assessment(ass_courseid.text,ass_mark.text,ass_contr.text,ass_category.text,ass_name.text)
                 app.summariseCourse()
-                app.update_assessment(ass_courseid.text)
+                app.update_assessment(ass_courseid.text,ass_category.text)
 #navigation menu
     MDFloatLayout:
         size_hint:1,.1
@@ -227,4 +227,4 @@ MDScreen:
                 app.clear_overview()
                 app.clear_assessmary()
                 root.manager.transition = FadeTransition()
-                root.manager.current = "AccountMenu"
+                root.manager.current = "Calendarscreen"

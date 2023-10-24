@@ -296,6 +296,7 @@ MDScreen:
                 theme_text_color:"Custom"
                 color:(30/255,47/255,151/255,1)
                 on_press:
+                    app.update_coursescreen()
                     root.manager.transition = FadeTransition()
                     root.manager.current = "CoursesScreen"
                     
@@ -308,4 +309,4 @@ MDScreen:
             text_color: 1,1,1,1
             on_press:
                 root.manager.transition = FadeTransition()
-                root.manager.current = "AccountMenu"
+                root.manager.current = "Calendarscreen"

@@ -49,7 +49,8 @@
         MDLabel:
             id:grade
             text:root.Grade
-            color:"#EFF7F6"
+            color:app.avg_color(grade.text)
+            #color:"#EFF7F6"
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size:"34sp"
             size_hint_x:.8
@@ -181,8 +182,8 @@
                 height:self.minimum_height
                 row_default_height:80
                 size_hint_y:None
-                padding:10,10
-                spacing:10,8
+                padding:10,20
+                spacing:10,10
     
     
 #navigation menu
@@ -248,4 +249,4 @@
             on_press:
                 app.clear_overview()
                 root.manager.transition = FadeTransition()
-                root.manager.current = "AccountMenu"
+                root.manager.current = "Calendarscreen"

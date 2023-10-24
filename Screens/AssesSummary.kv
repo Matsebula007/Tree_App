@@ -9,10 +9,17 @@
     assmtMark:assmtMark
     assmtName:assmtName
     testpk:testpk
+
+    Button:
+        size_hint: .8,.8
+        pos_hint: {"center_x":.5,"center_y":.5}  
+        on_release:
+            root.Navigate()
     
     MDLabel:
         id:testpk
-
+    
+    
     MDFloatLayout:
         size_hint:1,1
         pos_hint: {'center_x':.5,'center_y':.5}
@@ -38,18 +45,19 @@
             id:assmtMark
             text:root.testMark
             size_hint:.8,.1
-            pos_hint: {'center_x':.86,'center_y': .68}
+            color:(30/255,47/255,151/255,1)
+            pos_hint: {'center_x':.9,'center_y': .6}
             foreground_color: 1/255,1/255,1/255,1
             background_color: 0,0,0,0
             padding:8
             font_name:'assets/fonts/CroissantOne-Regular.ttf'
-            font_size:"16dp"
+            font_size:"34dp"
         
         MDLabel:
             id:assmtWeight
             text:root.testWeight
-            size_hint:.8,.1
-            pos_hint: {'center_x':.5,'center_y': .38}
+            size_hint:.4,.1
+            pos_hint: {'center_x':.3,'center_y': .6}
             foreground_color: 1/255,1/255,1/255,1
             background_color: 0,0,0,0
             padding:8
@@ -59,12 +67,20 @@
             id:assmtContr
             text:root.testContrib
             size_hint:.8,.1
+            color:app.avg_color(assmtContr.text)
             pos_hint: {'center_x':.5,'center_y': .2}
             foreground_color: 1/255,1/255,1/255,1
             background_color: 0,0,0,0
             padding:8
             font_name:'assets/fonts/CroissantOne-Regular.ttf'
-            font_size:"16dp"
+            font_size:"28dp"
+        MDFloatLayout:
+            id:nbar
+            size_hint:.02,.2
+            pos_hint:{"center_x":.96, "center_y":.2}
+            md_bg_color:assmtContr.color
+        
+
 
 
 <AssesSummary>:
@@ -176,7 +192,7 @@
                 pos_hint: {"center_x":.5,"center_y": .84}
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
-                padding:2
+                padding:8
                 font_name:'assets/fonts/Oxygen-Bold.ttf'
                 font_size:"20dp"
             MDLabel:
@@ -328,7 +344,7 @@
                     root.manager.current =  "overviewscreen"
                     
         MDIconButton:
-            icon: "account"
+            icon: "calendar"
             icon_size:dp(30)
             pos_hint: {"center_x":.86 ,"center_y":.5}
             theme_text_color:"Custom"
@@ -337,4 +353,4 @@
                 app.clear_overview()
                 app.clear_assessmary()
                 root.manager.transition = FadeTransition()
-                root.manager.current = "AccountMenu"
+                root.manager.current = "Calendarscreen"

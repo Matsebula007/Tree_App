@@ -1,0 +1,80 @@
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
+MDScreen:
+    name:"Calendarscreen"
+    md_bg_color: 244/255,249/255,253/255,1
+   
+
+    MDFloatLayout:
+        size_hint:.8,.85
+        pos_hint: {"center_x": .5,"center_y": .55}
+        canvas:
+            Color:
+                rgba:(109/255,207/255,251/255,.8)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
+        
+        
+    #navigation menu
+    MDFloatLayout:
+        size_hint:1,.1
+        pos_hint: {"center_x": .5,"center_y": .05}
+        canvas:
+            Color:
+                rgba:(0/255,0/255,0/255,1)
+            Rectangle:
+                size:self.size
+                pos:self.pos
+                
+        MDIconButton:
+            icon: "home"
+            icon_size:dp(30)
+            pos_hint: {"center_x":.14 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition() 
+                root.manager.current = "Home"
+
+        MDIconButton:
+            icon: "view-agenda"
+            icon_size:dp(30)
+            pos_hint: {"center_x":.38 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition() 
+                root.manager.current = "todoScreen" 
+        
+        MDIconButton:
+            icon: "library"
+            icon_size:dp(30)
+            pos_hint: {"center_x":.62 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                #app.summariseCourse()
+                root.manager.transition = FadeTransition() 
+                root.manager.current = "CoursesScreen"
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .86,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(30/255,47/255,151/255,.4)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
+        
+            MDIconButton:
+                icon: "calendar"
+                icon_size:dp(30)
+                pos_hint: {"center_x":.5 ,"center_y":.5}
+                theme_text_color:"Custom"
+                color: (30/255,47/255,151/255,.2)
+                on_press:
+                    root.manager.transition.direction = "left"
+                    root.manager.current = "Calendarscreen"
+   
