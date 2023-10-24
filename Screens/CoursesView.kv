@@ -84,7 +84,7 @@
         #CA CircularProgressBar settings 
         MDFloatLayout:
             size_hint:.32,.5
-            pos_hint: {"center_x": .3,"center_y": .38}
+            pos_hint: {"center_x": .3,"center_y": .5}
             canvas:
                 RoundedRectangle:
                     size:self.size
@@ -94,7 +94,7 @@
             CircularProgressBar:
                 id:caBar
                 size_hint:None,None
-                size:100,100
+                size:150,150
                 padding:8,10
                 value:root.crsavg
                 pos_hint:{"center_x":.5,"center_y": .5}

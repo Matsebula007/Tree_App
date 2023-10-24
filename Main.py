@@ -346,9 +346,9 @@ class MainApp(MDApp):
     
     def get_tasks(self):
         """_summary_
-
+            gets all checked and unchecked tasks from user_database 
         Returns:
-            _type_: _description_
+            tuple-list: all tasks from user_database
         """        
         uncomplete_tasks = Database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 0").fetchall()
         completed_tasks = Database.cursor.execute("SELECT Id,Tittle,Description,Date,FromTime,ToTime,completed FROM TASK WHERE completed = 1").fetchall()
@@ -1051,34 +1051,39 @@ class MainApp(MDApp):
                                 if icount>0:
                                     cursor.execute("INSERT OR REPLACE INTO SUMMARY(CATEGORY) VALUES(?)",(categ_name,))
                                     con.commit()
-                                    cursor.execute(f"SELECT SUM(CONTRIB) FROM {categ_name} WHERE  CONTRIB>0.0")
+                                    cursor.execute(f"SELECT SUM(WEIGHT) FROM {categ_name} WHERE  CONTRIB>0.0")
                                     sumarray = cursor.fetchone()
-                                    for sumof_contrib in sumarray:
+                                    cursor.execute(f"SELECT SUM(CONTRIB) FROM {categ_name} WHERE  CONTRIB>0.0")
+                                    contrarry = cursor.fetchone()
+                                    for sumof_weights in sumarray:
                                         cursor.execute(f"SELECT COUNT(TITTLE) FROM {categ_name} WHERE CONTRIB>0.0")
                                         assarray = cursor.fetchone()
                                         for ass_count in assarray:
                                             ass_count=float(ass_count)
                                             cursor.execute(f"UPDATE SUMMARY SET TUG_COUNT ={ass_count} WHERE CATEGORY =?",(categ_name,))
                                             con.commit()
-                                            sumof_contrib =float(sumof_contrib)
-                                            if sumof_contrib>100.0000000000001:
-                                                final_mark =sumof_contrib/ass_count
-                                                mark_formt = "{:.1f}".format(final_mark)
-                                                cursor.execute(f"UPDATE SUMMARY SET MARK ={mark_formt} WHERE CATEGORY =?",(categ_name,))
-                                                con.commit()
-                                            if sumof_contrib<100.0:
-                                                cursor.execute(f"SELECT SUM(WEIGHT) FROM {categ_name} WHERE  CONTRIB>0.0")
-                                                totl_warry = cursor.fetchone()
-                                                for sum_weight in totl_warry:
-                                                    sum_weight =float(sum_weight)
-                                                    checker1 =100.0*ass_count
-                                                    if sum_weight==checker1:
-                                                        average =sumof_contrib/ass_count
-                                                        cursor.execute(f"UPDATE SUMMARY SET MARK ={average} WHERE CATEGORY =?",(categ_name,))
-                                                        con.commit()
-                                                    elif sum_weight!=checker1:
-                                                        cursor.execute(f"UPDATE SUMMARY SET MARK ={sumof_contrib} WHERE CATEGORY =?",(categ_name,))
-                                                        con.commit()
+                                            for sumof_contrib in contrarry:
+                                                sumof_weights =float(sumof_weights)
+                                                sumof_contrib=float(sumof_contrib)
+                                                if sumof_weights>100.0000000000001:
+                                                    weight_bal=sumof_weights/100.0
+                                                    final_mark =sumof_contrib/weight_bal
+                                                    mark_formt = "{:.1f}".format(final_mark)
+                                                    cursor.execute(f"UPDATE SUMMARY SET MARK ={mark_formt} WHERE CATEGORY =?",(categ_name,))
+                                                    con.commit()
+                                                if sumof_weights<100.0:
+                                                    cursor.execute(f"SELECT SUM(WEIGHT) FROM {categ_name} WHERE  CONTRIB>0.0")
+                                                    totl_warry = cursor.fetchone()
+                                                    for sum_weight in totl_warry:
+                                                        sum_weight =float(sum_weight)
+                                                        checker1 =100.0*ass_count
+                                                        if sum_weight==checker1:
+                                                            average =sumof_weights/ass_count
+                                                            cursor.execute(f"UPDATE SUMMARY SET MARK ={average} WHERE CATEGORY =?",(categ_name,))
+                                                            con.commit()
+                                                        elif sum_weight!=checker1:
+                                                            cursor.execute(f"UPDATE SUMMARY SET MARK ={sumof_weights} WHERE CATEGORY =?",(categ_name,))
+                                                            con.commit()
 
                         except Exception:
                             Snackbar(text="INDE:CAL:1:error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
@@ -1091,13 +1096,13 @@ class MainApp(MDApp):
                                 if icount>0:
                                     cursor.execute("SELECT WEIGHT FROM CATEGORY WHERE TITTLE =?",(categ_name,))
                                     ca_array = cursor.fetchone()
-                                    for ca in ca_array:
-                                        ca=float(ca)
+                                    for ctgry_w in ca_array:
+                                        ctgry_w=float(ctgry_w)
                                         cursor.execute("SELECT MARK FROM SUMMARY WHERE CATEGORY =?",(categ_name,))
                                         markar = cursor.fetchone()
                                         for mark in markar:
                                             mark=float(mark)
-                                            cat_contrib = (mark*ca)/100.0
+                                            cat_contrib = mark*(ctgry_w/100.0)
                                             contr_fmt = "{:.1f}".format(cat_contrib)
                                             cursor.execute(f"UPDATE SUMMARY SET CAT_CONTRIB ={contr_fmt} WHERE CATEGORY =?",(categ_name,))
                                             con.commit()
@@ -1112,15 +1117,15 @@ class MainApp(MDApp):
                                 if icount>0:
                                     cursor.execute("SELECT SUM(CAT_CONTRIB) FROM SUMMARY WHERE ID IS NOT NULL")
                                     ca_array = cursor.fetchone()
-                                    for ca in ca_array:
-                                        ca=float(ca)
-                                        Database.cursor.execute(f"UPDATE COURSES SET CA={ca} WHERE COURSE_ID=?",(CourseID,))
+                                    for ctgry_w in ca_array:
+                                        ctgry_w=float(ctgry_w)
+                                        Database.cursor.execute(f"UPDATE COURSES SET CA={ctgry_w} WHERE COURSE_ID=?",(CourseID,))
                                         Database.con.commit()
                                         Database.cursor.execute("SELECT CA_R FROM COURSES WHERE COURSE_ID=?",(CourseID,))
                                         ratio_arr =Database.cursor.fetchone()
                                         for ratio in ratio_arr:
                                             ratio =float(ratio)
-                                            basis= (ratio*ca)/100.0
+                                            basis= (ratio*ctgry_w)/100.0
                                             basis_frt = "{:.1f}".format(basis)
                                             Database.cursor.execute(f"UPDATE COURSES SET BASIS={basis_frt} WHERE COURSE_ID=?",(CourseID,))
                                             Database.con.commit()
@@ -1165,12 +1170,13 @@ class MainApp(MDApp):
                     try: 
                         ass_mark =float(ass_mark)
                         ass_contr=float(ass_contr)
-                        if  ass_mark<100.0000000000001 and ass_mark>-0.01 and ass_contr<100.0000000000001 and ass_contr>0.0000000000001:
-                            # adding COURSE to Database
+                        if  ass_mark<100.0000000000001 and ass_mark>-0.01 and ass_contr<100.0000000000001 and ass_contr>-0.01:
                             con = sqlite3.connect(f'{ass_courseid}.db')
                             cursor = con.cursor()
-                            ass_weight = ass_mark*(ass_contr/100.0)
-                            data=ass_name,ass_contr,ass_mark,ass_weight
+                            ass_contrib = ass_mark*(ass_contr/100.0)  
+                            contrib_formt = "{:.1f}".format(ass_contrib)
+                            data=ass_name,ass_contr,ass_mark,contrib_formt
+
                             cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,CONTRIB) VALUES(?,?,?,?)",data)
                             con.commit()         
                         elif ass_mark >100.0:
@@ -1201,12 +1207,13 @@ class MainApp(MDApp):
                         
                         ass_mark =float(ass_mark)
                         ass_contr=float(ass_contr)
-                        ass_weight = (ass_mark*ass_contr)/100.0
+                        ass_contrib = ass_mark*(ass_contr/100.0)
+                        ass_contrib ="{:.1f}".format(ass_contrib)
                         ass_contr=str(ass_contr)
                         ass_mark=str(ass_mark)
                         ass_contr=str(ass_contr)
-                        ass_weight=str(ass_weight)
-                        add_test =(AssessmentCard(testpk=0,testName=ass_name,testWeight= ass_contr,testMark = ass_mark,testContrib=ass_weight))
+                        ass_contrib=str(ass_contrib)
+                        add_test =(AssessmentCard(testpk=0,testName=ass_name,testWeight= ass_contr,testMark = ass_mark,testContrib=ass_contrib))
                         screen_manager.get_screen("AssessmentSummary").assessmnt_list.add_widget(add_test)
                         screen_manager.transition = FadeTransition()
                         screen_manager.current = "AssessmentSummary"
@@ -1250,20 +1257,22 @@ class MainApp(MDApp):
                         if icount>0:
                             cursor.execute("INSERT OR REPLACE INTO SUMMARY(CATEGORY) VALUES(?)",(categ_name,))
                             con.commit()
-                            cursor.execute(f"SELECT SUM(CONTRIB) FROM {categ_name} WHERE ID IS NOT NULL")
+                            cursor.execute(f"SELECT SUM(WEIGHT) FROM {categ_name} WHERE ID IS NOT NULL")
                             sumarray = cursor.fetchone()
-                            for sumof_contrib in sumarray:
+                            cursor.execute(f"SELECT SUM(CONTRIB) FROM {categ_name} WHERE  CONTRIB>0.0")
+                            contrarry = cursor.fetchone()
+                            for sumof_weights in sumarray:
                                 cursor.execute(f"SELECT COUNT(TITTLE) FROM {categ_name} WHERE CONTRIB>0.0")
                                 assarray = cursor.fetchone()
                                 for ass_count in assarray:
                                     cursor.execute(f"UPDATE SUMMARY SET TUG_COUNT ={ass_count} WHERE CATEGORY =?",(categ_name,))
                                     con.commit()
-                                    sumof_contrib =float(sumof_contrib)
-                                    tug_cntarr =cursor.execute("SELECT TUG_COUNT FROM SUMMARY WHERE CATEGORY=?",(categ_name,)).fetchone()
-                                    for tug_count in tug_cntarr:
-                                        if sumof_contrib>100.0000000000001:
-                                            ass_count =float(tug_count)
-                                            final_mark =sumof_contrib/ass_count
+                                    for sumof_contrib in contrarry:
+                                        sumof_weights =float(sumof_weights)
+                                        sumof_contrib=float(sumof_contrib)
+                                        if sumof_weights>100.0000000000001:
+                                            weight_bal=sumof_weights/100.0
+                                            final_mark =sumof_contrib/weight_bal
                                             mark_formt = "{:.1f}".format(final_mark)
                                             cursor.execute(f"UPDATE SUMMARY SET MARK ={mark_formt} WHERE CATEGORY =?",(categ_name,))
                                             con.commit()
