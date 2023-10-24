@@ -335,7 +335,7 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('screens/coursesView.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addcourse.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addAssessment.kv'))
-        screen_manager.add_widget(Builder.load_file('screens/Calendarscreen.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/calendarscreen.kv'))
         Builder.load_file('screens/overviewScreen.kv')
         Builder.load_file('screens/assesSummary.kv')
         screen_manager.add_widget(AssesSummary(name="AssessmentSummary"))
@@ -552,7 +552,7 @@ class MainApp(MDApp):
         Returns:
             _type_: _description_
         """        
-        colors = [(85/255,204/255,96/255,1),(186/255,232/255,172/255,1),(120/255,127/255,246/255,1)]
+        colors = [(66/255,133/255,244/255,1),(186/255,232/255,172/255,1),(120/255,127/255,246/255,1)]
         d = random.choice(colors)
         return d
     def courseschooser(self):
@@ -591,10 +591,10 @@ class MainApp(MDApp):
         """         
         mark=float(mark)
         color=(52/255,168/255,83/255,1)
-        if mark<50.0000001:
+        if mark<50.0000000000001:
             color =(234/255,67/255,53/255,1)
-        if mark>49.9999999:
-            color =(52/255,168/255,83/255,1)
+        if mark>49.9999999999999:
+            color =(2/255,44/255,26/255,1)
         if mark<0.0:
             color =(52/255,168/255,83/255,1)
         return color
@@ -1345,7 +1345,7 @@ class MainApp(MDApp):
 if __name__ == "__main__":   
     
     MainApp().run()
-    """ for it in range(76,77,1):
+    """ for it in range(77,79,1):
         Database.cursor.execute(f"DELETE FROM COURSES WHERE ID ={it}")
         Database.con.commit() """
     
