@@ -336,6 +336,7 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('screens/addcourse.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addAssessment.kv'))
         screen_manager.add_widget(Builder.load_file('screens/calendarscreen.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/addEvent.kv'))
         Builder.load_file('screens/overviewScreen.kv')
         Builder.load_file('screens/assesSummary.kv')
         screen_manager.add_widget(AssesSummary(name="AssessmentSummary"))
@@ -387,9 +388,12 @@ class MainApp(MDApp):
         days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday', 'Sunday']
         year = str(datetime.now().year)
         month = str(datetime.now().strftime("%b"))
+        fullmonth = str(datetime.now().strftime("%B"))
         day = str(datetime.now().strftime("%d"))
         screen_manager.get_screen("todoScreen").date_text.text = f"{days[wd]}, {day} {month}"
-        #updates course summary large Operation  
+        screen_manager.get_screen("Calendarscreen").table_month.text = f"{fullmonth}"
+        
+        #updates course summary   
         self.summariseCourse()
        
         try:
@@ -418,8 +422,8 @@ class MainApp(MDApp):
                     daydt = my_date.strftime("%d")
                     frtime = datetime.strptime(scl[3],"%H:%M")
                     asd= frtime.time().strftime("%I:%M %p") 
-                    totime = datetime.strptime(scl[4],"%H:%M")
-                    bsd= totime.time().strftime("%I:%M %p")
+                    ttime = datetime.strptime(scl[4],"%H:%M")
+                    bsd= ttime.time().strftime("%I:%M %p")
                     add_taskhome = TaskCard(cardpk=scl[0],weekday=weekd, daydate=daydt,title=scl[2],frmtime=asd,totime=bsd)
                     screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
             elif toschedule==[]:
@@ -561,7 +565,7 @@ class MainApp(MDApp):
         Returns:
             _type_: _description_
         """        
-        pigments =[(26/255,167/255,236/255,1),(130/255,215/255,255/255,1)]
+        pigments =[(26/255,167/255,236/255,1),(74/255,222/255,222/255,1),(130/255,215/255,255/255,1)]
         p =random.choice(pigments)
         return p
 
@@ -801,7 +805,7 @@ class MainApp(MDApp):
             task_time2 (_type_): _description_
         """        
         try:
-            if tittle !="" and description !="" and len(tittle)<21 and len(description)<61 and date_time!=""and task_time!="" and task_time2!="" :
+            if tittle !="" and description !="" and len(tittle)<21 and len(description)<72 and date_time!=""and task_time!="" and task_time2!="" :
                 # adding task to Database
                 data= tittle,description,date_time,task_time,task_time2,0
                 Database.cursor.execute("INSERT INTO TASK(Tittle,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
@@ -823,12 +827,10 @@ class MainApp(MDApp):
                 Snackbar(text="Tittle must be < 21 char",snackbar_x ="10dp",snackbar_y ="10dp",
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                         font_size ="15dp").open() # type: ignore
-                screen_manager.get_screen("add_todo").tittle.text=""
-            elif len(description)>61:
-                Snackbar(text="Description must be < 60 char",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+            elif len(description)>71:
+                Snackbar(text="Description must be < 71 characters",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                         font_size ="15dp").open() # type: ignore
-                screen_manager.get_screen("add_todo").description.text=""
             
             elif date_time=="":
                 Snackbar(text="Specify date",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore

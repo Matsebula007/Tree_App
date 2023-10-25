@@ -1,12 +1,13 @@
 #: import FadeTransition kivy.uix.screenmanager.FadeTransition
 MDScreen: 
-    name:"add_todo"
+    name:"add_event"
     md_bg_color: 244/255,249/255,253/255,1
-    description: description
-    tittle:tittle
-    task_date:task_date
-    task_time:task_time
-    task_time2:task_time2
+    evnt_venue: evnt_venue
+    event_name:event_name
+    start_date:start_date
+    end_date:end_date
+    start_time:start_time
+    end_time:end_time
     
     MDFloatLayout:
         MDIconButton:
@@ -17,17 +18,17 @@ MDScreen:
             color:(30/255,47/255,151/255,1)
             on_release:
                 root.manager.transition = FadeTransition()
-                root.manager.current = "todoScreen"
+                root.manager.current = "Calendarscreen"
         MDLabel:
-            text: "Add Task"
+            text: "Add Event"
             pos_hint: {"center_x": .8,"center_y": .95}
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "32dp"
 
-    #tittle input
+    #event_name input
         MDFloatLayout:
-            size_hint:.85,.08
-            pos_hint: {"center_x": .5,"center_y": .82}
+            size_hint:.4,.08
+            pos_hint: {"center_x": .28,"center_y": .84}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -36,8 +37,8 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id: tittle
-                hint_text:"Tittle"
+                id:event_name
+                hint_text:"Event name *"
                 input_type:"text"
                 keyboard_suggestion:True
                 size_hint: 1,1
@@ -50,10 +51,10 @@ MDScreen:
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
 
-    #description input
+    #evnt_venue input
         MDFloatLayout:
-            size_hint:.85,.24
-            pos_hint: {"center_x": .5,"center_y": .64}
+            size_hint:.4,.08
+            pos_hint: {"center_x": .72,"center_y": .84}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -62,13 +63,13 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             TextInput:
-                id: description
-                hint_text:"Description"
+                id:evnt_venue
+                hint_text:"Venue *"
                 input_type:"text"
                 keyboard_suggestion:True
                 size_hint: 1,1
                 pos_hint: {"center_x": .5,"center_y": .5}
-                multiline:True
+                multiline:False
                 cursor_width: "2dp"
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
@@ -77,9 +78,10 @@ MDScreen:
                 font_size:"18dp"
         
     #date_time input
+        #Start date
         MDFloatLayout:
-            size_hint:.85,.1
-            pos_hint: {"center_x": .5,"center_y": .436}
+            size_hint:.8,.08
+            pos_hint: {"center_x": .5,"center_y": .72}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -88,13 +90,40 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             MDLabel:
-                id:task_date
-                text:"Date"
+                id:start_date
+                text:" Start Date"
                 size_hint: .8,None
                 pos_hint: {"center_x": .5,"center_y": .5}
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
-                padding:15
+                padding:10
+                font_name:'assets/fonts/JosefinSans-Light.ttf'
+                font_size:"18dp"
+            MDIconButton:
+                icon: 'calendar'
+                icon_size:dp(30)
+                pos_hint:{"center_x":.9,"center_y": .5}
+                on_release: app.show_date_picker()
+                padding: '10dp'
+        #End date
+        MDFloatLayout:
+            size_hint:.8,.08
+            pos_hint: {"center_x": .5,"center_y": .62}
+            canvas:
+                Color:
+                    rgba:(238/255,238/255,238/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            MDLabel:
+                id:end_date
+                text:"End Date"
+                size_hint: .8,None
+                pos_hint: {"center_x": .5,"center_y": .5}
+                foreground_color: 12/255,12/255,13/255,1
+                background_color: 0,0,0,0
+                padding:10
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
             MDIconButton:
@@ -108,7 +137,7 @@ MDScreen:
         #From
         MDFloatLayout:
             size_hint:.4,.08
-            pos_hint: {"center_x": .28,"center_y": .32}
+            pos_hint: {"center_x": .28,"center_y": .5}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -117,7 +146,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             MDLabel:
-                id:task_time
+                id:start_time
                 text:"Start time"
                 size_hint: .8,None
                 pos_hint: {"center_x": .4,"center_y": .5}
@@ -136,7 +165,7 @@ MDScreen:
         #To
         MDFloatLayout:
             size_hint:.4,.08
-            pos_hint: {"center_x": .72,"center_y": .32}
+            pos_hint: {"center_x": .72,"center_y": .5}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -145,7 +174,7 @@ MDScreen:
                     pos:self.pos
                     radius:[15]
             MDLabel:
-                id:task_time2
+                id:end_time
                 text:"End Time"
                 size_hint: .8,None
                 pos_hint: {"center_x": .4,"center_y": .5}
@@ -166,17 +195,17 @@ MDScreen:
 
         #add task button
         Button:
-            text: "Add Task"
+            text: "Add Event"
             size_hint: .45,.08
-            pos_hint: {"center_x": .5,"center_y": .2}
+            pos_hint: {"center_x": .5,"center_y": .38}
             background_color:0,0,0,0
             font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size: "18dp"
             color: 1,1,1,1
             on_release:
-                app.add_todo(tittle.text, description.text,task_date.text,task_time.text,task_time2.text)
-                app.update_task(tittle.text)
-                app.update_taskHome(tittle.text)
+                app.add_todo(event_name.text, evnt_venue.text,start_date.text,end_date.text,start_time.text,end_time.text)
+                app.update_task(event_name.text)
+                app.update_taskHome(event_name.text)
                 
             canvas.before:
                 Color:
@@ -207,25 +236,15 @@ MDScreen:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Home"
 
-        MDFloatLayout:
-            size_hint:.2,.8
-            pos_hint: {"center_x": .38,"center_y": .5}
-            canvas:
-                Color:
-                    rgba:(30/255,47/255,151/255,.4)
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[20]
-            MDIconButton:
-                icon: "view-agenda"
-                icon_size:dp(30)
-                pos_hint: {"center_x":.5,"center_y":.5}
-                theme_text_color:"Custom"
-                color:(30/255,47/255,151/255,1)
-                on_press:
-                    root.manager.transition = FadeTransition()
-                    root.manager.current = "todoScreen" 
+        MDIconButton:
+            icon: "view-agenda"
+            icon_size:dp(30)
+            pos_hint: {"center_x":.38,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "todoScreen" 
         
         
         MDIconButton:
@@ -238,14 +257,24 @@ MDScreen:
                 app.update_coursescreen()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "CoursesScreen"
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .86,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(30/255,47/255,151/255,.4)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
                     
-        MDIconButton:
-            icon: "calendar"
-            icon_size:dp(30)
-            pos_hint: {"center_x":.86 ,"center_y":.5}
-            theme_text_color:"Custom"
-            text_color: 1,1,1,1
-            on_press:
-                root.manager.transition = FadeTransition()
-                root.manager.current = "Calendarscreen"
+            MDIconButton:
+                icon: "calendar"
+                icon_size:dp(30)
+                pos_hint: {"center_x":.5 ,"center_y":.5}
+                theme_text_color:"Custom"
+                color:(30/255,47/255,151/255,1)
+                on_press:
+                    root.manager.transition = FadeTransition()
+                    root.manager.current = "Calendarscreen"
 
