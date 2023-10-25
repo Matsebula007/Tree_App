@@ -27,8 +27,8 @@ MDScreen:
 
     #event_name input
         MDFloatLayout:
-            size_hint:.4,.08
-            pos_hint: {"center_x": .28,"center_y": .84}
+            size_hint:.42,.08
+            pos_hint: {"center_x": .26,"center_y": .84}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -38,7 +38,7 @@ MDScreen:
                     radius:[15]
             TextInput:
                 id:event_name
-                hint_text:"Event name *"
+                hint_text:"Phy411 *"
                 input_type:"text"
                 keyboard_suggestion:True
                 size_hint: 1,1
@@ -50,11 +50,18 @@ MDScreen:
                 padding:10
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
+            MDIconButton:
+                icon: "coffee"
+                icon_size:dp(20)
+                pos_hint:{"center_x":.9,"center_y": .5}
+                on_release: event_name.text =""
+                padding: '10dp'
+                
 
     #evnt_venue input
         MDFloatLayout:
-            size_hint:.4,.08
-            pos_hint: {"center_x": .72,"center_y": .84}
+            size_hint:.42,.08
+            pos_hint: {"center_x": .74,"center_y": .84}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -64,7 +71,7 @@ MDScreen:
                     radius:[15]
             TextInput:
                 id:evnt_venue
-                hint_text:"Venue *"
+                hint_text:"Tent2 *"
                 input_type:"text"
                 keyboard_suggestion:True
                 size_hint: 1,1
@@ -76,6 +83,12 @@ MDScreen:
                 padding:15
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
+            MDIconButton:
+                icon: "city"
+                icon_size:dp(20)
+                pos_hint:{"center_x":.9,"center_y": .5}
+                on_release: evnt_venue.text =""
+                padding: '10dp'
         
     #date_time input
         #Start date
@@ -93,17 +106,17 @@ MDScreen:
                 id:start_date
                 text:" Start Date"
                 size_hint: .8,None
-                pos_hint: {"center_x": .5,"center_y": .5}
+                pos_hint: {"center_x": .4,"center_y": .5}
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
                 padding:10
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
             MDIconButton:
-                icon: 'calendar'
-                icon_size:dp(30)
+                icon: 'calendar-check'
+                icon_size:dp(25)
                 pos_hint:{"center_x":.9,"center_y": .5}
-                on_release: app.show_date_picker()
+                on_release: app.event_Sdate_picker()
                 padding: '10dp'
         #End date
         MDFloatLayout:
@@ -120,24 +133,24 @@ MDScreen:
                 id:end_date
                 text:"End Date"
                 size_hint: .8,None
-                pos_hint: {"center_x": .5,"center_y": .5}
+                pos_hint: {"center_x": .4,"center_y": .5}
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
                 padding:10
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
             MDIconButton:
-                icon: 'calendar'
-                icon_size:dp(30)
+                icon: 'calendar-check'
+                icon_size:dp(25)
                 pos_hint:{"center_x":.9,"center_y": .5}
-                on_release: app.show_date_picker()
+                on_release: app.event_Edate_picker()
                 padding: '10dp'
 
         #time picker settings 
         #From
         MDFloatLayout:
-            size_hint:.4,.08
-            pos_hint: {"center_x": .28,"center_y": .5}
+            size_hint:.42,.08
+            pos_hint: {"center_x": .26,"center_y": .5}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -159,13 +172,13 @@ MDScreen:
             MDIconButton:
                 icon: 'clock'
                 pos_hint:{"center_x":.86,"center_y": .5}
-                on_release: app.show_time_picker()
-                icon_size:dp(30)
+                on_release: app.event_Stime_picker()
+                icon_size:dp(25)
                 padding: '10dp'
         #To
         MDFloatLayout:
-            size_hint:.4,.08
-            pos_hint: {"center_x": .72,"center_y": .5}
+            size_hint:.42,.08
+            pos_hint: {"center_x": .74,"center_y": .5}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -186,9 +199,9 @@ MDScreen:
                 font_size:"18dp"
             MDIconButton:
                 icon: 'clock'
-                icon_size:dp(30)
+                icon_size:dp(25)
                 pos_hint:{"center_x":.86,"center_y": .5}
-                on_release: app.show_time_picker2()
+                on_release: app.event_Etime_picker()
                 padding: '10dp'
         
 
@@ -203,9 +216,7 @@ MDScreen:
             font_size: "18dp"
             color: 1,1,1,1
             on_release:
-                app.add_todo(event_name.text, evnt_venue.text,start_date.text,end_date.text,start_time.text,end_time.text)
-                app.update_task(event_name.text)
-                app.update_taskHome(event_name.text)
+                app.update_timetable(event_name.text)
                 
             canvas.before:
                 Color:

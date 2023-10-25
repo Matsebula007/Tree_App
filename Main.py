@@ -14,6 +14,7 @@ from kivy.uix.screenmanager import FadeTransition, ScreenManager
 from kivymd.app import MDApp
 from kivymd.uix.behaviors import CommonElevationBehavior, HoverBehavior
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.pickers import MDDatePicker, MDTimePicker
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.snackbar import Snackbar
@@ -223,7 +224,6 @@ class OverviewCard(CommonElevationBehavior,MDFloatLayout):
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                     font_size ="15dp").open() # type: ignore
 
-
 class CourseCard(CommonElevationBehavior,MDFloatLayout):
     """_summary_
 
@@ -292,7 +292,6 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
     CA_ratio=StringProperty()
     Ex_ratio=StringProperty()
 
-
 class OverviewScreen(MDScreen,MDFloatLayout):
     """_summary_
 
@@ -302,7 +301,6 @@ class OverviewScreen(MDScreen,MDFloatLayout):
     """    
     pass
 
-
 class AssesSummary(MDScreen,MDFloatLayout):
     """_summary_
 
@@ -311,6 +309,19 @@ class AssesSummary(MDScreen,MDFloatLayout):
         MDFloatLayout (_type_): _description_
     """    
     pass
+
+class TableCard(CommonElevationBehavior,MDFloatLayout,MDGridLayout):
+    """_summary_
+
+    Args:
+        CommonElevationBehavior (_type_): _description_
+        MDFloatLayout (_type_): _description_
+    """    
+    def __init__(self,key=None, **kwargs):
+        super().__init__(**kwargs)
+        # state a tablecard_key which we shall use link the card with the Database item primary keys
+        self.key=key
+    event_Name =StringProperty()
 
 class MainApp(MDApp):
     """_summary_
@@ -504,15 +515,53 @@ class MainApp(MDApp):
         """        
         value = value.strftime('%A %d %B')
         screen_manager.get_screen("add_todo").task_date.text = str(value)
+    
+    def on_sdate_save(self, instance, value, date_range):
+        """_summary_
+
+        Args:
+            instance (_type_): _description_
+            value (_type_): _description_
+            date_range (_type_): _description_
+        """        
+        value = value.strftime('%a %d %b %Y')
+        screen_manager.get_screen("add_event").start_date.text = str(value)
+
+    def on_edate_save(self, instance, value, date_range):
+        """_summary_
+
+        Args:
+            instance (_type_): _description_
+            value (_type_): _description_
+            date_range (_type_): _description_
+        """        
+        value = value.strftime('%a %d %b %Y')
+        screen_manager.get_screen("add_event").end_date.text = str(value)
+
     def on_cancel(self):
         """_summary_
         """        
         MDDatePicker.close() # type: ignore
+
     def show_date_picker(self):
         """_summary_
         """        
         date_dialog = MDDatePicker()
         date_dialog.bind(on_save=self.on_save) #type: ignore
+        date_dialog.open()#type: ignore
+
+    def event_Sdate_picker(self):
+        """_summary_
+        """        
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_save=self.on_sdate_save) #type: ignore
+        date_dialog.open()#type: ignore
+
+    def event_Edate_picker(self):
+        """_summary_
+        """        
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_save=self.on_edate_save) #type: ignore
         date_dialog.open()#type: ignore
 
 #time pickers
@@ -524,7 +573,27 @@ class MainApp(MDApp):
             time (_type_): _description_
         """        
         time= time.strftime('%H:%M')
-        screen_manager.get_screen("add_todo").task_time.text = str(time)      
+        screen_manager.get_screen("add_todo").task_time.text = str(time)  
+
+    def get_stime(self,instance,time):
+        """_summary_
+
+        Args:
+            instance (_type_): _description_
+            time (_type_): _description_
+        """        
+        time= time.strftime('%H:%M')
+        screen_manager.get_screen("add_event").start_time.text = str(time)      
+    def get_etime(self,instance,time):
+        """_summary_
+
+        Args:
+            instance (_type_): _description_
+            time (_type_): _description_
+        """        
+        time= time.strftime('%H:%M')
+        screen_manager.get_screen("add_event").end_time.text = str(time)      
+    
     def show_time_picker(self):
         '''Open time picker dialog.'''       
         previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
@@ -532,6 +601,22 @@ class MainApp(MDApp):
         time_dialog.set_time(previous_time)#type: ignore
         time_dialog.bind(time=self.get_time) #type: ignore
         time_dialog.open() # type: ignore
+
+    def event_Stime_picker(self):
+        '''Open time picker dialog.'''       
+        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
+        time_dialog = MDTimePicker()
+        time_dialog.set_time(previous_time)#type: ignore
+        time_dialog.bind(time=self.get_stime) #type: ignore
+        time_dialog.open() # type: ignore
+    def event_Etime_picker(self):
+        '''Open time picker dialog.'''       
+        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
+        time_dialog = MDTimePicker()
+        time_dialog.set_time(previous_time)#type: ignore
+        time_dialog.bind(time=self.get_etime) #type: ignore
+        time_dialog.open() # type: ignore
+    
     def get_time2(self,instance,time):
         """_summary_
 
@@ -541,6 +626,7 @@ class MainApp(MDApp):
         """        
         time= time.strftime('%H:%M')
         screen_manager.get_screen("add_todo").task_time2.text = str(time)
+    
     def show_time_picker2(self):
         '''Open time picker dialog.'''
         previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
@@ -753,10 +839,18 @@ class MainApp(MDApp):
                     cr= str (cred)
                     ca = str (c[3])
                     ex = str (c[4])
-                    avg = str(c[5])
                     bas = str (c[6])
                     add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=c[5],Basis=bas)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
+
+#TIMETABLE SETTINGS
+    def update_timetable(self,evnt_name):
+    
+        dayschedule =TableCard(event_Name=evnt_name)
+        screen_manager.get_screen("Calendarscreen").table_list.add_widget(dayschedule)
+
+        screen_manager.transition = FadeTransition()
+        screen_manager.current = "Calendarscreen"
 
 #update TASK and HOME view 
     def update_task(self,tittle):
