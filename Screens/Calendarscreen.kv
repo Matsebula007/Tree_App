@@ -4,34 +4,124 @@
     elevation: 0
     radius:[8]
     size_hint:1,None
-    height:dp(160)
+    height:dp(100)
     #card primary key holder
     MDLabel:
         id:key
         markup:True
-
-    # settings
     MDFloatLayout:
-        size_hint:.3,1
-        pos_hint: {"center_x":.1,"center_y": .5}
+        pos_hint: {'center_x':.5,'center_y':.5}
+        size_hint:1,1
         canvas:
-            Color:
-                # depreciate to own colors chooser pair assessmarry card
-                rgba:app.noteschooser()
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
                 radius:[15]
-        #Event name
-        MDLabel:
-            text:root.event_Name
-            markup: True
-            color: 1/255,1/255,1/255,1
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
-            font_size:"20sp"
-            size_hint_x:.78
-            size_hint_y:.2
-            pos_hint:{"center_x":.46,"center_y": .82}
+    #Event times
+        MDFloatLayout:
+            size_hint:.65,.36
+            pos_hint: {"center_x":.67,"center_y": .83}
+            canvas:
+                Color:
+                    rgba:app.calendarchooser()
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            #Event Start time
+            MDLabel:
+                text:root.start_time
+                markup: True
+                color: 1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"16sp"
+                size_hint_x:.48
+                size_hint_y:1
+                pos_hint:{"center_x":.32,"center_y": .5}
+
+            MDLabel:
+                text:"-"
+                color:(30/255,47/255,151/255,.4)
+                font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+                font_size:"30sp"
+                size_hint_x:.1
+                size_hint_y:.1
+                pos_hint:{"center_x":.52,"center_y":.5}
+            #Event End time
+            MDLabel:
+                text:root.end_time
+                markup: True
+                color: 1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"16sp"
+                size_hint_x:.48
+                size_hint_y:1
+                pos_hint:{"center_x":.82,"center_y": .5}
+
+    #Event name and Location
+        MDFloatLayout:
+            size_hint:.65,.58
+            pos_hint: {"center_x":.67,"center_y": .3}
+            canvas:
+                Color:
+                    rgba:(244/255,249/255,253/255,1)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            #Event name
+            MDLabel:
+                text:root.event_Name
+                markup: True
+                color: 1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+                font_size:"24sp"
+                size_hint_x:1
+                size_hint_y:.6
+                padding:10
+                pos_hint:{"center_x":.5,"center_y": .74}
+            #Event venue
+            MDLabel:
+                text:root.event_venue
+                markup: True
+                color: 30/255,47/255,151/255,1
+                font_name: 'assets/fonts/JosefinSans-Regular.ttf'
+                font_size:"16sp"
+                size_hint_x:.6
+                size_hint_y:.2
+                pos_hint:{"center_x":.5,"center_y": .26}
+
+    #Event date
+        MDFloatLayout:
+            size_hint:.32,1
+            pos_hint: {"center_x":.16,"center_y":.5}
+            canvas:
+                Color:
+                    rgba:app.calendarchooser()
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            #Event date
+            MDLabel:
+                text:root.evnt_day
+                markup: True
+                color:30/255,47/255,151/255,1
+                font_name: 'assets/fonts/CroissantOne-Regular.ttf'
+                font_size:"30sp"
+                size_hint_x:.8
+                size_hint_y:.5
+                pos_hint:{"center_x":.54,"center_y": .8}
+            #Event month
+            MDLabel:
+                text:root.evnt_date
+                markup: True
+                color: 1/255,1/255,1/255,1
+                font_name: 'assets/fonts/JosefinSans-Regular.ttf'
+                font_size:"20sp"
+                size_hint_x:.5
+                size_hint_y:.5
+                pos_hint:{"center_x":.52,"center_y": .32}
 
             
 MDScreen:
@@ -43,6 +133,7 @@ MDScreen:
     statusbarW:statusbarW
     statusbarM:statusbarM
 
+    #selection control
     MDFloatLayout:
         MDLabel:
             text:"Your Timetable"
@@ -118,11 +209,22 @@ MDScreen:
             on_press:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "add_event"
+    #Weekdays Bar
+    MDFloatLayout:
+        size_hint:.97,.08
+        pos_hint: {"center_x": .5,"center_y": .84}
+        canvas:
+            Color:
+                rgba:(238/255,238/255,238/255,1)
+            RoundedRectangle:
+                size:self.size
+                pos:self.pos
+                radius:[15]
     
     #Timetable view
     MDFloatLayout:
-        size_hint:.99,.78
-        pos_hint:{"center_x":.5,"center_y": .49}  
+        size_hint:.99,.7
+        pos_hint:{"center_x":.5,"center_y": .45}  
         canvas:
             RoundedRectangle:
                 size:self.size
@@ -142,7 +244,7 @@ MDScreen:
                 height:self.minimum_height
                 row_default_height:80
                 size_hint_y:None
-                padding:20,10
+                padding:10,10
                 spacing:10,10
             
                 

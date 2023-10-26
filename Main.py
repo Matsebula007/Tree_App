@@ -1,6 +1,7 @@
 import random
 import sqlite3
 from datetime import date, datetime
+from errno import ETIMEDOUT
 
 from kivy.animation import Animation
 from kivy.clock import Clock
@@ -322,6 +323,11 @@ class TableCard(CommonElevationBehavior,MDFloatLayout,MDGridLayout):
         # state a tablecard_key which we shall use link the card with the Database item primary keys
         self.key=key
     event_Name =StringProperty()
+    start_time =StringProperty("08:30 AM")
+    end_time =StringProperty("02:30 PM")
+    event_venue = StringProperty("EMPORIUM")
+    evnt_date =StringProperty("21")
+    evnt_day =StringProperty("Tue")
 
 class MainApp(MDApp):
     """_summary_
@@ -654,6 +660,15 @@ class MainApp(MDApp):
         pigments =[(26/255,167/255,236/255,1),(74/255,222/255,222/255,1),(130/255,215/255,255/255,1)]
         p =random.choice(pigments)
         return p
+    def calendarchooser(self):
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """        
+        pigments =[(168/255,243/255,135/255,1),(123/255,223/255,242/255,1),(175/255,135/255,206/255,1)]
+        p =random.choice(pigments)
+        return p
 
 #Category selection in add course
     def cat_select(self,value,cat_w,percentbar):
@@ -844,10 +859,21 @@ class MainApp(MDApp):
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
 
 #TIMETABLE SETTINGS
-    def update_timetable(self,evnt_name):
-    
-        dayschedule =TableCard(event_Name=evnt_name)
-        screen_manager.get_screen("Calendarscreen").table_list.add_widget(dayschedule)
+    def update_timetable(self,evnt_name,evt_venue,strt_date,end_date,strt_time,end_time):
+        #if today is not end date:
+        #   add widget to screen
+        strt_time = datetime.strptime(strt_time,"%H:%M")
+        stime= strt_time.time().strftime("%I:%M %p") 
+
+        end_time = datetime.strptime(end_time,"%H:%M")
+        etime= end_time.time().strftime("%I:%M %p") 
+
+        mystart_date =datetime.strptime(strt_date,"%a %d %b %Y")
+        dayname=mystart_date.strftime("%a")
+        evdate=mystart_date.strftime("%d")
+
+        day_sch =TableCard(event_Name=evnt_name,event_venue=evt_venue,evnt_day=dayname,evnt_date=evdate,start_time=stime,end_time=etime)
+        screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
 
         screen_manager.transition = FadeTransition()
         screen_manager.current = "Calendarscreen"
@@ -899,7 +925,7 @@ class MainApp(MDApp):
             task_time2 (_type_): _description_
         """        
         try:
-            if tittle !="" and description !="" and len(tittle)<21 and len(description)<72 and date_time!=""and task_time!="" and task_time2!="" :
+            if tittle !="" and description !="" and len(tittle)<21 and len(description)<81 and date_time!=""and task_time!="" and task_time2!="" :
                 # adding task to Database
                 data= tittle,description,date_time,task_time,task_time2,0
                 Database.cursor.execute("INSERT INTO TASK(Tittle,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
@@ -917,12 +943,12 @@ class MainApp(MDApp):
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                         font_size ="15dp").open() # type: ignore
                 
-            elif len(tittle)>21:
+            elif len(tittle)>20:
                 Snackbar(text="Tittle must be < 21 char",snackbar_x ="10dp",snackbar_y ="10dp",
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                         font_size ="15dp").open() # type: ignore
-            elif len(description)>71:
-                Snackbar(text="Description must be < 71 characters",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+            elif len(description)>80:
+                Snackbar(text="Description must be < 81 characters",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                         font_size ="15dp").open() # type: ignore
             
@@ -966,8 +992,7 @@ class MainApp(MDApp):
             crse= CourseCard(course_key = c[0],CourseID=courseid, C_Credit=cr,CA_ratio=ca,Ex_ratio=ex) #type: ignore
             screen_manager.get_screen("CoursesScreen").course_list.add_widget(crse)
             screen_manager.get_screen("CoursesScreen").crtot.text= self.creditscal()
-            
-     
+                 
 # add course settings
     def add_course(self,tcheck,test_w,acheck,ass_w,pcheck,prese_w,qcheck,quiz_w,lcheck,lab_w,gcheck,group_w,ccheck,clswrk_w,ocheck,other_w,course_id,credits,ca_rt,ex_rt):
         """_summary_

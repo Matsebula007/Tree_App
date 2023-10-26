@@ -27,8 +27,8 @@ MDScreen:
 
     #event_name input
         MDFloatLayout:
-            size_hint:.42,.08
-            pos_hint: {"center_x": .26,"center_y": .84}
+            size_hint:.46,.08
+            pos_hint: {"center_x": .28,"center_y": .84}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -41,13 +41,13 @@ MDScreen:
                 hint_text:"Phy411 *"
                 input_type:"text"
                 keyboard_suggestion:True
-                size_hint: 1,1
-                pos_hint: {"center_x": .5,"center_y": .4}
+                size_hint: .9,.9
+                pos_hint: {"center_x": .5,"center_y":.5}
                 multiline:False
                 cursor_width: "2dp"
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
-                padding:10
+                padding:8
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
             MDIconButton:
@@ -74,13 +74,13 @@ MDScreen:
                 hint_text:"Tent2 *"
                 input_type:"text"
                 keyboard_suggestion:True
-                size_hint: 1,1
+                size_hint:.9,.9
                 pos_hint: {"center_x": .5,"center_y": .5}
                 multiline:False
                 cursor_width: "2dp"
                 foreground_color: 1/255,1/255,1/255,1
                 background_color: 0,0,0,0
-                padding:15
+                padding:8
                 font_name:'assets/fonts/JosefinSans-Regular.ttf'
                 font_size:"18dp"
             MDIconButton:
@@ -94,7 +94,7 @@ MDScreen:
         #Start date
         MDFloatLayout:
             size_hint:.8,.08
-            pos_hint: {"center_x": .5,"center_y": .72}
+            pos_hint: {"center_x": .5,"center_y": .74}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -106,7 +106,7 @@ MDScreen:
                 id:start_date
                 text:" Start Date"
                 size_hint: .8,None
-                pos_hint: {"center_x": .4,"center_y": .5}
+                pos_hint: {"center_x": .5,"center_y": .5}
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
                 padding:10
@@ -121,7 +121,7 @@ MDScreen:
         #End date
         MDFloatLayout:
             size_hint:.8,.08
-            pos_hint: {"center_x": .5,"center_y": .62}
+            pos_hint: {"center_x": .5,"center_y": .64}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -133,7 +133,7 @@ MDScreen:
                 id:end_date
                 text:"End Date"
                 size_hint: .8,None
-                pos_hint: {"center_x": .4,"center_y": .5}
+                pos_hint: {"center_x": .5,"center_y": .5}
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
                 padding:10
@@ -162,7 +162,7 @@ MDScreen:
                 id:start_time
                 text:"Start time"
                 size_hint: .8,None
-                pos_hint: {"center_x": .4,"center_y": .5}
+                pos_hint: {"center_x": .5,"center_y": .5}
                 cursor_width: "2dp"
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
@@ -190,7 +190,7 @@ MDScreen:
                 id:end_time
                 text:"End Time"
                 size_hint: .8,None
-                pos_hint: {"center_x": .4,"center_y": .5}
+                pos_hint: {"center_x": .5,"center_y": .5}
                 cursor_width: "2dp"
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
@@ -216,7 +216,7 @@ MDScreen:
             font_size: "18dp"
             color: 1,1,1,1
             on_release:
-                app.update_timetable(event_name.text)
+                app.update_timetable(event_name.text,evnt_venue.text,start_date.text,end_date.text,start_time.text,end_time.text)
                 
             canvas.before:
                 Color:
