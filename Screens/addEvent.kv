@@ -286,6 +286,7 @@ MDScreen:
                 theme_text_color:"Custom"
                 color:(30/255,47/255,151/255,1)
                 on_press:
+                    app.clear_for_week()
                     root.manager.transition = FadeTransition()
                     root.manager.current = "Calendarscreen"
 

@@ -26,7 +26,7 @@ MDScreen:
 
         #Course ID for Assessment
         MDFloatLayout:
-            size_hint:.8,.08
+            size_hint:.6,.08
             pos_hint: {"center_x": .5,"center_y": .82}
             canvas:
                 Color:
@@ -39,7 +39,7 @@ MDScreen:
                 id: ass_courseid
                 text:""
                 size_hint: .5,1
-                pos_hint: {"center_x": .6,"center_y": .48}
+                pos_hint: {"center_x": .5,"center_y": .48}
                 foreground_color: 1/255,1/255,1/255,.8
                 background_color: 0,0,0,0
                 padding:10
@@ -228,5 +228,6 @@ MDScreen:
             on_press:
                 app.clear_overview()
                 app.clear_assessmary()
+                app.clear_for_week()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Calendarscreen"

@@ -329,6 +329,10 @@ class TableCard(CommonElevationBehavior,MDFloatLayout,MDGridLayout):
     evnt_date =StringProperty("21")
     evnt_day =StringProperty("Tue")
 
+class WeekdayCard(CommonElevationBehavior,MDFloatLayout):
+    dayname=StringProperty()
+    pass
+
 class MainApp(MDApp):
     """_summary_
     Args:
@@ -787,6 +791,21 @@ class MainApp(MDApp):
         screen_manager.get_screen("addAssesment").ass_mark.text=""
         screen_manager.get_screen("addAssesment").ass_name.text=""
         pass
+
+    def clear_for_month(self):
+
+        screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
+        screen_manager.get_screen("Calendarscreen").timetable_view.size_hint= .99,.78
+        screen_manager.get_screen("Calendarscreen").timetable_view.pos_hint={"center_x":.5,"center_y": .49} 
+
+    def clear_for_week(self):
+        screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
+        days =["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+        for day in days:
+            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(WeekdayCard(dayname=day ))
+            screen_manager.get_screen("Calendarscreen").timetable_view.size_hint= .99,.7
+            screen_manager.get_screen("Calendarscreen").timetable_view.pos_hint={"center_x":.5,"center_y":.45} 
+
     def clear_add_course(self):
         """_summary_
         """        
@@ -848,6 +867,7 @@ class MainApp(MDApp):
     def update_coursescreen(self):
         screen_manager.get_screen("CoursesScreen").course_list.clear_widgets()
         taken_courses =self.get_courses()
+        emty_crse =self.get_emptycrse()
         if taken_courses !=[]:
                 for c in taken_courses:
                     cred =float(c[2])
@@ -856,6 +876,16 @@ class MainApp(MDApp):
                     ex = str (c[4])
                     bas = str (c[6])
                     add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=c[5],Basis=bas)
+                    screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
+        if  emty_crse!=[]:
+                for c in emty_crse:
+                    cred =float(c[2])
+                    cr= str (cred)
+                    ca = str (c[3])
+                    ex = str (c[4])
+                    avg =1.0
+                    bas = "0"
+                    add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=avg,Basis=bas)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
 
 #TIMETABLE SETTINGS

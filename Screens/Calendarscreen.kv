@@ -123,7 +123,30 @@
                 size_hint_y:.5
                 pos_hint:{"center_x":.52,"center_y": .32}
 
-            
+<WeekdayCard>
+    id: table_card
+    elevation: 0
+    radius:[8]
+    size_hint:None,1
+    width:dp(50)
+    md_bg_color:(30/255,47/255,151/255,.5)
+    MDFloatLayout:
+        size_hint: 1,1
+        pos_hint: {"center_x":.5,"center_y": .5}
+        Button:
+            id:dayname
+            text:root.dayname
+            size_hint:.9,.9
+            pos_hint: {"center_x":.5,"center_y": .5}
+            background_color:0,0,0,0
+            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+            font_size: "18dp"
+            color: 1,1,1,1
+            on_press:
+                self.color=52/255,0,231/255,1
+                    
+
+
 MDScreen:
     name:"Calendarscreen"
     md_bg_color: 244/255,249/255,253/255,1
@@ -132,7 +155,8 @@ MDScreen:
     week_text:week_text
     statusbarW:statusbarW
     statusbarM:statusbarM
-
+    days_of_week:days_of_week
+    timetable_view:timetable_view
     #selection control
     MDFloatLayout:
         MDLabel:
@@ -159,6 +183,7 @@ MDScreen:
                 week_text.color= 63/255,72/255,204/255,1
                 statusbarW.md_bg_color="#7BDFF2"
                 statusbarM.md_bg_color="#EEF7F6"
+                app.clear_for_week()
         MDFloatLayout:
             id:statusbarM
             size_hint:.46,.002
@@ -166,7 +191,7 @@ MDScreen:
             md_bg_color:"#EEF7F6"
         Button:
             id:table_month
-            text:"October"
+            text:"August"
             color:63/255,72/255,204/255,.7
             pos_hint: {"center_x":.77,"center_y": .9}
             font_name: 'assets/fonts/JosefinSans-Regular.ttf'
@@ -178,6 +203,8 @@ MDScreen:
                 table_month.color= 63/255,72/255,204/255,1
                 statusbarM.md_bg_color="#7BDFF2"
                 statusbarW.md_bg_color="#EEF7F6"
+                root.manager.transition = FadeTransition()
+                app.clear_for_month()
 
     #top add event button
     MDFloatLayout:
@@ -214,18 +241,38 @@ MDScreen:
         size_hint:.97,.08
         pos_hint: {"center_x": .5,"center_y": .84}
         canvas:
-            Color:
-                rgba:(238/255,238/255,238/255,1)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
                 radius:[15]
+        ScrollView:
+            do_scroll_y:False
+            do_scroll_x:True
+            size_hint:1,1
+            pos_hint:{"center_x":.5,"center_y":.5}
+            bar_width:1
+            bar_color:(30/255,47/255,151/255,.8)
+            MDGridLayout:
+                orientation: "lr-bt"
+                id:days_of_week
+                rows:1
+                width:self.minimum_width
+                row_force_default: False
+                size_hint_x:None
+                padding:10,10
+                spacing:10,10
+                adaptive_width:True
+                
+
     
     #Timetable view
     MDFloatLayout:
+        id:timetable_view
         size_hint:.99,.7
         pos_hint:{"center_x":.5,"center_y": .45}  
         canvas:
+            Color:
+                rgba:(238/255,238/255,238/255,1)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
@@ -288,7 +335,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
-                #app.summariseCourse()
+                app.update_coursescreen()
                 root.manager.transition = FadeTransition() 
                 root.manager.current = "CoursesScreen"
         MDFloatLayout:
