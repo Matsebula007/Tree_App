@@ -340,6 +340,8 @@ class DaySelectionCard(CommonElevationBehavior,MDFloatLayout):
 class MonthCard(CommonElevationBehavior,MDFloatLayout):
     evnt_day =StringProperty("Tue")
     evnt_date= StringProperty("21")
+    task_number=StringProperty("4") 
+    evnt_hours=StringProperty("8")
 
 
 class MainApp(MDApp):
@@ -770,6 +772,13 @@ class MainApp(MDApp):
         categ_name =categ_name.lower()
         screen_manager.get_screen("addAssesment").ass_name.hint_text =f"{categ_name} name"
 
+#Delete event from view and from database 
+    def delete_event(self,table_card):
+        screen_manager.get_screen("Calendarscreen").table_list.remove_widget(table_card)
+        #TodoCard.delete_task(task_card,task_card.pk)
+
+
+
 #delete widget from view and info from Database HOME and task
     def delete_item(self, task_card):
         """_summary_
@@ -965,7 +974,8 @@ class MainApp(MDApp):
             month_wkd=str(full_dt.strftime("%a"))
             dayof_mnth=str(dayof_mnth)
             screen_manager.get_screen("Calendarscreen").table_list.add_widget(MonthCard(evnt_day=month_wkd,evnt_date=dayof_mnth))
-
+            screen_manager.transition = FadeTransition()
+            screen_manager.current = "Calendarscreen" 
 
 
     def clear_for_week(self):
@@ -1016,7 +1026,6 @@ class MainApp(MDApp):
         screen_manager.get_screen("addCourse").ca_ratio.text=""
         screen_manager.get_screen("addCourse").c_credit.text=""
         pass
-
 
     def update_overviwscreen(self):
         screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
