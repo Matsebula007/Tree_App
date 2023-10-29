@@ -134,6 +134,8 @@
         pos_hint: {'center_x':.5,'center_y':.5}
         size_hint:1,1
         canvas:
+            Color:
+                rgba:(238/255,238/255,238/255,1)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
@@ -144,7 +146,7 @@
             pos_hint: {"center_x":.16,"center_y":.5}
             canvas:
                 Color:
-                    rgba:app.calendarchooser()
+                    rgba:(74/255,222/255,222/255,1)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
@@ -154,9 +156,9 @@
                 text:root.evnt_day 
                 markup: True
                 color:30/255,47/255,151/255,1
-                font_name: 'assets/fonts/JosefinSans-Regular.ttf'
+                font_name: 'assets/fonts/CroissantOne-Regular.ttf'
                 font_size:"20sp"
-                size_hint_x:.4
+                size_hint_x:.8
                 size_hint_y:.4
                 pos_hint:{"center_x":.5,"center_y": .78}
             #Event month
@@ -165,10 +167,10 @@
                 markup: True
                 color: 1/255,1/255,1/255,1
                 font_name: 'assets/fonts/CroissantOne-Regular.ttf'
-                font_size:"32sp"
+                font_size:"28sp"
                 size_hint_x:.5
                 size_hint_y:.5
-                pos_hint:{"center_x":.52,"center_y": .32}
+                pos_hint:{"center_x":.7,"center_y": .32}
 
 <DaySelectionCard>
     id: day_selection

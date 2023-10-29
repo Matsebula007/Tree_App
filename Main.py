@@ -1,6 +1,6 @@
 import random
 import sqlite3
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from errno import ETIMEDOUT
 from mimetypes import common_types
 
@@ -829,52 +829,183 @@ class MainApp(MDApp):
 
     def selected_weekday(self,dayname):
         screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
+        screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
         screen_manager.get_screen("Calendarscreen").days_of_week.size_hint_x=1
-        if dayname=="Mon":
-            view_day=DaySelectionCard(selected_day="Monday")
-            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-        if dayname=="Tue":
-            view_day=DaySelectionCard(selected_day="Tuesday")
-            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-        if dayname=="Wed":
-            view_day=DaySelectionCard(selected_day="Wednesday")
-            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-        if dayname=="Thu":
-            view_day=DaySelectionCard(selected_day="Thursday")
-            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-        if dayname=="Fri":
-            view_day=DaySelectionCard(selected_day="Friday")
-            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-        if dayname=="Sat":
-            view_day=DaySelectionCard(selected_day="Saturday")
-            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-        if dayname=="Sun":
-            view_day=DaySelectionCard(selected_day="Sunday")
-            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+
+        Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_DATE,ED_DATE,ST_TIME,ED_TIME FROM EVENT")
+        event_arr=Database.cursor.fetchall()
+        if event_arr!=[]:
+            try:
+                if dayname=="Mon":
+                    view_day=DaySelectionCard(selected_day="Monday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day) 
+                    for evt in event_arr:
+                        live_date =str(datetime.now())
+                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+                        en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
+
+                        week_in= live_date+timedelta(days=7)
+
+                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
+                        day_dt=st_date.strftime("%d")
+                        if evt[3]=="Mon" and en_date>=live_date and st_date<=week_in:
+                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3])
+                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+                elif dayname=="Tue":
+                    view_day=DaySelectionCard(selected_day="Tuesday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                    for evt in event_arr:
+                        live_date =str(datetime.now())
+                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+                        en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
+
+                        week_in= live_date+timedelta(days=7)
+
+                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
+                        day_dt=st_date.strftime("%d")
+                        if evt[3]=="Tue" and en_date>=live_date and st_date<=week_in:
+                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3])
+                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+                elif dayname=="Wed":
+                    view_day=DaySelectionCard(selected_day="Wednesday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                    for evt in event_arr:
+                        live_date =str(datetime.now())
+                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+                        en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
+
+                        week_in= live_date+timedelta(days=7)
+
+                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
+                        day_dt=st_date.strftime("%d")
+                        if evt[3]=="Wed" and en_date>=live_date and st_date<=week_in:
+                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3])
+                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+                elif dayname=="Thu":
+                    view_day=DaySelectionCard(selected_day="Thursday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                    for evt in event_arr:
+                        live_date =str(datetime.now())
+                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+                        en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
+                        
+                        week_in= live_date+timedelta(days=7)
+
+                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
+                        day_dt=st_date.strftime("%d")
+                        if evt[3]=="Thu" and en_date>=live_date and st_date<=week_in:
+                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3])
+                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+                elif dayname=="Fri":
+                    view_day=DaySelectionCard(selected_day="Friday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                    for evt in event_arr:
+                        live_date =str(datetime.now())
+                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+                        en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
+
+                        week_in= live_date+timedelta(days=7)
+
+                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
+                        day_dt=st_date.strftime("%d")
+                        if evt[3]=="Fri" and en_date>=live_date and st_date<=week_in:
+                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3])
+                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+                elif dayname=="Sat":
+                    view_day=DaySelectionCard(selected_day="Saturday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                    for evt in event_arr:
+                        live_date =str(datetime.now())
+                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+                        en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
+
+                        week_in= live_date+timedelta(days=7)
+
+                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
+                        day_dt=st_date.strftime("%d")
+                        if evt[3]=="Sat" and en_date>=live_date and st_date<=week_in:
+                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3])
+                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+                elif dayname=="Sun":
+                    view_day=DaySelectionCard(selected_day="Sunday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                    for evt in event_arr:
+                        live_date =str(datetime.now())
+                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+                        en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
+
+                        week_in= live_date+timedelta(days=7)
+
+                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
+                        day_dt=st_date.strftime("%d")
+                        if evt[3]=="Sun" and en_date>=live_date and st_date<=week_in:
+                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3])
+                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+            except Exception:
+                Snackbar(text="Weekday load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                        font_size ="15dp").open() # type: ignore
+        
 
     def clear_for_month(self):
 
         screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
         screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
         screen_manager.get_screen("Calendarscreen").timetable_view.size_hint= .99,.78
-        screen_manager.get_screen("Calendarscreen").timetable_view.pos_hint={"center_x":.5,"center_y": .49} 
-        for dmon in range(0,30,1):
-            dmon=str(dmon)
-            screen_manager.get_screen("Calendarscreen").table_list.add_widget(MonthCard(evnt_date=dmon))
+        screen_manager.get_screen("Calendarscreen").timetable_view.pos_hint={"center_x":.5,"center_y": .49}
+
+        now_year = datetime.now().year
+        now_month = datetime.now().month
+        first_day=datetime(year=now_year,month=now_month,day=1) 
+        last_day=datetime(year=now_year,month=now_month+1,day=1)+timedelta(days=-1) 
+        first_dy=int(first_day.strftime("%d"))
+        last_dy=int(last_day.strftime("%d"))
+        for dayof_mnth in range(first_dy,last_dy+1,1):
+            full_dt=datetime(year=now_year,month=now_month,day=dayof_mnth)
+            month_wkd=str(full_dt.strftime("%a"))
+            dayof_mnth=str(dayof_mnth)
+            screen_manager.get_screen("Calendarscreen").table_list.add_widget(MonthCard(evnt_day=month_wkd,evnt_date=dayof_mnth))
+
+
 
     def clear_for_week(self):
+        """_summary_
+        """        
         screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
         screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
         #day_sch must only be Monday events form databse if end_date not datetime now 
-        day_sch =TableCard()
-        screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-        screen_manager.get_screen("Calendarscreen").days_of_week.size_hint_x=None
+
+        Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_DATE,ED_DATE,ST_TIME,ED_TIME FROM EVENT")
+        event_arr=Database.cursor.fetchall()
+        try:
+            screen_manager.get_screen("Calendarscreen").days_of_week.size_hint_x=None
+            if event_arr!=[]:
+                for evt in event_arr:
+                    live_date =str(datetime.now())
+                    live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+                    en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
+
+                    week_in= live_date+timedelta(days=7)
+
+                    st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
+                    day_dt=st_date.strftime("%d")
+                    if evt[3]=="Mon" and en_date>=live_date and st_date<=week_in:
+                        """ and en_date<live_date+1: """
+
+                        day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3])
+                        screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+
+                    #else:pass
+            days =["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+            for day in days:
+                screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(WeekdayCard(dayname=day ))
+                screen_manager.get_screen("Calendarscreen").timetable_view.size_hint= .99,.7
+                screen_manager.get_screen("Calendarscreen").timetable_view.pos_hint={"center_x":.5,"center_y":.45} 
+        except Exception:
+            Snackbar(text="Monday load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                    font_size ="15dp").open() # type: ignore
         
-        days =["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
-        for day in days:
-            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(WeekdayCard(dayname=day ))
-            screen_manager.get_screen("Calendarscreen").timetable_view.size_hint= .99,.7
-            screen_manager.get_screen("Calendarscreen").timetable_view.pos_hint={"center_x":.5,"center_y":.45} 
 
     def clear_add_course(self):
         """_summary_
@@ -1098,8 +1229,7 @@ class MainApp(MDApp):
                 Snackbar(text=f"What time does {tittle} end ?",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore
-        except Exception as e:
-            print(e)
+        except Exception:
             Snackbar(text="Event Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                     font_size ="15dp").open() # type: ignore
