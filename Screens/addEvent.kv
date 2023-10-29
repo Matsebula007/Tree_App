@@ -102,16 +102,19 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
-            MDLabel:
+            TextInput:
                 id:start_date
-                text:" Start Date"
-                size_hint: .8,None
+                hint_text:"Start date"
+                size_hint: .9,.9
+                multiline:False
+                cursor_width: "2dp"
                 pos_hint: {"center_x": .5,"center_y": .5}
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
                 padding:10
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
+
             MDIconButton:
                 icon: 'calendar-check'
                 icon_size:dp(25)
@@ -129,10 +132,12 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
-            MDLabel:
+            TextInput:
                 id:end_date
-                text:"End Date"
-                size_hint: .8,None
+                hint_text:"End date"
+                size_hint: .9,.9
+                multiline:False
+                cursor_width: "2dp"
                 pos_hint: {"center_x": .5,"center_y": .5}
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
@@ -158,10 +163,12 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
-            MDLabel:
+            TextInput:
                 id:start_time
-                text:"Start time"
-                size_hint: .8,None
+                hint_text:"Start time"
+                size_hint: .8,.9
+                multiline:False
+                cursor_width: "2dp"
                 pos_hint: {"center_x": .5,"center_y": .5}
                 cursor_width: "2dp"
                 foreground_color: 12/255,12/255,13/255,1
@@ -186,10 +193,12 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
-            MDLabel:
+            TextInput:
                 id:end_time
-                text:"End Time"
-                size_hint: .8,None
+                hint_text:"End time"
+                size_hint: .8,.9
+                multiline:False
+                cursor_width: "2dp"
                 pos_hint: {"center_x": .5,"center_y": .5}
                 cursor_width: "2dp"
                 foreground_color: 12/255,12/255,13/255,1
@@ -216,8 +225,8 @@ MDScreen:
             font_size: "18dp"
             color: 1,1,1,1
             on_release:
-                app.update_timetable(event_name.text,evnt_venue.text,start_date.text,end_date.text,start_time.text,end_time.text)
-                
+                app.add_event(event_name.text,evnt_venue.text,start_date.text,end_date.text,start_time.text,end_time.text)
+                #app.update_timetable(event_name.text,evnt_venue.text,start_date.text,end_date.text,start_time.text,end_time.text)
             canvas.before:
                 Color:
                     rgba:(30/255,47/255,151/255,1)

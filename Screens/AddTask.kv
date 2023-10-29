@@ -100,10 +100,11 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
-            MDLabel:
+            TextInput:
                 id:task_date
-                text:"Date"
-                size_hint: .8,None
+                hint_text:"Date"
+                multiline:False
+                size_hint: .9,.9
                 pos_hint: {"center_x": .5,"center_y": .5}
                 foreground_color: 12/255,12/255,13/255,1
                 background_color: 0,0,0,0
@@ -129,10 +130,11 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
-            MDLabel:
+            TextInput:
                 id:task_time
-                text:"Start time"
-                size_hint: .8,None
+                hint_text:"Start time"
+                size_hint: .9,.9
+                multiline:False
                 pos_hint: {"center_x": .4,"center_y": .5}
                 cursor_width: "2dp"
                 foreground_color: 12/255,12/255,13/255,1
@@ -157,10 +159,11 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
-            MDLabel:
+            TextInput:
                 id:task_time2
-                text:"End Time"
-                size_hint: .8,None
+                hint_text:"End Time"
+                size_hint: .9,.9
+                multiline:False
                 pos_hint: {"center_x": .4,"center_y": .5}
                 cursor_width: "2dp"
                 foreground_color: 12/255,12/255,13/255,1

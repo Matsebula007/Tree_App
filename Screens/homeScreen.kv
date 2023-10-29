@@ -110,30 +110,17 @@ MDScreen:
     course_home: course_home
     md_bg_color: 244/255,249/255,253/255,1
 
-    #home header bar
-    MDFloatLayout:
-    
-        MDIconButton:
-            icon:"chevron-left"
-            icon_size:dp(30)
-            pos_hint:{"center_y":.98}
-            theme_text_color:'Custom'
-            color:(30/255,47/255,151/255,1)
-            on_press:
-                root.manager.transition = FadeTransition()
-                root.manager.current = "main"
-    
     #schedule label
     MDLabel:
         text:"Your schedule"
         font_name:"assets/fonts/JosefinSans-Bold.ttf"
-        font_size:"24dp"
-        pos_hint: {"center_x":.55,"center_y": .92}
+        font_size:"28dp"
+        pos_hint: {"center_x":.55,"center_y": .95}
 
     #task view_home
     MDFloatLayout:
         size_hint:1,.22
-        pos_hint: {"center_x": .5,"center_y": .79}
+        pos_hint: {"center_x": .5,"center_y": .8}
         canvas:
             RoundedRectangle:
                 size:self.size
@@ -161,7 +148,7 @@ MDScreen:
     MDLabel:
         text:"Your timetable"
         font_name:"assets/fonts/JosefinSans-Bold.ttf"
-        font_size:"24dp"
+        font_size:"28dp"
         pos_hint: {"center_x":.55,"center_y": .64}
    
     #course view_home

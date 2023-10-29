@@ -2,6 +2,7 @@ import random
 import sqlite3
 from datetime import date, datetime
 from errno import ETIMEDOUT
+from mimetypes import common_types
 
 from kivy.animation import Animation
 from kivy.clock import Clock
@@ -19,6 +20,7 @@ from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.pickers import MDDatePicker, MDTimePicker
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.snackbar import Snackbar
+from urllib3 import Retry
 
 Window.softinput_mode ="below_target"
 
@@ -322,7 +324,7 @@ class TableCard(CommonElevationBehavior,MDFloatLayout,MDGridLayout):
         super().__init__(**kwargs)
         # state a tablecard_key which we shall use link the card with the Database item primary keys
         self.key=key
-    event_Name =StringProperty()
+    event_Name =StringProperty("PHY312")
     start_time =StringProperty("08:30 AM")
     end_time =StringProperty("02:30 PM")
     event_venue = StringProperty("EMPORIUM")
@@ -330,8 +332,15 @@ class TableCard(CommonElevationBehavior,MDFloatLayout,MDGridLayout):
     evnt_day =StringProperty("Tue")
 
 class WeekdayCard(CommonElevationBehavior,MDFloatLayout):
-    dayname=StringProperty()
-    pass
+    dayname=StringProperty("")
+
+class DaySelectionCard(CommonElevationBehavior,MDFloatLayout):
+    selected_day= StringProperty("Sunday")
+
+class MonthCard(CommonElevationBehavior,MDFloatLayout):
+    evnt_day =StringProperty("Tue")
+    evnt_date= StringProperty("21")
+
 
 class MainApp(MDApp):
     """_summary_
@@ -708,6 +717,32 @@ class MainApp(MDApp):
             color =(52/255,168/255,83/255,1)
         return color
 
+    def asmark_color(self,mark,weight):
+        """_summary_
+
+        Args:
+            mark (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """         
+        if weight!="":
+            weight=float(weight)
+            mark=float(mark)
+            weight_check =weight/2.0
+            color=(52/255,168/255,83/255,1)
+            if mark<(weight_check+0.0000000000001):
+                color =(234/255,67/255,53/255,1)
+            if mark>(weight_check-0.0000000000001):
+                color =(2/255,44/255,26/255,1)
+            if mark<0.0:
+                color =(52/255,168/255,83/255,1)
+            return color
+        else:
+            color=(52/255,168/255,83/255,1)
+            return color
+
+
 # add course ID to next screen
     def get_id(self,crseid,crs_cr):
         """_summary_
@@ -792,14 +827,49 @@ class MainApp(MDApp):
         screen_manager.get_screen("addAssesment").ass_name.text=""
         pass
 
+    def selected_weekday(self,dayname):
+        screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
+        screen_manager.get_screen("Calendarscreen").days_of_week.size_hint_x=1
+        if dayname=="Mon":
+            view_day=DaySelectionCard(selected_day="Monday")
+            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+        if dayname=="Tue":
+            view_day=DaySelectionCard(selected_day="Tuesday")
+            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+        if dayname=="Wed":
+            view_day=DaySelectionCard(selected_day="Wednesday")
+            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+        if dayname=="Thu":
+            view_day=DaySelectionCard(selected_day="Thursday")
+            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+        if dayname=="Fri":
+            view_day=DaySelectionCard(selected_day="Friday")
+            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+        if dayname=="Sat":
+            view_day=DaySelectionCard(selected_day="Saturday")
+            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+        if dayname=="Sun":
+            view_day=DaySelectionCard(selected_day="Sunday")
+            screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+
     def clear_for_month(self):
 
         screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
+        screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
         screen_manager.get_screen("Calendarscreen").timetable_view.size_hint= .99,.78
         screen_manager.get_screen("Calendarscreen").timetable_view.pos_hint={"center_x":.5,"center_y": .49} 
+        for dmon in range(0,30,1):
+            dmon=str(dmon)
+            screen_manager.get_screen("Calendarscreen").table_list.add_widget(MonthCard(evnt_date=dmon))
 
     def clear_for_week(self):
         screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
+        screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
+        #day_sch must only be Monday events form databse if end_date not datetime now 
+        day_sch =TableCard()
+        screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+        screen_manager.get_screen("Calendarscreen").days_of_week.size_hint_x=None
+        
         days =["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
         for day in days:
             screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(WeekdayCard(dayname=day ))
@@ -905,8 +975,135 @@ class MainApp(MDApp):
         day_sch =TableCard(event_Name=evnt_name,event_venue=evt_venue,evnt_day=dayname,evnt_date=evdate,start_time=stime,end_time=etime)
         screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
 
-        screen_manager.transition = FadeTransition()
-        screen_manager.current = "Calendarscreen"
+    
+#Add event to user_database table EVENT 
+    def add_event(self,tittle,venue,st_date,ed_date,st_time,ed_time):
+
+        try:
+            if tittle!="" and len(tittle)<13 and venue!="" and len(venue)<11 and st_date!="" and ed_date!="" and st_time!="" and ed_time!="":
+
+                mystart_date =datetime.strptime(st_date,"%a %d %b %Y")
+                day=mystart_date.strftime("%a") #Mon
+                #srt_date=mystart_date.strftime("%d")#21
+
+                myend_date =datetime.strptime(ed_date,"%a %d %b %Y")
+                #dayname=myend_date.strftime("%a")
+                #end_date=myend_date.strftime("%d")
+
+                strt_time = datetime.strptime(st_time,"%H:%M")
+                srt_time= strt_time.time().strftime("%I:%M %p") 
+
+                end_time = datetime.strptime(ed_time,"%H:%M")
+                en_time= end_time.time().strftime("%I:%M %p") 
+                live_date =str(datetime.now())
+                live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+
+                if mystart_date <= myend_date and strt_time<end_time and myend_date >= live_date:
+
+                    Database.cursor.execute("SELECT TITTLE FROM EVENT")
+                    tittle_arr =Database.cursor.fetchall()
+                    Database.cursor.execute("SELECT ST_TIME FROM EVENT")
+                    st_arr =Database.cursor.fetchall()
+                    Database.cursor.execute("SELECT ST_DATE FROM EVENT")
+                    sd_arr =Database.cursor.fetchall()
+
+                    existing_event=[]
+                    tittle=str(tittle)
+                    for exist_tl in tittle_arr:
+                        for i in exist_tl:
+                            existing_event.append(i)
+
+                    event_startT=[]
+                    event_startD=[]
+                    for booked_tm  in st_arr :
+                        for t in booked_tm :
+                            t=str(t) 
+                            event_startT.append(t)
+                    for booked_dt  in sd_arr :
+                        for d in booked_dt :
+                            d=str(d) 
+                            event_startD.append(d)
+    
+                    full_startT=[]
+                    if event_startD !="" and event_startT!="":
+                        for i in range(0,len(event_startD),1):
+                            tm=event_startT[i]
+                            dt=event_startD[i]
+                            tm=str(tm)
+                            dt=str(dt)
+                            full_startT.append(tm+" "+dt)
+                            
+                    partsrt_time=str(srt_time)  
+                    partsrt_date=str(mystart_date)
+                    new_eventst=partsrt_time+" "+partsrt_date
+                    
+                    if new_eventst in full_startT:
+                        Snackbar(text="Time-slot Already Booked",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore  
+                        
+                    if tittle in existing_event:
+                        Snackbar(text="Event Already exist",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore  
+                    elif tittle not in existing_event and new_eventst not in full_startT:
+                        data= tittle,venue,day,mystart_date,myend_date,srt_time,en_time
+                        Database.cursor.execute("INSERT INTO EVENT(TITTLE,VENUE,DAY,ST_DATE,ED_DATE,ST_TIME,ED_TIME) VALUES(?,?,?,?,?,?,?)",data)
+                        Database.con.commit()
+                        screen_manager.transition = FadeTransition()
+                        screen_manager.current = "Calendarscreen"   
+                    
+                elif mystart_date>myend_date:
+                    Snackbar(text="Invalid Event dates",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore
+                elif strt_time>end_time:
+                    Snackbar(text="Event cannot end before it begins",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore
+                elif myend_date<live_date:
+                    Snackbar(text="Event cannot end in the past",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore
+                    
+            elif tittle=="":
+                Snackbar(text="Event name is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif len(tittle)>12:
+                Snackbar(text="Event name must be  <13 char!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif venue=="":
+                Snackbar(text=f"Where will {tittle} be ?",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif len(venue)>10:
+                Snackbar(text=f"{tittle} venue must be <11 char ?",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif st_date=="":
+                Snackbar(text=f"What day does {tittle} start ?",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif ed_date=="":
+                Snackbar(text=f"What day does {tittle} end ?",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif st_time =="":
+                Snackbar(text=f"What time does {tittle} start ?",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+            elif ed_time =="":
+                Snackbar(text=f"What time does {tittle} end ?",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                        font_size ="15dp").open() # type: ignore
+        except Exception as e:
+            print(e)
+            Snackbar(text="Event Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                    font_size ="15dp").open() # type: ignore
+        
 
 #update TASK and HOME view 
     def update_task(self,tittle):
@@ -1031,7 +1228,7 @@ class MainApp(MDApp):
             tcheck (bool): check test selection
             test_w (int): test weight
             acheck (bool): _description_
-            ass_w (_type_): _description_
+            ass_w (int): assingment weight
             pcheck (_type_): _description_
             prese_w (_type_): _description_
             qcheck (_type_): _description_
@@ -1061,17 +1258,33 @@ class MainApp(MDApp):
                     for i in crse:
                         taken_crs.append(i)
                 if courseid in taken_crs:
-                    Snackbar(text="Course Alredy exist",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    Snackbar(text="Course Already exist",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore  
                 elif courseid not in taken_crs:   
                     if  credits !=""and ca_rt !=""  and ex_rt !="":                        
                         try:
                             #create databse for course and initialize tables of categories
+
+                            #get Read category SUM(weights) from database check 
+                            # if sumof_weights==100.0 
+                            # else:
+                            #   snackbar
+                            #
+                            test_w=float(test_w)
+                            ass_w=float(ass_w)
+                            prese_w=float(prese_w)
+                            quiz_w=float(quiz_w)
+                            lab_w=float(lab_w)
+                            group_w=float(group_w)
+                            clswrk_w=float(clswrk_w)
+                            other_w=float(other_w)
+
+                            totl_weight=test_w+ass_w,+prese_w+quiz_w+lab_w+group_w+clswrk_w+other_w
                             ca_rt=float(ca_rt)
                             ex_rt=float(ex_rt)
-                            tatal_ratio=(ca_rt+ex_rt)
-                            if tatal_ratio ==100.0:
+                            total_ratio=(ca_rt+ex_rt)
+                            if total_ratio ==100.0 and totl_weight==100.0:
                                 try:
                                     con = sqlite3.connect(f'{courseid}.db')
                                     cursor = con.cursor() # type: ignore
@@ -1145,8 +1358,12 @@ class MainApp(MDApp):
                                     Snackbar(text="INDE:3: Add Course Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                                             size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                                             font_size ="15dp").open() # type: ignore
-                            elif tatal_ratio!=100.0:
+                            elif total_ratio!=100.0:
                                 Snackbar(text="Faulty Course ratio",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                                        font_size ="15dp").open() # type: ignore
+                            elif totl_weight!=100.0:
+                                Snackbar(text="Faulty Assessment weights",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                                         font_size ="15dp").open() # type: ignore
                         except Exception:
@@ -1506,6 +1723,12 @@ if __name__ == "__main__":
     
     MainApp().run()
     """ for it in range(77,79,1):
+    for it in range(0,3,1):
+        Database.cursor.execute(f"DELETE FROM EVENT WHERE ID ={it}")
+        Database.con.commit()
+    Database.cursor.execute("ALTER TABLE EVENT DROP COLUMN DATE")
+    Database.cursor.execute("CREATE TABLE EVENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT UNIQUE NOT NULL,VENUE TEXT NOT NULL,DAY TEXT NOT NULL,DATE TEXT NOT NULL,ST_DATE TEXT NOT NULL,ED_DATE TEXT NOT NULL,ST_TIME TEXT NOT NULL,ED_TIME TEXT NOT NULL)")
+    Database.con.commit()
         Database.cursor.execute(f"DELETE FROM COURSES WHERE ID ={it}")
         Database.con.commit() """
     

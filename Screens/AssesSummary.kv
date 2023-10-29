@@ -8,6 +8,7 @@
     assmtContr:assmtContr
     assmtMark:assmtMark
     assmtName:assmtName
+    assmtWeight:assmtWeight
     testpk:testpk
 
     Button:
@@ -67,7 +68,7 @@
             id:assmtContr
             text:root.testContrib
             size_hint:.8,.1
-            color:app.avg_color(assmtContr.text)
+            color:app.asmark_color(assmtContr.text,assmtWeight.text)
             pos_hint: {'center_x':.5,'center_y': .2}
             foreground_color: 1/255,1/255,1/255,1
             background_color: 0,0,0,0
@@ -212,7 +213,7 @@
             MDLabel:
                 id:categavar
                 text: "0.0"
-                color:app.avg_color(categavar.text)
+                color:app.avg_color(categavar.text,)
                 pos_hint: {'center_x':.55,'center_y':.5}
                 size_hint: 1, 1
                 foreground_color: 1/255,1/255,1/255,1
