@@ -369,6 +369,7 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('screens/addcourse.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addAssessment.kv'))
         screen_manager.add_widget(Builder.load_file('screens/calendarscreen.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/current_month.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addEvent.kv'))
         Builder.load_file('screens/overviewScreen.kv')
         Builder.load_file('screens/assesSummary.kv')
@@ -425,9 +426,12 @@ class MainApp(MDApp):
         day = str(datetime.now().strftime("%d"))
         screen_manager.get_screen("todoScreen").date_text.text = f"{days[wd]}, {day} {month}"
         screen_manager.get_screen("Calendarscreen").table_month.text = f"{fullmonth}"
+        screen_manager.get_screen("monthscreen").table_month.text = f"{fullmonth}"
         
         #updates course summary   
         self.summariseCourse()
+        #create month
+        self.create_month()
        
         try:
             completed_tasks, uncomplete_tasks = self.get_tasks()
@@ -987,30 +991,37 @@ class MainApp(MDApp):
 
 
     def create_month(self):
-        now_year = datetime.now().year
-        now_month = datetime.now().month
-        first_day=datetime(year=now_year,month=now_month,day=1) 
-        last_day=datetime(year=now_year,month=now_month+1,day=1)+timedelta(days=-1) 
-        first_dy=int(first_day.strftime("%d"))
-        last_dy=int(last_day.strftime("%d"))
-        for dayof_mnth in range(first_dy,last_dy+1,1):
-            full_dt=datetime(year=now_year,month=now_month,day=dayof_mnth)
-            day_name=str(full_dt.strftime("%a"))
-            evnt_date=str(dayof_mnth)
-            task_count=3
-            task_duratn="9"
-            data= day_name,evnt_date,task_count,task_duratn
-            Database.cursor.execute("INSERT INTO MONTH(DAY,DATE,TASK,HOURS) VALUES(?,?,?,?)",data)
-            Database.con.commit()
+
+        Database.cursor.execute("SELECT COUNT(*) FROM ( SELECT 0 FROM MONTH LIMIT 1)")
+        count = Database.cursor.fetchone()
+        for icount in count:
+            if icount==0:
+                for it in range(0,32,1):
+                    Database.cursor.execute(f"DELETE FROM MONTH WHERE ID ={it}")
+                    Database.con.commit()
+                now_year = datetime.now().year
+                now_month = datetime.now().month
+                first_day=datetime(year=now_year,month=now_month,day=1) 
+                last_day=datetime(year=now_year,month=now_month+1,day=1)+timedelta(days=-1) 
+                first_dy=int(first_day.strftime("%d"))
+                last_dy=int(last_day.strftime("%d"))
+                for dayof_mnth in range(first_dy,last_dy+1,1):
+                    full_dt=datetime(year=now_year,month=now_month,day=dayof_mnth)
+                    day_name=str(full_dt.strftime("%a"))
+                    evnt_date=str(dayof_mnth)
+                    task_count=3
+                    task_duratn="9"
+                    data= day_name,evnt_date,task_count,task_duratn
+                    Database.cursor.execute("INSERT INTO MONTH(DAY,DATE,TASK,HOURS) VALUES(?,?,?,?)",data)
+                    Database.con.commit()
+                else:pass
             
 
     def clear_for_month(self):
         try:
            
-            screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
-            month_sch =MonthCard()
-            screen_manager.get_screen("Calendarscreen").table_list.add_widget(month_sch)
-            """ Database.cursor.execute("SELECT ID,DAY,DATE,TASK,HOURS FROM MONTH WHERE ID IS NOT NULL")
+            screen_manager.get_screen("monthscreen").table_list.clear_widgets()
+            Database.cursor.execute("SELECT ID,DAY,DATE,TASK,HOURS FROM MONTH WHERE ID IS NOT NULL")
             month_arr=Database.cursor.fetchall()
             for i in month_arr:
                 day=str(i[2])
@@ -1019,7 +1030,7 @@ class MainApp(MDApp):
 
                 #print(day," ",num," ",hr)
                 month_sch =MonthCard(key=i[0],evnt_day=i[1],evnt_date=day,task_number=num,evnt_hours=hr)
-                screen_manager.get_screen("Calendarscreen").table_list.add_widget(month_sch) """
+                screen_manager.get_screen("monthscreen").table_list.add_widget(month_sch)
         except Exception:
             Snackbar(text="Month load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
@@ -1093,7 +1104,7 @@ class MainApp(MDApp):
             for cat in live_categ:
                 grade = str(cat[2])
                 contrib= str(cat[3])
-                tugcount = str(cat[4])+" Tug"
+                tugcount = str(cat[4])+" Tug" # type: ignore
                 add_categ =(OverviewCard(categ_key=cat[0],Category=cat[1],Grade=grade,Contribution=contrib,TUG_count=tugcount))
                 screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
         except Exception:
@@ -1443,7 +1454,7 @@ class MainApp(MDApp):
                 course_id = str(course_id)
                 course_id =course_id.replace(" ","")
                 courseid = course_id.upper()
-                Database.cursor.execute("SELECT COURSE_ID FROM COURSES")
+                Database.cursor.execute("SELECT COURSE_ID FROM COURSES  WHERE ID IS NOT NULL")
                 arr =Database.cursor.fetchall()
                 taken_crs=[]
                 for crse in arr:
@@ -1453,7 +1464,7 @@ class MainApp(MDApp):
                     Snackbar(text="Course Already exist",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore  
-                elif courseid not in taken_crs:   
+                elif taken_crs==[] or courseid not in taken_crs:   
                     test_w=float(test_w)
                     ass_w=float(ass_w)
                     prese_w=float(prese_w)
@@ -1905,10 +1916,11 @@ class MainApp(MDApp):
     
 
 if __name__ == "__main__":  
-    Database.cursor.execute(f"DELETE FROM COURSES WHERE ID =82")
-    Database.con.commit()
-
+    """ for it in range(0,857,1):
+        Database.cursor.execute(f"DELETE FROM MONTH WHERE ID ={it}")
+        Database.con.commit() """
     MainApp().run()
+
     """ for it in range(77,79,1):
     Database.cursor.execute("CREATE TABLE MONTH(ID INTEGER PRIMARY KEY AUTOINCREMENT,DAY TEXT NOT NULL,DATE TEXT NOT NULL,TASK INTEGER NOT NULL,HOURS TEXT NOT NULL)")
     Database.con.commit()

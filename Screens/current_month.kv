@@ -1,206 +1,123 @@
 #: import FadeTransition kivy.uix.screenmanager.FadeTransition
-<TableCard>
-    id: table_card
+<MonthCard>
+    id: month_card
     elevation: 0
     radius:[8]
     size_hint:1,None
-    height:dp(100)
-    #card primary key holder
-    MDLabel:
-        id:key
-        markup:True
+    height:dp(50)
+    md_bg_color: 248/255,249/255,253/255,1
     MDFloatLayout:
         pos_hint: {'center_x':.5,'center_y':.5}
         size_hint:1,1
         canvas:
+            Color:
+                rgba:(74/255,222/255,222/255,.8)
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
                 radius:[15]
-    #Event times
-        MDFloatLayout:
-            size_hint:.65,.36
-            pos_hint: {"center_x":.67,"center_y": .83}
-            canvas:
-                Color:
-                    rgba:app.calendarchooser()
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[15]
-           
-            #Event Start time
-            Button:
-                text:root.start_time
-                markup: True
-                color: 1/255,1/255,1/255,1
-                font_name: 'assets/fonts/JosefinSans-Bold.ttf'
-                font_size:"16sp"
-                size_hint_x:.48
-                size_hint_y:1
-                pos_hint:{"center_x":.28,"center_y": .5}
-                background_color:0,0,0,0
-                on_release:app.delete_event(table_card)
-
-            MDLabel:
-                text:"-"
-                color:(30/255,47/255,151/255,.4)
-                font_name: 'assets/fonts/JosefinSans-Bold.ttf'
-                font_size:"30sp"
-                size_hint_x:.1
-                size_hint_y:.1
-                pos_hint:{"center_x":.54,"center_y":.5}
-            #Event End time
-            MDLabel:
-                text:root.end_time
-                markup: True
-                color: 1/255,1/255,1/255,1
-                font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
-                font_size:"16sp"
-                size_hint_x:.48
-                size_hint_y:1
-                pos_hint:{"center_x":.82,"center_y": .5}
-
-    #Event name and Location
-        MDFloatLayout:
-            size_hint:.65,.58
-            pos_hint: {"center_x":.67,"center_y": .3}
-            canvas:
-                Color:
-                    rgba:(244/255,249/255,253/255,1)
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[15]
-            #Event name
-            MDLabel:
-                text:root.event_Name
-                markup: True
-                color: 1/255,1/255,1/255,1
-                font_name: 'assets/fonts/JosefinSans-Bold.ttf'
-                font_size:"24sp"
-                size_hint_x:1
-                size_hint_y:.6
-                padding:10
-                pos_hint:{"center_x":.5,"center_y": .74}
-            #Event venue
-            MDLabel:
-                text:root.event_venue
-                markup: True
-                color: 30/255,47/255,151/255,1
-                font_name: 'assets/fonts/JosefinSans-Regular.ttf'
-                font_size:"16sp"
-                size_hint_x:.6
-                size_hint_y:.2
-                pos_hint:{"center_x":.5,"center_y": .26}
-            #Time span
-            MDLabel:
-                text:"72 mins"
-                markup: True
-                color: 30/255,47/255,151/255,1
-                font_name: 'assets/fonts/JosefinSans-Regular.ttf'
-                font_size:"10sp"
-                size_hint_x:.2
-                size_hint_y:.2
-                pos_hint:{"center_x":.8,"center_y": .08}
-
     #Event date
         MDFloatLayout:
             size_hint:.32,1
             pos_hint: {"center_x":.16,"center_y":.5}
             canvas:
-                Color:
-                    rgba:app.calendarchooser()
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
                     radius:[15]
             #Event date
             MDLabel:
-                text:root.evnt_day
+                text:root.evnt_day 
                 markup: True
                 color:30/255,47/255,151/255,1
                 font_name: 'assets/fonts/CroissantOne-Regular.ttf'
-                font_size:"30sp"
+                font_size:"20sp"
                 size_hint_x:.8
-                size_hint_y:.5
-                pos_hint:{"center_x":.54,"center_y": .8}
+                size_hint_y:.4
+                pos_hint:{"center_x":.5,"center_y": .78}
             #Event month
             MDLabel:
                 text:root.evnt_date
                 markup: True
                 color: 1/255,1/255,1/255,1
                 font_name: 'assets/fonts/CroissantOne-Regular.ttf'
-                font_size:"26sp"
-                size_hint_x:.4
+                font_size:"28sp"
+                size_hint_x:.5
+                size_hint_y:.5
+                pos_hint:{"center_x":.7,"center_y": .32}
+    #TASK NUMBER
+        MDFloatLayout:
+            size_hint:.3,.9
+            pos_hint: {"center_x":.5,"center_y":.5}
+            canvas:
+                Color:
+                    rgba:(248/255,249/255,253/255,.8)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            #TASK text
+            MDLabel:
+                text:"Tasks" 
+                markup: True
+                color:30/255,47/255,151/255,.8
+                font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+                font_size:"18sp"
+                size_hint_x:.8
                 size_hint_y:.4
-                pos_hint:{"center_x":.5,"center_y": .32}
-
-
-
-<DaySelectionCard>
-    id: day_selection
-    elevation: 0
-    radius:[8]
-    size_hint:1,1
-    #height:dp(50)
-    md_bg_color: 248/255,249/255,253/255,1
-    MDFloatLayout:
-        size_hint:.98,.98
-        pos_hint: {"center_x":.5,"center_y":.5}
-        canvas:
-            Color:
-                rgba:app.calendarchooser()
-            RoundedRectangle:
-                size:self.size
-                pos:self.pos
-                radius:[15]
-        #Event date
-        Button:
-            id:selct_day
-            text:root.selected_day 
-            size_hint:1,1
-            pos_hint: {"center_x":.5,"center_y": .5}
-            background_color:0,0,0,0
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
-            font_size: "20dp"
-            color: 1,1,1,1
-            on_press:
-                app.clear_for_week()
-
-<WeekdayCard>
-    id: table_card
-    elevation: 0
-    radius:[8]
-    size_hint:None,.8
-    width:dp(50)
-    md_bg_color:(30/255,47/255,151/255,.5)
-    MDFloatLayout:
-        size_hint: 1,1
-        pos_hint: {"center_x":.5,"center_y": .5}
-        Button:
-            id:dayname
-            text:root.dayname
-            size_hint:.9,.9
-            pos_hint: {"center_x":.5,"center_y": .5}
-            background_color:0,0,0,0
-            font_name: 'assets/fonts/JosefinSans-Bold.ttf'
-            font_size: "18dp"
-            color: 1,1,1,1
-            on_press:
-                app.selected_weekday(dayname.text)
-                
+                pos_hint:{"center_x":.55,"center_y": .74}
+            #Event count
+            MDLabel:
+                text:root.task_number 
+                markup: True
+                color: 1/255,1/255,1/255,1
+                font_name: 'assets/fonts/CroissantOne-Regular.ttf'
+                font_size:"16sp"
+                size_hint_x:.5
+                size_hint_y:.5
+                pos_hint:{"center_x":.55,"center_y": .32}
+   
+    #Event DAY HOURS
+        MDFloatLayout:
+            size_hint:.3,.9
+            pos_hint: {"center_x":.84,"center_y":.5}
+            canvas:
+                Color:
+                    rgba:(248/255,249/255,253/255,.8)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[15]
+            #Events HOURS text
+            MDLabel:
+                text:"Hours"
+                markup: True
+                color:30/255,47/255,151/255,.8
+                font_name: 'assets/fonts/JosefinSans-Bold.ttf'
+                font_size:"18sp"
+                size_hint_x:.8
+                size_hint_y:.4
+                pos_hint:{"center_x":.55,"center_y": .74}
+            #Event HOURS
+            MDLabel:
+                text:root.evnt_hours
+                markup: True
+                color: 1/255,1/255,1/255,1
+                font_name: 'assets/fonts/CroissantOne-Regular.ttf'
+                font_size:"16sp"
+                size_hint_x:.5
+                size_hint_y:.5
+                pos_hint:{"center_x":.6,"center_y": .32}
 
 
 MDScreen:
-    name:"Calendarscreen"
+    name:"monthscreen"
     md_bg_color: 244/255,249/255,253/255,1
     table_list:table_list
     table_month:table_month
     week_text:week_text
     statusbarW:statusbarW
     statusbarM:statusbarM
-    days_of_week:days_of_week
     timetable_view:timetable_view
     #selection control
     MDFloatLayout:
@@ -213,7 +130,7 @@ MDScreen:
             id:statusbarW
             size_hint:.46,.002
             pos_hint:{"center_x":.27, "center_y":.885}
-            md_bg_color:"#7BDFF2"
+            md_bg_color:"#EEF7F6"
         Button:
             id:week_text
             text:"This Week"
@@ -227,11 +144,13 @@ MDScreen:
                 table_month.color= 63/255,72/255,204/255,.7
                 week_text.color= 63/255,72/255,204/255,1
                 app.clear_for_week()
+                root.manager.transition = FadeTransition()
+                root.manager.current ="Calendarscreen"
         MDFloatLayout:
             id:statusbarM
             size_hint:.46,.002
             pos_hint:{"center_x":.73, "center_y":.885}
-            md_bg_color:"#EEF7F6"
+            md_bg_color:"#7BDFF2"
         Button:
             id:table_month
             text:"August"
@@ -245,7 +164,7 @@ MDScreen:
                 week_text.color= 63/255,72/255,204/255,.7
                 table_month.color= 63/255,72/255,204/255,1
                 root.manager.transition = FadeTransition()
-                root.manager.current ="monthscreen"
+                app.clear_for_month()
 
     #top add event button
     MDFloatLayout:
@@ -277,40 +196,15 @@ MDScreen:
             on_press:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "add_event"
-    #Weekdays Bar
-    MDFloatLayout:
-        size_hint:.97,.1
-        pos_hint: {"center_x": .5,"center_y": .84}
-        canvas:
-            RoundedRectangle:
-                size:self.size
-                pos:self.pos
-                radius:[15]
-        ScrollView:
-            do_scroll_y:False
-            do_scroll_x:True
-            size_hint:1,1
-            pos_hint:{"center_x":.5,"center_y":.5}
-            bar_width:1
-            bar_color:(30/255,47/255,151/255,.8)
-            MDGridLayout:
-                orientation: "lr-bt"
-                id:days_of_week
-                rows:1
-                width:self.minimum_width
-                row_force_default: False
-                size_hint_x:None
-                padding:10,10
-                spacing:10,10
-                adaptive_width:True
+    
                 
 
     
     #Timetable view
     MDFloatLayout:
         id:timetable_view
-        size_hint:.99,.7
-        pos_hint:{"center_x":.5,"center_y": .45}  
+        size_hint:.99,.8
+        pos_hint:{"center_x":.5,"center_y": .48}  
         canvas:
             RoundedRectangle:
                 size:self.size
