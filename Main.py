@@ -1,8 +1,6 @@
 import random
 import sqlite3
 from datetime import date, datetime, timedelta
-from errno import ETIMEDOUT
-from mimetypes import common_types
 
 from kivy.animation import Animation
 from kivy.clock import Clock
@@ -20,7 +18,6 @@ from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.pickers import MDDatePicker, MDTimePicker
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.snackbar import Snackbar
-from urllib3 import Retry
 
 Window.softinput_mode ="below_target"
 
@@ -338,6 +335,10 @@ class DaySelectionCard(CommonElevationBehavior,MDFloatLayout):
     selected_day= StringProperty("Sunday")
 
 class MonthCard(CommonElevationBehavior,MDFloatLayout):
+    def __init__(self,key=None, **kwargs):
+        super().__init__(**kwargs)
+        # state a tablecard_key which we shall use link the card with the Database item primary keys
+        self.key=key
     evnt_day =StringProperty("Tue")
     evnt_date= StringProperty("21")
     task_number=StringProperty("4") 
@@ -696,6 +697,7 @@ class MainApp(MDApp):
         """        
         if value.active is True:
             percentbar.md_bg_color =0/255,255/255,125/255,1
+            cat_w.text = ""
         elif value.active is False:
             cat_w.text = ""
             percentbar.md_bg_color =0/255,255/255,125/255,.2
@@ -954,15 +956,37 @@ class MainApp(MDApp):
                 Snackbar(text="Weekday load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                         font_size ="15dp").open() # type: ignore
-        
+        elif event_arr==[]:
+            try:
+                if dayname=="Mon":
+                    view_day=DaySelectionCard(selected_day="Monday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                elif dayname=="Tue":
+                    view_day=DaySelectionCard(selected_day="Tuesday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                elif dayname=="Wed":
+                    view_day=DaySelectionCard(selected_day="Wednesday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                elif dayname=="Thu":
+                    view_day=DaySelectionCard(selected_day="Thursday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                elif dayname=="Fri":
+                    view_day=DaySelectionCard(selected_day="Friday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                elif dayname=="Sat":
+                    view_day=DaySelectionCard(selected_day="Saturday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+                elif dayname=="Sun":
+                    view_day=DaySelectionCard(selected_day="Sunday")
+                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
+            except Exception:
+                Snackbar(text="INDE:2: Empty week load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                        font_size ="15dp").open() # type: ignore
 
-    def clear_for_month(self):
 
-        screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
-        screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
-        screen_manager.get_screen("Calendarscreen").timetable_view.size_hint= .99,.78
-        screen_manager.get_screen("Calendarscreen").timetable_view.pos_hint={"center_x":.5,"center_y": .49}
 
+    def create_month(self):
         now_year = datetime.now().year
         now_month = datetime.now().month
         first_day=datetime(year=now_year,month=now_month,day=1) 
@@ -971,11 +995,36 @@ class MainApp(MDApp):
         last_dy=int(last_day.strftime("%d"))
         for dayof_mnth in range(first_dy,last_dy+1,1):
             full_dt=datetime(year=now_year,month=now_month,day=dayof_mnth)
-            month_wkd=str(full_dt.strftime("%a"))
-            dayof_mnth=str(dayof_mnth)
-            screen_manager.get_screen("Calendarscreen").table_list.add_widget(MonthCard(evnt_day=month_wkd,evnt_date=dayof_mnth))
-            screen_manager.transition = FadeTransition()
-            screen_manager.current = "Calendarscreen" 
+            day_name=str(full_dt.strftime("%a"))
+            evnt_date=str(dayof_mnth)
+            task_count=3
+            task_duratn="9"
+            data= day_name,evnt_date,task_count,task_duratn
+            Database.cursor.execute("INSERT INTO MONTH(DAY,DATE,TASK,HOURS) VALUES(?,?,?,?)",data)
+            Database.con.commit()
+            
+
+    def clear_for_month(self):
+        try:
+           
+            screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
+            month_sch =MonthCard()
+            screen_manager.get_screen("Calendarscreen").table_list.add_widget(month_sch)
+            """ Database.cursor.execute("SELECT ID,DAY,DATE,TASK,HOURS FROM MONTH WHERE ID IS NOT NULL")
+            month_arr=Database.cursor.fetchall()
+            for i in month_arr:
+                day=str(i[2])
+                num=str(i[3])
+                hr=str(i[4])
+
+                #print(day," ",num," ",hr)
+                month_sch =MonthCard(key=i[0],evnt_day=i[1],evnt_date=day,task_number=num,evnt_hours=hr)
+                screen_manager.get_screen("Calendarscreen").table_list.add_widget(month_sch) """
+        except Exception:
+            Snackbar(text="Month load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                    font_size ="15dp").open() # type: ignore
+             
 
 
     def clear_for_week(self):
@@ -1138,7 +1187,7 @@ class MainApp(MDApp):
                 live_date =str(datetime.now())
                 live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
 
-                if mystart_date <= myend_date and strt_time<end_time and myend_date >= live_date:
+                if mystart_date <= myend_date and strt_time<end_time and myend_date >= live_date and mystart_date >= live_date:
 
                     Database.cursor.execute("SELECT TITTLE FROM EVENT")
                     tittle_arr =Database.cursor.fetchall()
@@ -1199,6 +1248,10 @@ class MainApp(MDApp):
                             font_size ="15dp").open() # type: ignore
                 elif strt_time>end_time:
                     Snackbar(text="Event cannot end before it begins",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore
+                elif mystart_date<live_date:
+                    Snackbar(text="Event cannot start in the past",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                             size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                             font_size ="15dp").open() # type: ignore
                 elif myend_date<live_date:
@@ -1401,28 +1454,21 @@ class MainApp(MDApp):
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore  
                 elif courseid not in taken_crs:   
+                    test_w=float(test_w)
+                    ass_w=float(ass_w)
+                    prese_w=float(prese_w)
+                    quiz_w=float(quiz_w)
+                    lab_w=float(lab_w)
+                    group_w=float(group_w)
+                    clswrk_w=float(clswrk_w)
+                    other_w=float(other_w)
+
+                    totl_weight=test_w+ass_w+prese_w+quiz_w+lab_w+group_w+clswrk_w+other_w
                     if  credits !=""and ca_rt !=""  and ex_rt !="":                        
+                        ca_rt=float(ca_rt)
+                        ex_rt=float(ex_rt)
+                        total_ratio=(ca_rt+ex_rt)
                         try:
-                            #create databse for course and initialize tables of categories
-
-                            #get Read category SUM(weights) from database check 
-                            # if sumof_weights==100.0 
-                            # else:
-                            #   snackbar
-                            #
-                            test_w=float(test_w)
-                            ass_w=float(ass_w)
-                            prese_w=float(prese_w)
-                            quiz_w=float(quiz_w)
-                            lab_w=float(lab_w)
-                            group_w=float(group_w)
-                            clswrk_w=float(clswrk_w)
-                            other_w=float(other_w)
-
-                            totl_weight=test_w+ass_w,+prese_w+quiz_w+lab_w+group_w+clswrk_w+other_w
-                            ca_rt=float(ca_rt)
-                            ex_rt=float(ex_rt)
-                            total_ratio=(ca_rt+ex_rt)
                             if total_ratio ==100.0 and totl_weight==100.0:
                                 try:
                                     con = sqlite3.connect(f'{courseid}.db')
@@ -1858,16 +1904,19 @@ class MainApp(MDApp):
         Window.close()
     
 
-if __name__ == "__main__":   
-    
+if __name__ == "__main__":  
+    Database.cursor.execute(f"DELETE FROM COURSES WHERE ID =82")
+    Database.con.commit()
+
     MainApp().run()
     """ for it in range(77,79,1):
-    for it in range(0,3,1):
-        Database.cursor.execute(f"DELETE FROM EVENT WHERE ID ={it}")
-        Database.con.commit()
+    Database.cursor.execute("CREATE TABLE MONTH(ID INTEGER PRIMARY KEY AUTOINCREMENT,DAY TEXT NOT NULL,DATE TEXT NOT NULL,TASK INTEGER NOT NULL,HOURS TEXT NOT NULL)")
+    Database.con.commit()
     Database.cursor.execute("ALTER TABLE EVENT DROP COLUMN DATE")
     Database.cursor.execute("CREATE TABLE EVENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT UNIQUE NOT NULL,VENUE TEXT NOT NULL,DAY TEXT NOT NULL,DATE TEXT NOT NULL,ST_DATE TEXT NOT NULL,ED_DATE TEXT NOT NULL,ST_TIME TEXT NOT NULL,ED_TIME TEXT NOT NULL)")
-    Database.con.commit()
+    for it in range(3,16,1):
+        Database.cursor.execute(f"DELETE FROM EVENT WHERE ID ={it}")
+        Database.con.commit()
         Database.cursor.execute(f"DELETE FROM COURSES WHERE ID ={it}")
         Database.con.commit() """
     
