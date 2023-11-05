@@ -5,6 +5,7 @@
     radius:[8]
     size_hint:1,None
     height:dp(100)
+    tittle:tittle
     #card primary key holder
     MDLabel:
         id:key
@@ -40,7 +41,7 @@
                 size_hint_y:1
                 pos_hint:{"center_x":.28,"center_y": .5}
                 background_color:0,0,0,0
-                on_release:app.delete_event(table_card)
+                on_release:app.delete_event(table_card,tittle.text)
 
             MDLabel:
                 text:"-"
@@ -74,6 +75,7 @@
                     radius:[15]
             #Event name
             MDLabel:
+                id:tittle
                 text:root.event_Name
                 markup: True
                 color: 1/255,1/255,1/255,1
@@ -107,7 +109,7 @@
     #Event date
         MDFloatLayout:
             size_hint:.32,1
-            pos_hint: {"center_x":.16,"center_y":.5}
+            pos_hint: {"center_x":.17,"center_y":.5}
             canvas:
                 Color:
                     rgba:app.calendarchooser()
@@ -142,11 +144,11 @@
     id: day_selection
     elevation: 0
     radius:[8]
-    size_hint:1,1
+    size_hint:1,.7
     #height:dp(50)
     md_bg_color: 248/255,249/255,253/255,1
     MDFloatLayout:
-        size_hint:.98,.98
+        size_hint:1,1
         pos_hint: {"center_x":.5,"center_y":.5}
         canvas:
             Color:
@@ -171,8 +173,8 @@
 <WeekdayCard>
     id: table_card
     elevation: 0
-    radius:[8]
-    size_hint:None,.8
+    radius:[15]
+    size_hint:None,.7
     width:dp(50)
     md_bg_color:(30/255,47/255,151/255,.5)
     MDFloatLayout:
@@ -280,7 +282,7 @@ MDScreen:
     #Weekdays Bar
     MDFloatLayout:
         size_hint:.97,.1
-        pos_hint: {"center_x": .5,"center_y": .84}
+        pos_hint: {"center_x": .5,"center_y": .82}
         canvas:
             RoundedRectangle:
                 size:self.size
@@ -300,7 +302,7 @@ MDScreen:
                 width:self.minimum_width
                 row_force_default: False
                 size_hint_x:None
-                padding:10,10
+                padding:10,15
                 spacing:10,10
                 adaptive_width:True
                 
@@ -310,7 +312,7 @@ MDScreen:
     MDFloatLayout:
         id:timetable_view
         size_hint:.99,.7
-        pos_hint:{"center_x":.5,"center_y": .45}  
+        pos_hint:{"center_x":.5,"center_y": .42}  
         canvas:
             RoundedRectangle:
                 size:self.size
@@ -330,7 +332,7 @@ MDScreen:
                 height:self.minimum_height
                 row_default_height:50
                 size_hint_y:None
-                padding:10,10
+                padding:10,15
                 spacing:10,10
             
                 
