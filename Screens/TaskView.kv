@@ -13,8 +13,8 @@
 
     #task note settings
     MDFloatLayout:
-        size_hint:.8,1
-        pos_hint: {"center_x": .61,"center_y": .5}
+        size_hint:1,1
+        pos_hint: {"center_x": .5,"center_y": .5}
         canvas:
             Color:
                 rgba:app.noteschooser()
@@ -52,7 +52,7 @@
             size_hint:None,None
             size:"50dp","50dp"
             pos_hint:{"center_x":.9,"center_y": .8}
-            on_active: app.on_complete(task_card,check,description,bar)
+            on_active: app.on_complete(task_card,check,description)
         
         #delete button settings
         MDIconButton:
@@ -75,45 +75,7 @@
             size_hint_y:.2
             pos_hint:{"center_x":.43,"center_y": .16}
 
-    #task time settings 
-    MDFloatLayout:
-        size_hint:.24,1
-        pos_hint: {"center_x": .09,"center_y": .5}
-        canvas:
-            Color:
-                rgba:(244/255,249/255,253/255,1)
-            RoundedRectangle:
-                size:self.size
-                pos:self.pos
-                radius:[15]
-        #task status bar settungs
-        MDFloatLayout:
-            id:bar
-            size_hint:.04,.9
-            pos_hint:{"center_x":.9, "center_y":.5}
-            md_bg_color:30/255,47/255,151/255,1
-          
-        MDLabel:
-            id:task_time
-            text:root.task_time
-            color: 1/255,1/255,1/255,1
-            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
-            font_size:"18sp"
-            padding:8,0
-            size_hint_x:1
-            size_hint_y:.4
-            pos_hint:{"center_y": .8}
-
-        MDLabel:
-            id:task_time2
-            text:root.task_time2
-            color:12/255,12/255,13/255,.5
-            font_name: 'assets/fonts/CroissantOne-Regular.ttf'
-            font_size:"18sp"
-            padding:8,0
-            size_hint_x:1
-            size_hint_y:.4
-            pos_hint:{"center_y": .2}
+    
 
 MDScreen:
     name: "todoScreen"
@@ -156,7 +118,7 @@ MDScreen:
                 height:self.minimum_height
                 row_default_height:80
                 size_hint_y:None
-                padding:20,10
+                padding:10,10
                 spacing:10,10
                 
     #top add task button

@@ -5,8 +5,7 @@ MDScreen:
     description: description
     tittle:tittle
     task_date:task_date
-    task_time:task_time
-    task_time2:task_time2
+   
     
     MDFloatLayout:
         MDIconButton:
@@ -59,8 +58,8 @@ MDScreen:
 
     #description input
         MDFloatLayout:
-            size_hint:.85,.24
-            pos_hint: {"center_x": .5,"center_y": .64}
+            size_hint:.85,.36
+            pos_hint: {"center_x": .5,"center_y": .58}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -92,7 +91,7 @@ MDScreen:
     #date_time input
         MDFloatLayout:
             size_hint:.85,.1
-            pos_hint: {"center_x": .5,"center_y": .436}
+            pos_hint: {"center_x": .5,"center_y": .33}
             canvas:
                 Color:
                     rgba:(238/255,238/255,238/255,1)
@@ -118,65 +117,7 @@ MDScreen:
                 on_release: app.show_date_picker()
                 padding: '10dp'
 
-        #time picker settings 
-        #From
-        MDFloatLayout:
-            size_hint:.4,.08
-            pos_hint: {"center_x": .28,"center_y": .32}
-            canvas:
-                Color:
-                    rgba:(238/255,238/255,238/255,1)
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[15]
-            TextInput:
-                id:task_time
-                hint_text:"Start time"
-                size_hint: .8,.8
-                multiline:False
-                pos_hint: {"center_x": .5,"center_y": .5}
-                cursor_width: "2dp"
-                foreground_color: 12/255,12/255,13/255,1
-                background_color: 0,0,0,0
-                padding:10
-                font_name:'assets/fonts/JosefinSans-Light.ttf'
-                font_size:"18dp"
-            MDIconButton:
-                icon: 'clock'
-                pos_hint:{"center_x":.86,"center_y": .5}
-                on_release: app.show_time_picker()
-                icon_size:dp(30)
-                padding: '10dp'
-        #To
-        MDFloatLayout:
-            size_hint:.4,.08
-            pos_hint: {"center_x": .72,"center_y": .32}
-            canvas:
-                Color:
-                    rgba:(238/255,238/255,238/255,1)
-                RoundedRectangle:
-                    size:self.size
-                    pos:self.pos
-                    radius:[15]
-            TextInput:
-                id:task_time2
-                hint_text:"End Time"
-                size_hint: .8,.8
-                multiline:False
-                pos_hint: {"center_x": .5,"center_y": .5}
-                cursor_width: "2dp"
-                foreground_color: 12/255,12/255,13/255,1
-                background_color: 0,0,0,0
-                padding:10
-                font_name:'assets/fonts/JosefinSans-Light.ttf'
-                font_size:"18dp"
-            MDIconButton:
-                icon: 'clock'
-                icon_size:dp(30)
-                pos_hint:{"center_x":.86,"center_y": .5}
-                on_release: app.show_time_picker2()
-                padding: '10dp'
+
         
 
 
@@ -190,9 +131,8 @@ MDScreen:
             font_size: "18dp"
             color: 1,1,1,1
             on_release:
-                app.add_todo(tittle.text, description.text,task_date.text,task_time.text,task_time2.text)
+                app.add_todo(tittle.text, description.text,task_date.text)
                 app.update_task(tittle.text)
-                app.update_taskHome(tittle.text)
                 
             canvas.before:
                 Color:

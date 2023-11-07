@@ -88,7 +88,7 @@ class TaskCard(CommonElevationBehavior,MDFloatLayout):
         self.cardpk = cardpk
 
     weekday = StringProperty()
-    daydate = StringProperty()
+    venue = StringProperty()
     title = StringProperty()
     frmtime = StringProperty()
     totime = StringProperty()
@@ -145,10 +145,14 @@ class TodoCard(CommonElevationBehavior,MDFloatLayout):
         Returns:
             _type_: _description_
         """        
-        Database.cursor.execute("UPDATE TASK SET completed=0 WHERE id=?", (taskid,))
-        Database.con.commit()
-        task_text = Database.cursor.execute("SELECT Description FROM TASK WHERE Id=?", (taskid,)).fetchall()
-        return task_text[0][0]
+        try:
+
+            Database.cursor.execute("UPDATE TASK SET completed=0 WHERE id=?", (taskid,))
+            Database.con.commit()
+            task_text = Database.cursor.execute("SELECT Description FROM TASK WHERE Id=?", (taskid,)).fetchall()
+            return task_text[0][0]
+        except Exception:
+            pass
     
     def delete_task(self, taskid):
         """_summary_
@@ -162,8 +166,6 @@ class TodoCard(CommonElevationBehavior,MDFloatLayout):
     tittle = StringProperty()
     description = StringProperty()
     task_date= StringProperty()
-    task_time = StringProperty()
-    task_time2 = StringProperty()
 
 class OverviewCard(CommonElevationBehavior,MDFloatLayout):
     """_summary_
@@ -412,7 +414,7 @@ class MainApp(MDApp):
         Returns:
             _type_: _description_
         """        
-        schedule = Database.cursor.execute("SELECT Id,Date,Tittle,FromTime,ToTime FROM TASK  WHERE completed = 0").fetchall()
+        schedule = Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_TIME,ED_TIME FROM EVENT  WHERE ID IS NOT NULL").fetchall()
         return schedule
                                                           
 
@@ -444,31 +446,24 @@ class MainApp(MDApp):
             toschedule = self.get_schedule()
             if completed_tasks != []:
                 for i in completed_tasks: 
-                    add_task =(TodoCard(pk=i[0],tittle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3],task_time=i[4],task_time2=i[5])) # type: ignore
+                    add_task =TodoCard(pk=i[0],tittle=i[1],description= f"[s]{i[2]}[/s]",task_date=i[3]) # type: ignore
                     add_task.ids.check.active = True 
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
             else:pass
             if uncomplete_tasks != []:
                 for i in uncomplete_tasks:
-                    add_task = TodoCard(pk=i[0],tittle=i[1], description=i[2],task_date=i[3],task_time=i[4],task_time2=i[5])
+                    add_task = TodoCard(pk=i[0],tittle=i[1], description=i[2],task_date=i[3])
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
-            elif uncomplete_tasks==[]:
-                add_task = TodoCard(pk=0,tittle="Welcome", description="Add task here",task_date="13 August 2000",task_time="4:20",task_time2="16:20")
+                    
+            elif completed_tasks==[] and uncomplete_tasks==[]:
+                add_task = TodoCard(pk=0,tittle="Welcome", description="Add note here",task_date="13 August 2000")
                 screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
             if toschedule !=[]:
                 for scl in toschedule:
-                    ddname =f"{year} "+scl[1]
-                    my_date = datetime.strptime(ddname,"%Y %A %d %B")
-                    weekd=my_date.strftime("%A")
-                    daydt = my_date.strftime("%d")
-                    frtime = datetime.strptime(scl[3],"%H:%M")
-                    asd= frtime.time().strftime("%I:%M %p") 
-                    ttime = datetime.strptime(scl[4],"%H:%M")
-                    bsd= ttime.time().strftime("%I:%M %p")
-                    add_taskhome = TaskCard(cardpk=scl[0],weekday=weekd, daydate=daydt,title=scl[2],frmtime=asd,totime=bsd)
+                    add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
                     screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
             elif toschedule==[]:
-                add_taskhome = TaskCard(cardpk=0,weekday="Sunday", daydate="13",title="Welcome",frmtime="4:20AM",totime="4:20PM")
+                add_taskhome = TaskCard(cardpk=0,weekday="Tue", venue="MS2.4",title="Chess",frmtime="06:00PM",totime="08:00PM")
                 screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
             if taken_courses !=[]:
                 for c in taken_courses:
@@ -522,16 +517,14 @@ class MainApp(MDApp):
         return str(cred_format)
 
 #checkbox seetings
-    def on_complete(self,task_card,value,description,bar):
+    def on_complete(self,task_card,value,description):
         if value.active == True:
             description.text = f"[s]{description.text}[/s]"
-            bar.md_bg_color =12/255,12/255,13/255,.5
             TodoCard.mark_task_as_complete(task_card,task_card.pk)
         else:
             remove = ["[s]", "[/s]"]
             for i in remove:
                 description.text = description.text.replace(i,"")
-                bar.md_bg_color =30/255,47/255,151/255,.8 
                 TodoCard.mark_task_as_incomplete(task_card,task_card.pk)
 
 # date pickers
@@ -623,14 +616,6 @@ class MainApp(MDApp):
         """        
         time= time.strftime('%H:%M')
         screen_manager.get_screen("add_event").end_time.text = str(time)      
-    
-    def show_time_picker(self):
-        '''Open time picker dialog.'''       
-        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
-        time_dialog = MDTimePicker()
-        time_dialog.set_time(previous_time)#type: ignore
-        time_dialog.bind(time=self.get_time) #type: ignore
-        time_dialog.open() # type: ignore
 
     def event_Stime_picker(self):
         '''Open time picker dialog.'''       
@@ -647,23 +632,7 @@ class MainApp(MDApp):
         time_dialog.bind(time=self.get_etime) #type: ignore
         time_dialog.open() # type: ignore
     
-    def get_time2(self,instance,time):
-        """_summary_
-
-        Args:
-            instance (_type_): _description_
-            time (_type_): _description_
-        """        
-        time= time.strftime('%H:%M')
-        screen_manager.get_screen("add_todo").task_time2.text = str(time)
     
-    def show_time_picker2(self):
-        '''Open time picker dialog.'''
-        previous_time = datetime.strptime("16:20:00",'%H:%M:%S').time()
-        time_dialog = MDTimePicker()
-        time_dialog.set_time(previous_time)
-        time_dialog.bind(time=self.get_time2)#type: ignore
-        time_dialog.open()#type: ignore
 
 #color choosers
     def noteschooser(self):
@@ -784,10 +753,23 @@ class MainApp(MDApp):
 
 #Delete event from view and from database 
     def delete_event(self,table_card,tittle): 
+        
+        
         screen_manager.get_screen("Calendarscreen").table_list.remove_widget(table_card)
         Database.cursor.execute("DELETE FROM EVENT WHERE TITTLE=?", (tittle,))
         Database.con.commit()
+        self.update_home_sche()
+        
 
+#update home view when new event added
+    def update_home_sche(self):
+        toschedule = self.get_schedule()
+        screen_manager.get_screen("Home").tasks_home.clear_widgets()
+        if toschedule !=[]:
+            for scl in toschedule:
+                add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
+                screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
+        else:pass
 
 
 #delete widget from view and info from Database HOME and task
@@ -799,23 +781,7 @@ class MainApp(MDApp):
         """        
         screen_manager.get_screen("todoScreen").todo_list.remove_widget(task_card)
         TodoCard.delete_task(task_card,task_card.pk)
-        screen_manager.get_screen("Home").tasks_home.clear_widgets()
-        year = str(datetime.now().year)
-        toschedule =self.get_schedule()
-        if toschedule !=[]:
-            for scl in toschedule:
-                ddname =f"{year} "+scl[1]
-                my_date = datetime.strptime(ddname,"%Y %A %d %B")
-                weekd=my_date.strftime("%A")
-                daydt = my_date.strftime("%d")
 
-                frtime = datetime.strptime(scl[3],"%H:%M")
-                asd= frtime.time().strftime("%I:%M %p") 
-                totime = datetime.strptime(scl[4],"%H:%M")
-                bsd= totime.time().strftime("%I:%M %p")
-                add_taskHom = TaskCard(cardpk=scl[0],weekday=weekd, daydate=daydt,title=scl[2],frmtime=asd,totime=bsd)
-                screen_manager.get_screen("Home").tasks_home.add_widget(add_taskHom)
-           
 #delete assessment form database
     def delete_assmt(self,tittle,card):
         screen_manager.get_screen("AssessmentSummary").assessmnt_list.remove_widget(card)
@@ -842,8 +808,6 @@ class MainApp(MDApp):
         screen_manager.get_screen("add_todo").description.text=""
         screen_manager.get_screen("add_todo").tittle.text=""
         screen_manager.get_screen("add_todo").task_date.text="Date"
-        screen_manager.get_screen("add_todo").task_time.text="From"
-        screen_manager.get_screen("add_todo").task_time2.text="To"
         pass
 
     def clear_add_assesmnt(self):
@@ -1062,8 +1026,6 @@ class MainApp(MDApp):
             pass
                         
 
-                
-
 
     def clear_for_month(self):
         try:
@@ -1111,8 +1073,12 @@ class MainApp(MDApp):
                         dur=str(evt[8])+" min"
                         day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
                         screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+                        
         
                     #else:pass
+            elif event_arr==[]:
+                day_sch =TableCard(key=0,event_Name="Chess",start_time="06:00PM",end_time="08:00PM",event_venue="MS2.4",evnt_date="13",evnt_day="Tue",duratn="120 mins")
+                screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
             days =["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
             for day in days:
                 screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(WeekdayCard(dayname=day ))
@@ -1231,7 +1197,7 @@ class MainApp(MDApp):
                 live_date =str(datetime.now())
                 live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
 
-                if mystart_date <= myend_date and strt_time<end_time and myend_date >= live_date:
+                if mystart_date <= myend_date and strt_time<end_time and myend_date >live_date+timedelta(days=-1):
 
                     Database.cursor.execute("SELECT TITTLE FROM EVENT")
                     tittle_arr =Database.cursor.fetchall()
@@ -1291,10 +1257,10 @@ class MainApp(MDApp):
                             size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                             font_size ="15dp").open() # type: ignore
                 elif strt_time>end_time:
-                    Snackbar(text="Event cannot end before it begins",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    Snackbar(text="Start time must be less than end time",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                             size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                             font_size ="15dp").open() # type: ignore
-                elif myend_date<live_date:
+                elif myend_date <live_date+timedelta(days=1):
                     Snackbar(text="Event cannot end in the past",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                             size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                             font_size ="15dp").open() # type: ignore
@@ -1337,43 +1303,21 @@ class MainApp(MDApp):
                     font_size ="15dp").open() # type: ignore
         
 
-#update TASK and HOME view 
+#update TASK  
     def update_task(self,tittle):
         """_summary_
 
         Args:
             tittle (_type_): _description_
         """        
-        Database.cursor.execute("SELECT Id,Description,Date,FromTime,ToTime,completed FROM TASK WHERE Tittle=?",(tittle,))
+        Database.cursor.execute("SELECT Id,Description,Date,completed FROM TASK WHERE Tittle=?",(tittle,))
         arr =Database.cursor.fetchall()
         for i in arr:
             screen_manager.get_screen("todoScreen").todo_list.add_widget(TodoCard(pk=i[0],tittle=tittle, description=i[1],
-                                                                                  task_date=i[2],task_time=i[3],task_time2=i[4]))
-    def update_taskHome(self,tittle):
-        """_summary_
-
-        Args:
-            tittle (_type_): _description_
-        """        
-        year = str(datetime.now().year)
-        Database.cursor.execute("SELECT Id,Date,FromTime,ToTime FROM TASK  WHERE Tittle=?",(tittle,))
-        tohome = Database.cursor.fetchall()
-        if tohome !=[]:
-            for scl in tohome:
-                ddname =f"{year} "+scl[1]
-                my_date = datetime.strptime(ddname,"%Y %A %d %B")
-                weekd=my_date.strftime("%A")
-                daydt = my_date.strftime("%d")
-
-                frtime = datetime.strptime(scl[2],"%H:%M")
-                asd= frtime.time().strftime("%I:%M %p") 
-                totime = datetime.strptime(scl[3],"%H:%M")
-                bsd= totime.time().strftime("%I:%M %p")
-                add_taskHom = TaskCard(cardpk=scl[0],weekday=weekd, daydate=daydt,title=tittle,frmtime=asd,totime=bsd)
-                screen_manager.get_screen("Home").tasks_home.add_widget(add_taskHom)
+                                                                                  task_date=i[2]))
 
 # add task settings
-    def add_todo(self,tittle,description,date_time,task_time,task_time2):
+    def add_todo(self,tittle,description,date_time):
         """_summary_
 
         Args:
@@ -1384,10 +1328,10 @@ class MainApp(MDApp):
             task_time2 (_type_): _description_
         """        
         try:
-            if tittle !="" and description !="" and len(tittle)<21 and len(description)<81 and date_time!=""and task_time!="" and task_time2!="" :
+            if tittle !="" and description !="" and len(tittle)<21 and len(description)<81 and date_time!="":
                 # adding task to Database
-                data= tittle,description,date_time,task_time,task_time2,0
-                Database.cursor.execute("INSERT INTO TASK(Tittle,Description,Date,FromTime,ToTime,completed) VALUES(?,?,?,?,?,?)",data)
+                data= tittle,description,date_time,0
+                Database.cursor.execute("INSERT INTO TASK(Tittle,Description,Date,completed) VALUES(?,?,?,?)",data)
                 Database.con.commit()
                 screen_manager.transition = FadeTransition()
                 screen_manager.current = "todoScreen"
@@ -1416,15 +1360,8 @@ class MainApp(MDApp):
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                         font_size ="15dp").open() # type: ignore
                         #add action mybe highlight empty area   
-            elif task_time=="":
-                Snackbar(text="Specify start time",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open() # type: ignore
-            
-            elif task_time2=="":
-                Snackbar(text="Specify completion time",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open() # type: ignore
+                        # change color to alert empty field
+           
         except Exception:
             Snackbar(text="Task Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
