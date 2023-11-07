@@ -20,7 +20,7 @@
                 radius:[15]
     #Event times
         MDFloatLayout:
-            size_hint:.65,.36
+            size_hint:.64,.36
             pos_hint: {"center_x":.67,"center_y": .83}
             canvas:
                 Color:
@@ -97,12 +97,12 @@
                 pos_hint:{"center_x":.5,"center_y": .26}
             #Time span
             MDLabel:
-                text:"72 mins"
+                text:root.duratn
                 markup: True
                 color: 30/255,47/255,151/255,1
                 font_name: 'assets/fonts/JosefinSans-Regular.ttf'
-                font_size:"10sp"
-                size_hint_x:.2
+                font_size:"12sp"
+                size_hint_x:.35
                 size_hint_y:.2
                 pos_hint:{"center_x":.8,"center_y": .08}
 
@@ -226,8 +226,6 @@ MDScreen:
             size_hint:.28,.04
             background_color:0,0,0,0
             on_press:
-                table_month.color= 63/255,72/255,204/255,.7
-                week_text.color= 63/255,72/255,204/255,1
                 app.clear_for_week()
         MDFloatLayout:
             id:statusbarM
@@ -244,8 +242,6 @@ MDScreen:
             size_hint:.3,.2
             background_color:0,0,0,0
             on_press:
-                week_text.color= 63/255,72/255,204/255,.7
-                table_month.color= 63/255,72/255,204/255,1
                 root.manager.transition = FadeTransition()
                 root.manager.current ="monthscreen"
 
@@ -282,7 +278,7 @@ MDScreen:
     #Weekdays Bar
     MDFloatLayout:
         size_hint:.97,.1
-        pos_hint: {"center_x": .5,"center_y": .82}
+        pos_hint: {"center_x": .5,"center_y": .84}
         canvas:
             RoundedRectangle:
                 size:self.size
@@ -291,7 +287,7 @@ MDScreen:
         ScrollView:
             do_scroll_y:False
             do_scroll_x:True
-            size_hint:1,1
+            size_hint:1,.8
             pos_hint:{"center_x":.5,"center_y":.5}
             bar_width:1
             bar_color:(30/255,47/255,151/255,.8)
@@ -302,7 +298,7 @@ MDScreen:
                 width:self.minimum_width
                 row_force_default: False
                 size_hint_x:None
-                padding:10,15
+                padding:10,6
                 spacing:10,10
                 adaptive_width:True
                 
