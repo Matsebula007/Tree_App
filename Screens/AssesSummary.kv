@@ -14,7 +14,7 @@
     Button:
         size_hint: .8,.8
         pos_hint: {"center_x":.5,"center_y":.5}  
-        #on_release:
+        on_release:
             #app.delete_assmt(assmtName.text,assessmnt_card)
     
     MDLabel:
@@ -353,5 +353,6 @@
                 app.clear_overview()
                 app.clear_assessmary()
                 app.clear_for_week()
+                app.update_month()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Calendarscreen"

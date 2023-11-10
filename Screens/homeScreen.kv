@@ -12,7 +12,12 @@
     MDLabel:
         id:cardpk
         markup:True
-    
+    Button:
+        size_hint: .8,.8
+        pos_hint: {"center_x":.5,"center_y":.5}  
+        background_color:0,0,0,0  
+        on_release:
+            app.selected_weekday(weekday.text)
     #weekday
     MDLabel:
         id:weekday
@@ -146,7 +151,7 @@ MDScreen:
     
     #courses label
     MDLabel:
-        text:"Your timetable"
+        text:"Your courses"
         font_name:"assets/fonts/JosefinSans-Bold.ttf"
         font_size:"28dp"
         pos_hint: {"center_x":.55,"center_y": .64}
@@ -230,5 +235,7 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.clear_for_week()
+                app.update_month()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Calendarscreen"

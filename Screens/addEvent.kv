@@ -102,6 +102,7 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
+            
             TextInput:
                 id:start_date
                 hint_text:"Start date"
@@ -114,13 +115,12 @@ MDScreen:
                 padding:10
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
-
-            MDIconButton:
-                icon: 'calendar-check'
-                icon_size:dp(25)
-                pos_hint:{"center_x":.9,"center_y": .5}
-                on_release: app.event_Sdate_picker()
-                padding: '10dp'
+            Button:
+                size_hint: 1,1
+                pos_hint: {"center_x":.5,"center_y":.5}  
+                background_color:0,0,0,0  
+                on_release:
+                    app.event_Sdate_picker()
         #End date
         MDFloatLayout:
             size_hint:.8,.08
@@ -144,12 +144,12 @@ MDScreen:
                 padding:10
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
-            MDIconButton:
-                icon: 'calendar-check'
-                icon_size:dp(25)
-                pos_hint:{"center_x":.9,"center_y": .5}
-                on_release: app.event_Edate_picker()
-                padding: '10dp'
+            Button:
+                size_hint:1,1
+                pos_hint: {"center_x":.5,"center_y":.5}  
+                background_color:0,0,0,0  
+                on_release:
+                    app.event_Edate_picker()
 
         #time picker settings 
         #From
@@ -163,6 +163,7 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
+            
             TextInput:
                 id:start_time
                 hint_text:"Start time"
@@ -176,12 +177,12 @@ MDScreen:
                 padding:10
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
-            MDIconButton:
-                icon: 'clock'
-                pos_hint:{"center_x":.86,"center_y": .5}
-                on_release: app.event_Stime_picker()
-                icon_size:dp(25)
-                padding: '10dp'
+            Button:
+                size_hint:1,1
+                pos_hint: {"center_x":.5,"center_y":.5}  
+                background_color:0,0,0,0  
+                on_release:
+                    app.event_Stime_picker()
         #To
         MDFloatLayout:
             size_hint:.42,.08
@@ -206,12 +207,12 @@ MDScreen:
                 padding:10
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
-            MDIconButton:
-                icon: 'clock'
-                icon_size:dp(25)
-                pos_hint:{"center_x":.86,"center_y": .5}
-                on_release: app.event_Etime_picker()
-                padding: '10dp'
+            Button:
+                size_hint:1,1
+                pos_hint: {"center_x":.5,"center_y":.5}  
+                background_color:0,0,0,0  
+                on_release:
+                    app.event_Etime_picker()
         
 
 
@@ -227,7 +228,8 @@ MDScreen:
             on_release:
                 app.add_event(event_name.text,evnt_venue.text,start_date.text,end_date.text,start_time.text,end_time.text)
                 app.clear_for_week()
-                app. update_home_sche()
+                app.update_home_sche()
+                app.update_month()
             canvas.before:
                 Color:
                     rgba:(30/255,47/255,151/255,1)
@@ -297,6 +299,7 @@ MDScreen:
                 color:(30/255,47/255,151/255,1)
                 on_press:
                     app.clear_for_week()
+                    app.update_month()
                     root.manager.transition = FadeTransition()
                     root.manager.current = "Calendarscreen"
 

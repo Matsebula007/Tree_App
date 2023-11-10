@@ -57,7 +57,7 @@
         #delete button settings
         MDIconButton:
             icon: 'delete'
-            icon_size:dp(30)
+            icon_size:dp(25)
             theme_text_color: "Custom"
             text_color: 0, 0, 0, .8
             pos_hint:{"center_x":.9,"center_y": .2}
@@ -133,7 +133,7 @@ MDScreen:
                 pos:self.pos
                 radius:[15]
         Button:
-            text: "Add Task"
+            text: "Add Note"
             size_hint:1,1
             pos_hint: {"center_x":.5,"center_y": .5}
             background_color:0,0,0,0
@@ -213,5 +213,6 @@ MDScreen:
             text_color: 1,1,1,1
             on_press:
                 app.clear_for_week()
+                app.update_month()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Calendarscreen"

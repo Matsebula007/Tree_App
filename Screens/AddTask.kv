@@ -18,7 +18,7 @@ MDScreen:
                 root.manager.transition = FadeTransition()
                 root.manager.current = "todoScreen"
         MDLabel:
-            text: "Add Task"
+            text: "Add Note"
             pos_hint: {"center_x": .8,"center_y": .95}
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "32dp"
@@ -110,12 +110,13 @@ MDScreen:
                 padding:15
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
-            MDIconButton:
-                icon: 'calendar-check'
-                icon_size:dp(30)
-                pos_hint:{"center_x":.9,"center_y": .5}
-                on_release: app.show_date_picker()
-                padding: '10dp'
+            Button:
+                size_hint: 1,1
+                pos_hint: {"center_x":.5,"center_y":.5}  
+                background_color:0,0,0,0  
+                on_release:
+                    app.show_date_picker()
+            
 
 
         
@@ -123,7 +124,7 @@ MDScreen:
 
         #add task button
         Button:
-            text: "Add Task"
+            text: "Add Note"
             size_hint: .45,.08
             pos_hint: {"center_x": .5,"center_y": .2}
             background_color:0,0,0,0
@@ -203,6 +204,7 @@ MDScreen:
             text_color: 1,1,1,1
             on_press:
                 app.clear_for_week()
+                app.update_month()
                 root.manager.transition = FadeTransition()
                 root.manager.current = "Calendarscreen"
 

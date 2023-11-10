@@ -6,6 +6,12 @@
     size_hint:1,None
     height:dp(50)
     md_bg_color: 248/255,249/255,253/255,1
+    Button:
+        size_hint: .7,.7
+        pos_hint: {"center_x":.5,"center_y":.5}  
+        background_color:0,0,0,0  
+        on_release:
+            app.view_monthtask(dayname.text,evtdate.text)
     MDFloatLayout:
         pos_hint: {'center_x':.5,'center_y':.5}
         size_hint:1,1
@@ -27,6 +33,7 @@
                     radius:[15]
             #Event date
             MDLabel:
+                id:dayname
                 text:root.evnt_day 
                 markup: True
                 color:30/255,47/255,151/255,1
@@ -37,6 +44,7 @@
                 pos_hint:{"center_x":.5,"center_y": .78}
             #Event month
             MDLabel:
+                id:evtdate
                 text:root.evnt_date
                 markup: True
                 color: 1/255,1/255,1/255,1
@@ -66,6 +74,12 @@
                 size_hint_x:.8
                 size_hint_y:.4
                 pos_hint:{"center_x":.55,"center_y": .74}
+            Button:
+                size_hint: .8,.8
+                pos_hint: {"center_x":.5,"center_y":.5}  
+                background_color:0,0,0,0  
+                on_release:
+                    app.view_monthtask(dayname.text,evtdate.text)
             #Event count
             MDLabel:
                 text:root.task_number 
