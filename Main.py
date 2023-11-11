@@ -1,7 +1,6 @@
 import random
 import sqlite3
 from datetime import date, datetime, timedelta
-from queue import Empty
 
 from kivy.animation import Animation
 from kivy.clock import Clock
@@ -1201,7 +1200,24 @@ class MainApp(MDApp):
                     Database.cursor.execute("INSERT INTO MONTH(DAY,DATE,TASK,HOURS) VALUES(?,?,?,?)",data)
                     Database.con.commit()
                 else:pass
-            self.update_month()
+            elif icount==0:
+                now_year = datetime.now().year
+                now_month = datetime.now().month
+                first_day=datetime(year=now_year,month=now_month,day=1) 
+                last_day=datetime(year=now_year,month=now_month+1,day=1)+timedelta(days=-1) 
+                first_dy=int(first_day.strftime("%d"))
+                last_dy=int(last_day.strftime("%d"))
+                for dayof_mnth in range(first_dy,last_dy+1,1):
+                    full_dt=datetime(year=now_year,month=now_month,day=dayof_mnth)
+                    day_name=str(full_dt.strftime("%a"))
+                    evnt_date=str(dayof_mnth)
+                    task_count=0
+                    task_duratn="0"
+                    data= day_name,evnt_date,task_count,task_duratn
+                    Database.cursor.execute("INSERT INTO MONTH(DAY,DATE,TASK,HOURS) VALUES(?,?,?,?)",data)
+                    Database.con.commit()
+
+        self.update_month()
 
 #calculate total booked hours for esch day of the month
     def update_month(self):
@@ -1812,25 +1828,20 @@ class MainApp(MDApp):
                                             for sumof_contrib in contrarry:
                                                 sumof_weights =float(sumof_weights)
                                                 sumof_contrib=float(sumof_contrib)
-                                                if sumof_weights>100.0000000000001:
+                                                if sumof_weights>100.0:
                                                     weight_bal=sumof_weights/100.0
                                                     final_mark =sumof_contrib/weight_bal
                                                     mark_formt = "{:.1f}".format(final_mark)
                                                     cursor.execute(f"UPDATE SUMMARY SET MARK ={mark_formt} WHERE CATEGORY =?",(categ_name,))
                                                     con.commit()
                                                 if sumof_weights<100.0:
-                                                    cursor.execute(f"SELECT SUM(WEIGHT) FROM {categ_name} WHERE  CONTRIB>0.0")
-                                                    totl_warry = cursor.fetchone()
-                                                    for sum_weight in totl_warry:
-                                                        sum_weight =float(sum_weight)
-                                                        checker1 =100.0*ass_count
-                                                        if sum_weight==checker1:
-                                                            average =sumof_weights/ass_count
-                                                            cursor.execute(f"UPDATE SUMMARY SET MARK ={average} WHERE CATEGORY =?",(categ_name,))
-                                                            con.commit()
-                                                        elif sum_weight!=checker1:
-                                                            cursor.execute(f"UPDATE SUMMARY SET MARK ={sumof_weights} WHERE CATEGORY =?",(categ_name,))
-                                                            con.commit()
+                                                    cursor.execute(f"UPDATE SUMMARY SET MARK ={sumof_contrib} WHERE CATEGORY =?",(categ_name,))
+                                                    con.commit()
+                                                if sumof_weights==100.0:
+                                                    average =sumof_contrib/ass_count
+                                                    cursor.execute(f"UPDATE SUMMARY SET MARK ={average} WHERE CATEGORY =?",(categ_name,))
+                                                    con.commit()
+                                                    
 
                         except Exception:
                             Snackbar(text="INDE:CAL:1:error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
@@ -2025,21 +2036,16 @@ class MainApp(MDApp):
                                             cursor.execute(f"UPDATE SUMMARY SET MARK ={mark_formt} WHERE CATEGORY =?",(categ_name,))
                                             con.commit()
                                             screen_manager.get_screen("AssessmentSummary").categavar.text=str(mark_formt)
-                                        if sumof_contrib<100.0:
-                                            cursor.execute(f"SELECT SUM(WEIGHT) FROM {categ_name} WHERE  CONTRIB>0.0")
-                                            totl_warry = cursor.fetchone()
-                                            for sum_weight in totl_warry:
-                                                sum_weight =float(sum_weight)
-                                                checker1 =100.0*ass_count
-                                                if sum_weight==checker1:
-                                                    average =sumof_contrib/ass_count
-                                                    cursor.execute(f"UPDATE SUMMARY SET MARK ={average} WHERE CATEGORY =?",(categ_name,))
-                                                    con.commit()
-                                                    screen_manager.get_screen("AssessmentSummary").categavar.text=str(average)
-                                                elif sum_weight!=checker1:
-                                                    cursor.execute(f"UPDATE SUMMARY SET MARK ={sumof_contrib} WHERE CATEGORY =?",(categ_name,))
-                                                    con.commit()
-                                                    screen_manager.get_screen("AssessmentSummary").categavar.text=str(sumof_contrib)
+                                        if sumof_weights<100.0:
+                                            cursor.execute(f"UPDATE SUMMARY SET MARK ={sumof_contrib} WHERE CATEGORY =?",(categ_name,))
+                                            con.commit()
+                                            screen_manager.get_screen("AssessmentSummary").categavar.text=str(sumof_contrib)
+                                        if sumof_weights==100.0:
+                                            average =sumof_contrib/ass_count
+                                            cursor.execute(f"UPDATE SUMMARY SET MARK ={average} WHERE CATEGORY =?",(categ_name,))
+                                            con.commit()
+                                            screen_manager.get_screen(
+                                                "AssessmentSummary").categavar.text = str(average)
                 except Exception:
                     Snackbar(text="INDE:CAL:1:error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
@@ -2099,8 +2105,7 @@ class MainApp(MDApp):
         Window.close()
     
 
-if __name__ == "__main__":  
-
+if __name__ == "__main__": 
     MainApp().run()
 
     """ for it in range(77,79,1):
