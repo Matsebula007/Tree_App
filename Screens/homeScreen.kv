@@ -83,28 +83,34 @@
             
 <CourseDisplayCard>
     elevation: 0
-    md_bg_color:17/255,162/255,235/255
+    md_bg_color:app.courseschooser()
     radius:[8]
     size_hint:1,None
-    height:dp(240)
+    height:dp(150)
+    Button:
+        size_hint: .8,.8
+        background_color:0,0,0,0 
+        pos_hint: {"center_x":.5,"center_y":.5}    
+        on_release:root.navigate()
     
-    MDLabel:
-        text:root.title
-        markup: True
-        font_name: 'assets/fonts/Sono_Monospace-Medium.ttf'
-        font_size:"20sp"
+    MDLabel:  
+        id:courseid
+        text:root.Courseid
+        font_name: 'assets/fonts/Poppins-Bold.ttf'
+        font_size:"28sp"
         size_hint_x:.8
-        size_hint_y:.8
+        size_hint_y:.3
         pos_hint:{"center_x":.5,"center_y": .8}
     
     MDLabel:
         #reead data from json database
-        id:description
-        text:root.description
-        font_name:'assets/fonts/Sono_Monospace-Regular.ttf'
-        markup:True
-        size_hint_x:.9
-        size_hint_y:.9
+        id:average
+        text:root.average
+        font_name:'assets/fonts/CroissantOne-Regular.ttf'
+        font_size:"30sp"
+        color:(2/255,44/255,26/255,1)
+        size_hint_x:.5
+        size_hint_y:.3
         pos_hint:{"center_x": .5,"center_y":.4}
 
 

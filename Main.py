@@ -294,6 +294,16 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
     CA_ratio=StringProperty()
     Ex_ratio=StringProperty()
 
+class CourseDisplayCard(CommonElevationBehavior,MDFloatLayout):
+    def navigate(self):
+        """_summary_
+        """        
+        screen_manager.transition = FadeTransition()
+        screen_manager.current = "CoursesScreen"
+        
+    Courseid=StringProperty("PHY312")
+    average=StringProperty("70%")
+
 class OverviewScreen(MDScreen,MDFloatLayout):
     """_summary_
 
@@ -471,10 +481,11 @@ class MainApp(MDApp):
                     cr= str (cred)
                     ca = str (c[3])
                     ex = str (c[4])
-                    avg = str(c[5])
                     bas = str (c[6])
                     add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=c[5],Basis=bas)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
+                    crse_hom = CourseDisplayCard(Courseid=c[1],average=str(c[5]))
+                    screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
                 for empty_crs in empty_course:
                     cr= str (empty_crs[2])
                     ca = str (empty_crs[3])
@@ -1404,7 +1415,7 @@ class MainApp(MDApp):
     def add_event(self,tittle,venue,st_date,ed_date,st_time,ed_time):
 
         try:
-            if tittle!="" and len(tittle)<13 and venue!="" and len(venue)<11 and st_date!="" and ed_date!="" and st_time!="" and ed_time!="":
+            if tittle!="" and len(tittle)<16 and venue!="" and len(venue)<13 and st_date!="" and ed_date!="" and st_time!="" and ed_time!="":
 
                 mystart_date =datetime.strptime(st_date,"%a %d %b %Y")
                 day=mystart_date.strftime("%a") 
@@ -1504,15 +1515,15 @@ class MainApp(MDApp):
                 Snackbar(text="Event name is missing!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore
-            elif len(tittle)>12:
-                Snackbar(text="Event name must be  <13 char!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+            elif len(tittle)>16:
+                Snackbar(text="Event name must be  <16 char!",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore
             elif venue=="":
                 Snackbar(text=f"Where will {tittle} be ?",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore
-            elif len(venue)>10:
+            elif len(venue)>13:
                 Snackbar(text=f"{tittle} venue must be <11 char ?",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                         font_size ="15dp").open() # type: ignore
