@@ -11,12 +11,7 @@
     assmtWeight:assmtWeight
     testpk:testpk
 
-    Button:
-        size_hint: .8,.8
-        pos_hint: {"center_x":.5,"center_y":.5}  
-        on_release:
-            #app.delete_assmt(assmtName.text,assessmnt_card)
-    
+   
     MDLabel:
         id:testpk
         
@@ -79,6 +74,14 @@
             size_hint:.02,.1
             pos_hint:{"center_x":.96, "center_y":.2}
             md_bg_color:assmtContr.color
+
+        MDIconButton:
+            icon: 'delete'
+            icon_size:dp(18)
+            theme_text_color: "Custom"
+            text_color:(30/255,47/255,151/255,.5)
+            pos_hint:{"center_x":.84,"center_y":.9}
+            on_release:app.delete_assmt(assessmnt_card,assmtName.text)
         
 
 
@@ -304,6 +307,8 @@
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.update_coursescreen()
+                app.update_home_sche()
                 app.clear_overview()
                 app.clear_assessmary()
                 root.manager.transition = FadeTransition()

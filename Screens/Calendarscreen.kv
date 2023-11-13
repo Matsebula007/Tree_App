@@ -103,13 +103,13 @@
                 font_size:"12sp"
                 size_hint_x:.35
                 size_hint_y:.2
-                pos_hint:{"center_x":.9,"center_y": .08}
+                pos_hint:{"center_x":.9,"center_y": .1}
             MDIconButton:
                 icon: 'delete'
                 icon_size:dp(18)
                 theme_text_color: "Custom"
                 text_color:app.calendarchooser()
-                pos_hint:{"center_x":.06,"center_y": .08}
+                pos_hint:{"center_x":.06,"center_y": .1}
                 on_release:app.delete_event(table_card,tittle.text) 
 
     #Event date
@@ -359,6 +359,8 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.update_coursescreen()
+                app.update_home_sche()
                 root.manager.transition = FadeTransition() 
                 root.manager.current = "Home"
 

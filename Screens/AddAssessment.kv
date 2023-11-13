@@ -163,8 +163,8 @@ MDScreen:
                     radius:[15]
             on_release:
                 app.add_assessment(ass_courseid.text,ass_mark.text,ass_contr.text,ass_category.text,ass_name.text)
-                app.summariseCourse()
                 app.update_assessment(ass_courseid.text,ass_category.text)
+                app.summariseCourse()
 #navigation menu
     MDFloatLayout:
         size_hint:1,.1
@@ -183,6 +183,8 @@ MDScreen:
             theme_text_color:"Custom"
             text_color: 1,1,1,1
             on_press:
+                app.update_coursescreen()
+                app.update_home_sche()
                 app.clear_overview()
                 app.clear_assessmary()
                 root.manager.transition = FadeTransition()

@@ -300,9 +300,9 @@ class CourseDisplayCard(CommonElevationBehavior,MDFloatLayout):
         """        
         screen_manager.transition = FadeTransition()
         screen_manager.current = "CoursesScreen"
-        
+
     Courseid=StringProperty("PHY312")
-    average=StringProperty("70%")
+    average=StringProperty("0")
 
 class OverviewScreen(MDScreen,MDFloatLayout):
     """_summary_
@@ -470,8 +470,9 @@ class MainApp(MDApp):
                 screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
             if toschedule !=[]:
                 for scl in toschedule:
-                    add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
-                    screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
+                    if scl[3]==dtod:
+                        add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
+                        screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
             elif toschedule==[]:
                 add_taskhome = TaskCard(cardpk=0,weekday=dtod, venue="MS2.4",title="Chess",frmtime="06:00PM",totime="08:00PM")
                 screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
@@ -484,7 +485,7 @@ class MainApp(MDApp):
                     bas = str (c[6])
                     add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=c[5],Basis=bas)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
-                    crse_hom = CourseDisplayCard(Courseid=c[1],average=str(c[5]))
+                    crse_hom = CourseDisplayCard(Courseid=c[1],average=str(c[5])+" %")
                     screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
                 for empty_crs in empty_course:
                     cr= str (empty_crs[2])
@@ -494,16 +495,11 @@ class MainApp(MDApp):
                     bas = "0"
                     add_course = CourseCard(course_key = empty_crs[0],CourseID=empty_crs[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=avg,Basis=bas)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
+                    crse_hom = CourseDisplayCard(Courseid=empty_crs[1], average=str(empty_crs[5])+" %")
+                    screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
 
             elif taken_courses ==[]:
-                for empty_crs in empty_course:
-                    cr= str (empty_crs[2])
-                    ca = str (empty_crs[3])
-                    ex = str (empty_crs[4])
-                    avg =1.0
-                    bas = "0"
-                    add_course = CourseCard(course_key = empty_crs[0],CourseID=empty_crs[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=avg,Basis=bas)
-                    screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
+                pass
         except Exception:
             Snackbar(text="Murky Start",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
                         size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
@@ -764,8 +760,6 @@ class MainApp(MDApp):
 
 #Delete event from view and from database 
     def delete_event(self,table_card,tittle): 
-        
-        
         screen_manager.get_screen("Calendarscreen").table_list.remove_widget(table_card)
         Database.cursor.execute("DELETE FROM EVENT WHERE TITTLE=?", (tittle,))
         Database.con.commit()
@@ -775,12 +769,16 @@ class MainApp(MDApp):
 
 #update home view when new event added
     def update_home_sche(self):
+        live_date =str(datetime.now())
+        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
+        dtoday=live_date.strftime("%a")
         toschedule = self.get_schedule()
         screen_manager.get_screen("Home").tasks_home.clear_widgets()
         if toschedule !=[]:
             for scl in toschedule:
-                add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
-                screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
+                if scl[3]==dtoday:
+                    add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
+                    screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
         else:pass
         
 
@@ -796,15 +794,15 @@ class MainApp(MDApp):
         TodoCard.delete_task(task_card,task_card.pk)
 
 #delete assessment form database
-    """ def delete_assmt(self,tittle,card):
-        self.summariseCourse()
+    def delete_assmt(self,card,tittle):
         screen_manager.get_screen("AssessmentSummary").assessmnt_list.remove_widget(card)
         courseID=screen_manager.get_screen("AssessmentSummary").crseid.text
         category=screen_manager.get_screen("AssessmentSummary").categName.text
         con = sqlite3.connect(f'{courseID}.db')
         cursor = con.cursor() # type: ignore
         cursor.execute(f"DELETE FROM {category} WHERE TITTLE=?", (tittle,))
-        con.commit() """
+        con.commit()
+        self.summariseCourse()
         
       
 
@@ -1389,6 +1387,7 @@ class MainApp(MDApp):
 
     def update_coursescreen(self):
         screen_manager.get_screen("CoursesScreen").course_list.clear_widgets()
+        screen_manager.get_screen("Home").course_home.clear_widgets()
         taken_courses =self.get_courses()
         emty_crse =self.get_emptycrse()
         if taken_courses !=[]:
@@ -1400,6 +1399,8 @@ class MainApp(MDApp):
                     bas = str (c[6])
                     add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=c[5],Basis=bas)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
+                    crse_hom = CourseDisplayCard(Courseid=c[1],average=str(c[5])+" %")
+                    screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
         if  emty_crse!=[]:
                 for c in emty_crse:
                     cred =float(c[2])
@@ -1410,7 +1411,9 @@ class MainApp(MDApp):
                     bas = "0"
                     add_course = CourseCard(course_key = c[0],CourseID=c[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=avg,Basis=bas)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
-  
+                    crse_hom = CourseDisplayCard(Courseid=c[1],average="0 %")
+                    screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
+
 #Add event to user_database table EVENT 
     def add_event(self,tittle,venue,st_date,ed_date,st_time,ed_time):
 
@@ -2113,20 +2116,8 @@ class MainApp(MDApp):
                     font_size ="15dp").open() # type: ignore
 
     def close_app(self):
-        Window.close()
-    
+        Window.close()  
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
+
     MainApp().run()
-
-    """ for it in range(77,79,1):
-    Database.cursor.execute("CREATE TABLE MONTH(ID INTEGER PRIMARY KEY AUTOINCREMENT,DAY TEXT NOT NULL,DATE TEXT NOT NULL,TASK INTEGER NOT NULL,HOURS TEXT NOT NULL)")
-    Database.con.commit()
-    Database.cursor.execute("ALTER TABLE EVENT DROP COLUMN DATE")
-    Database.cursor.execute("CREATE TABLE EVENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT UNIQUE NOT NULL,VENUE TEXT NOT NULL,DAY TEXT NOT NULL,DATE TEXT NOT NULL,ST_DATE TEXT NOT NULL,ED_DATE TEXT NOT NULL,ST_TIME TEXT NOT NULL,ED_TIME TEXT NOT NULL)")
-    for it in range(3,16,1):
-        Database.cursor.execute(f"DELETE FROM EVENT WHERE ID ={it}")
-        Database.con.commit()
-        Database.cursor.execute(f"DELETE FROM COURSES WHERE ID ={it}")
-        Database.con.commit() """
-    
