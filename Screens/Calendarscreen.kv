@@ -103,13 +103,13 @@
                 font_size:"12sp"
                 size_hint_x:.35
                 size_hint_y:.2
-                pos_hint:{"center_x":.9,"center_y": .1}
+                pos_hint:{"center_x":.9,"center_y": .12}
             MDIconButton:
                 icon: 'delete'
                 icon_size:dp(18)
                 theme_text_color: "Custom"
                 text_color:app.calendarchooser()
-                pos_hint:{"center_x":.06,"center_y": .1}
+                pos_hint:{"center_x":.06,"center_y": .14}
                 on_release:app.delete_event(table_card,tittle.text) 
 
     #Event date
@@ -173,7 +173,7 @@
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "20dp"
             color: 1,1,1,1
-            on_press:
+            on_release:
                 app.select_day()
 
 <WeekdayCard>
@@ -195,7 +195,7 @@
             font_name: 'assets/fonts/JosefinSans-Bold.ttf'
             font_size: "18dp"
             color: 1,1,1,1
-            on_press:
+            on_release:
                 app.selected_weekday(dayname.text)
                 
 
@@ -227,7 +227,7 @@ MDScreen:
             text:"This Week"
             color:63/255,72/255,204/255,1
             pos_hint: {"center_x":.25,"center_y": .9}
-            font_name: 'assets/fonts/JosefinSans-Regular.ttf'
+            font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size:"18sp"
             size_hint:.28,.04
             background_color:0,0,0,0

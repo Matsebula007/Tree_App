@@ -81,7 +81,9 @@
             theme_text_color: "Custom"
             text_color:(30/255,47/255,151/255,.5)
             pos_hint:{"center_x":.84,"center_y":.9}
-            on_release:app.delete_assmt(assessmnt_card,assmtName.text)
+            on_release:
+                app.delete_assmt(assessmnt_card,assmtName.text)
+                root.Navigate()
         
 
 
