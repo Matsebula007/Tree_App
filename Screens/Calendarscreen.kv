@@ -248,8 +248,9 @@ MDScreen:
             size_hint:.3,.2
             background_color:0,0,0,0
             on_press:
-                root.manager.transition = FadeTransition()
-                root.manager.current ="monthscreen"
+                #root.manager.transition = FadeTransition()
+                #root.manager.current ="monthscreen"
+                app.pendingupdate()
 
     #top add event button
     MDFloatLayout:
@@ -402,8 +403,8 @@ MDScreen:
                 theme_text_color:"Custom"
                 color:(30/255,47/255,151/255,1)
                 on_press:
-                    app.clear_for_week()
-                    app.update_month()
+                    #app.clear_for_week()
+                    #app.update_month()
                     root.manager.transition = FadeTransition()
                     root.manager.current = "add_event"
                     
