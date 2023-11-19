@@ -474,17 +474,11 @@ class MainApp(MDApp):
                     if scl[3]==dtod:
                         add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
                         screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
-                    if scl[3]!=dtod:
-                        screen_manager.get_screen("Home").tasks_home.clear_widgets()
-                        add_taskhome = TaskCard(cardpk=0,weekday="Tue", venue="S1.2",title="PHY101 lab4",frmtime="01:00PM",totime="03:00PM")
-                        screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
                 
             elif toschedule==[]:
                 add_taskhome = TaskCard(cardpk=0,weekday=dtod, venue="Here",title="No events",frmtime="00:00AM",totime="11:59PM")
                 screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
-            else:
-                add_taskhome = TaskCard(cardpk=0,weekday=dtod, venue="Here",title="No events",frmtime="00:00AM",totime="11:59PM")
-                screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
+           
                 
             if taken_courses !=[]:
                 for c in taken_courses:
@@ -505,11 +499,11 @@ class MainApp(MDApp):
                     bas = "0"
                     add_course = CourseCard(course_key = empty_crs[0],CourseID=empty_crs[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=avg,Basis=bas)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
-                    crse_hom = CourseDisplayCard(Courseid=empty_crs[1], average="0.0 %")
+                    crse_hom = CourseDisplayCard(Courseid=empty_crs[1], average="0 %")
                     screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
 
             elif taken_courses ==[] and empty_course ==[]:
-                crse_hom = CourseDisplayCard(Courseid="PHY101", average="0.0 %")
+                crse_hom = CourseDisplayCard(Courseid="PHY101", average="0 %")
                 screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
                 pass
         except Exception:
@@ -809,10 +803,7 @@ class MainApp(MDApp):
                 if scl[3]==dtoday:
                     add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
                     screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
-                elif  scl[3]!=dtoday:
-                    screen_manager.get_screen("Home").tasks_home.clear_widgets()
-                    add_taskhome = TaskCard(cardpk=0,weekday=dtoday, venue="Here",title="No events",frmtime="00:00AM",totime="11:59PM")
-                    screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
+                
         elif toschedule==[]:
             add_taskhome = TaskCard(cardpk=0,weekday=dtoday, venue="Here",title="No events",frmtime="00:00AM",totime="11:59PM")
             screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
@@ -1193,6 +1184,7 @@ class MainApp(MDApp):
             dtoday=live_date.strftime("%a")
             dtdy=live_date.strftime("%d")
             if event_arr!=[]:
+                
                 for evt in event_arr:
                     en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
                     week_in= live_date+timedelta(days=8)
@@ -1203,10 +1195,6 @@ class MainApp(MDApp):
                         day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
                         screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
                         
-                    if evt[3]!=dtoday and en_date>live_date+timedelta(days=-1) and st_date<week_in:
-                        screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
-                        day_sch =TableCard(key=evt[0],event_Name="No events today",start_time="00:00AM",end_time="11:59PM",event_venue="Here",evnt_date=dtdy,evnt_day=dtoday,duratn="1439")
-                        screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
 
         except Exception:
             Snackbar(text="Select day load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
@@ -1220,7 +1208,7 @@ class MainApp(MDApp):
         for icount in count:
             if icount!=0:
                 for it in range(0,32,1):
-                    Database.cursor.execute("DELETE FROM MONTH WHERE ID IS NOT NULL")
+                    Database.cursor.execute("DELETE FROM MONTH WHERE DATE IS NOT NULL")
                     Database.con.commit()
                 now_year = datetime.now().year
                 now_month = datetime.now().month
@@ -1259,13 +1247,13 @@ class MainApp(MDApp):
 
 #calculate total booked hours for esch day of the month
     def update_month(self):
-        Database.cursor.execute("SELECT ST_DATE,ED_DATE FROM EVENT WHERE ID IS NOT NULL") 
+        Database.cursor.execute("SELECT TITTLE,ST_DATE,ED_DATE FROM EVENT WHERE ID IS NOT NULL") 
         sted_date = Database.cursor.fetchall()    
 
         if sted_date !=[]:
             for evt_date in sted_date:
-                ed_day=datetime.strptime(evt_date[1],"%Y-%m-%d %H:%M:%S")
-                st_day=datetime.strptime(evt_date[0],"%Y-%m-%d %H:%M:%S")
+                ed_day=datetime.strptime(evt_date[2],"%Y-%m-%d %H:%M:%S")
+                st_day=datetime.strptime(evt_date[1],"%Y-%m-%d %H:%M:%S")
                 dof_evt=st_day.strftime("%a")
                 stdof=int(st_day.strftime("%d"))
                 dofed_evt=int(ed_day.strftime("%d"))
@@ -1273,48 +1261,68 @@ class MainApp(MDApp):
                 if ed_day!=st_day:
                     repeat_days= ed_day-st_day
                     rpt_days=repeat_days.days
+                    print(rpt_days)
+                    Database.cursor.execute("SELECT TASK,HOURS FROM MONTH WHERE DAY=?",(dof_evt,))
+                    occpd_hr=Database.cursor.fetchall()
                     
+                    """ if rpt_days==0:
+                        Database.cursor.execute("SELECT SUM(DURATION) FROM EVENT WHERE TITTLE=?",(evt_date[0],))
+                        hourarry=Database.cursor.fetchone()
+                        Database.cursor.execute("SELECT COUNT(TITTLE) FROM EVENT WHERE TITTLE=?",(evt_date[0],))
+                        countarry=Database.cursor.fetchone()
+                        Database.cursor.execute("SELECT HOURS FROM MONTH WHERE DAY=?",(dof_evt,))
+                        occpd_hr=Database.cursor.fetchone()
+                        
+                        for dur in hourarry:
+                                dur=float(dur)/60.0
+                                if dur!=0.0:
+                                    for count in countarry:
+                                        for oc_hours in occpd_hr:
+                                            dur_hours=float(oc_hours)
+                                            dur=float(dur)
+                                            hour_diff = abs( dur - dur_hours)
+                                            hours_ = hour_diff+dur_hours
+                                            hrfmt = "{:.0f}".format(hours_)
+                                            Database.cursor.execute(f"UPDATE MONTH SET HOURS={hrfmt} WHERE DAY={stdof}")
+                                            Database.con.commit()
+                                            Database.cursor.execute(f"UPDATE MONTH SET TASK={count} WHERE DAY={stdof}")
+                                            Database.con.commit() """
                     
-                    Database.cursor.execute("SELECT SUM(DURATION) FROM EVENT WHERE ST_DATE=?",(st_day,))
-                    hourarry=Database.cursor.fetchone()
-                    Database.cursor.execute("SELECT COUNT(TITTLE) FROM EVENT WHERE ST_DATE=?",(st_day,))
-                    countarry=Database.cursor.fetchone()
-                    Database.cursor.execute("SELECT HOURS FROM MONTH WHERE DAY=?",(dof_evt,))
-                    occpd_hr=Database.cursor.fetchone()
-                    
-                    
-                    for dur in hourarry:
-                        dur=float(dur)/60.0
-                        if dur!=0.0:
-                            for count in countarry:
-                                for oc_hours in occpd_hr:
-                                    dur_hours=float(oc_hours)
-                                    dur=float(dur)
-                                    
-                                    if dur_hours==0.0 or dur== dur_hours:
-                                        pass
-                                    if dur!= dur_hours:
-                                        hour_diff = abs(dur - dur_hours)
-                                        hours_ = hour_diff+dur_hours
-                                        hrfmt="{:.0f}".format(hours_)
-                                        for ind in range(stdof,(rpt_days+1),7):
-                                            print(rpt_days)
-                                            Database.cursor.execute(f"UPDATE MONTH SET HOURS={hrfmt} WHERE DATE={ind}")
-                                            Database.con.commit()
-                                            Database.cursor.execute(f"UPDATE MONTH SET TASK={count} WHERE DATE={ind}")
-                                            Database.con.commit()
-                                    if rpt_days==0:
-                                        hour_diff = abs( dur - dur_hours)
-                                        hours_ = hour_diff+dur_hours
-                                        hrfmt = "{:.0f}".format(hours_)
-                                        for ind in range(stdof,(rpt_days+1),7):
-                                            Database.cursor.execute(f"UPDATE MONTH SET HOURS={hrfmt} WHERE DAY={dof_evt}")
-                                            Database.con.commit()
-                                            Database.cursor.execute(f"UPDATE MONTH SET TASK={count} WHERE DAY={dof_evt}")
-                                            Database.con.commit()
-                                                
-                        else:
-                            pass
+                    if rpt_days!=0:
+                        for ind in range(stdof,stdof+rpt_days,7):
+                            Database.cursor.execute("SELECT DURATION FROM EVENT WHERE TITTLE=?",(evt_date[0],))
+                            hourarry=Database.cursor.fetchone()
+                            Database.cursor.execute("SELECT COUNT(TITTLE) FROM EVENT WHERE TITTLE=?",(evt_date[0],))
+                            countarry=Database.cursor.fetchone()
+                            
+                            for dur in hourarry:
+                                dur=float(dur)/60.0
+                                if dur!=0.0:
+                                    for count in countarry:
+                                        for oc_hours in occpd_hr:
+                                            dur_hours=float(oc_hours[1])
+                                            
+                                            if dur_hours==0.0 :
+                                                hour_diff = abs(dur - dur_hours)
+                                                hours_ = hour_diff+dur_hours
+                                                hrfmt="{:.0f}".format(hours_)
+                                                print("one")
+                                                Database.cursor.execute(f"UPDATE MONTH SET HOURS={hrfmt} WHERE DATE=?",(ind,))
+                                                Database.con.commit()
+                                                Database.cursor.execute(f"UPDATE MONTH SET TASK={count} WHERE DATE=?",(ind,))
+                                                Database.con.commit()
+                                            
+                                            if dur!= dur_hours or dur_hours!=0.0 :
+                                                print("Two")
+                                                hour_diff = abs(dur - dur_hours)
+                                                hours_ = hour_diff+dur_hours
+                                                hrfmt="{:.0f}".format(hours_)
+                                                Database.cursor.execute(f"UPDATE MONTH SET HOURS={hrfmt} WHERE DATE=?",(ind,))
+                                                Database.con.commit()
+                                                Database.cursor.execute(f"UPDATE MONTH SET TASK={count} WHERE DATE=?", (ind,))
+                                                Database.con.commit()
+                                else:
+                                    pass
                     
                 if ed_day==st_day:
                     pass
@@ -1331,13 +1339,13 @@ class MainApp(MDApp):
         try:
            
             screen_manager.get_screen("monthscreen").table_list.clear_widgets()
-            Database.cursor.execute("SELECT ID,DAY,DATE,TASK,HOURS FROM MONTH WHERE ID IS NOT NULL")
+            Database.cursor.execute("SELECT DATE,DAY,TASK,HOURS FROM MONTH WHERE DATE IS NOT NULL")
             month_arr=Database.cursor.fetchall()
             for i in month_arr:
-                day=str(i[2])
-                num=str(i[3])
-                hr=str(i[4])
-                month_sch =MonthCard(key=i[0],evnt_day=i[1],evnt_date=day,task_number=num,evnt_hours=hr)
+                dt=str(i[0])
+                num=str(i[2])
+                hr=str(i[3])
+                month_sch =MonthCard(key=i[0],evnt_day=i[1],evnt_date=dt,task_number=num,evnt_hours=hr)
                 screen_manager.get_screen("monthscreen").table_list.add_widget(month_sch)
         except Exception:
             Snackbar(text="Month load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
@@ -1375,10 +1383,7 @@ class MainApp(MDApp):
                         dur=str(evt[8])+" mins"
                         day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
                         screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-                    elif evt[3]!=dtoday and en_date>live_date+timedelta(days=-1) and st_date<week_in:
-                        screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
-                        day_sch = TableCard(key=0, event_Name="No events today", start_time="00:00AM", end_time="11:59PM", event_venue="Here", evnt_date= today_dy, evnt_day=dtoday , duratn="1439 mins")
-                        screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
+                    
 
             elif event_arr==[]:
                 screen_manager.get_screen("Calendarscreen").timetable_view.size_hint= .99,.7
@@ -2192,5 +2197,8 @@ class MainApp(MDApp):
         Window.close()  
 
 if __name__ == "__main__":
-
+    
     MainApp().run()
+    """ Database.cursor.execute("DROP TABLE MONTH ")
+    Database.cursor.execute("CREATE TABLE MONTH(DATE INTEGER PRIMARY KEY,DAY TEXT NOT NULL,TASK INTEGER NOT NULL,HOURS TEXT NOT NULL)")
+    Database.con.commit() """
