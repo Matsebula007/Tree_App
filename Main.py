@@ -435,7 +435,6 @@ class MainApp(MDApp):
         days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday', 'Sunday']
         #year = str(datetime.now().year)
         month = str(datetime.now().strftime("%b"))
-        fullmonth = str(datetime.now().strftime("%B"))
         day = str(datetime.now().strftime("%d"))
         dtod=str(datetime.now().strftime("%a"))
         screen_manager.get_screen("todoScreen").date_text.text = f"{days[wd]}, {day} {month}"
@@ -464,16 +463,17 @@ class MainApp(MDApp):
                     screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
                     
             elif completed_tasks==[] and uncomplete_tasks==[]:
-                add_task = TodoCard(pk=0,tittle="Welcome", description="Added notes appear here",task_date=f"{days[wd]}, {day} {month}")
+                add_task = TodoCard(pk=0,tittle="Welcome", description="Your notes display here",task_date=f"{days[wd]}, {day} {month}")
                 screen_manager.get_screen("todoScreen").todo_list.add_widget(add_task)
             if toschedule !=[]:
                 for scl in toschedule:
                     if scl[3]==dtod:
                         add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
                         screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
-                
             elif toschedule==[]:
-                add_taskhome = TaskCard(cardpk=0,weekday=dtod, venue="Here",title="No events",frmtime="00:00AM",totime="11:59PM")
+                add_taskhom = TaskCard(cardpk=0,weekday=dtod, venue="Events",title="display here",frmtime="00:00AM",totime="11:59PM")
+                screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhom)
+                add_taskhome = TaskCard(cardpk=0,weekday=dtod, venue="Here",title="No events today",frmtime="00:00AM",totime="11:59PM")
                 screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
            
                 
@@ -500,8 +500,10 @@ class MainApp(MDApp):
                     screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
 
             elif taken_courses ==[] and empty_course ==[]:
-                crse_hom = CourseDisplayCard(Courseid="PHY101", average="0 %")
+                crse_hom = CourseDisplayCard(Courseid="Courses", average="show here")
                 screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
+                crse_hom2 = CourseDisplayCard(Courseid="PHY101", average="0 %")
+                screen_manager.get_screen("Home").course_home.add_widget(crse_hom2)
                 pass
         except Exception:
             Snackbar(text="Murky Start",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
@@ -787,9 +789,8 @@ class MainApp(MDApp):
                 if scl[3]==dtoday:
                     add_taskhome = TaskCard(cardpk=scl[0],weekday=scl[3],title=scl[1],venue=scl[2],frmtime=scl[4],totime=scl[5])
                     screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
-                
         elif toschedule==[]:
-            add_taskhome = TaskCard(cardpk=0,weekday=dtoday, venue="Here",title="No events",frmtime="00:00AM",totime="11:59PM")
+            add_taskhome = TaskCard(cardpk=0,weekday=dtoday, venue="Here",title="No events today",frmtime="00:00AM",totime="11:59PM")
             screen_manager.get_screen("Home").tasks_home.add_widget(add_taskhome)
 
         
@@ -979,38 +980,12 @@ class MainApp(MDApp):
 #days menu tabs
     def select_day(self):
         screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
-        screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
         screen_manager.get_screen("Calendarscreen").days_of_week.size_hint_x=None
         screen_manager.get_screen("Calendarscreen").timetable_view.size_hint= .99,.7
         screen_manager.get_screen("Calendarscreen").timetable_view.pos_hint={"center_x":.5,"center_y":.45} 
         days =["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
         for day in days:
             screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(WeekdayCard(dayname=day ))
-        Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_DATE,ED_DATE,ST_TIME,ED_TIME,DURATION FROM EVENT")
-        event_arr=Database.cursor.fetchall()
-        try:
-            
-            live_date =str(datetime.now())
-            live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
-            dtoday=live_date.strftime("%a")
-            dtdy=live_date.strftime("%d")
-            if event_arr!=[]:
-                
-                for evt in event_arr:
-                    en_date=datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S" )
-                    week_in= live_date+timedelta(days=8)
-                    st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
-                    day_dt=st_date.strftime("%d")
-                    if evt[3]==dtoday and en_date>live_date+timedelta(days=-1) and st_date<week_in:
-                        dur=str(evt[8])+" mins"
-                        day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
-                        screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-                        
-
-        except Exception:
-            Snackbar(text="Select day load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                    font_size ="15dp").open() # type: ignore
             
     def clear_for_week(self):
         """_summary_
@@ -1536,7 +1511,7 @@ class MainApp(MDApp):
                             size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                             font_size ="15dp").open() # type: ignore
         except Exception:
-            Snackbar(text="INDE:1:Add Course Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+            Snackbar(text="INDE:1: Uncheck empty fields",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                     font_size ="15dp").open() # type: ignore
 
@@ -1859,6 +1834,4 @@ class MainApp(MDApp):
 if __name__ == "__main__":
     
     MainApp().run()
-    """ Database.cursor.execute("DROP TABLE MONTH ")
-    Database.cursor.execute("CREATE TABLE MONTH(DATE INTEGER PRIMARY KEY,DAY TEXT NOT NULL,TASK INTEGER NOT NULL,HOURS TEXT NOT NULL)")
-    Database.con.commit() """
+  
