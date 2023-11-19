@@ -383,7 +383,6 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('screens/addcourse.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addAssessment.kv'))
         screen_manager.add_widget(Builder.load_file('screens/calendarscreen.kv'))
-        screen_manager.add_widget(Builder.load_file('screens/current_month.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addEvent.kv'))
         Builder.load_file('screens/overviewScreen.kv')
         Builder.load_file('screens/assesSummary.kv')
@@ -440,16 +439,14 @@ class MainApp(MDApp):
         day = str(datetime.now().strftime("%d"))
         dtod=str(datetime.now().strftime("%a"))
         screen_manager.get_screen("todoScreen").date_text.text = f"{days[wd]}, {day} {month}"
-        screen_manager.get_screen("Calendarscreen").table_month.text = f"{fullmonth}"
-        screen_manager.get_screen("monthscreen").table_month.text = f"{fullmonth}"
+        
+        
         
         #updates course summary   
         self.summariseCourse()
-        #create month
-        self.create_month()
+        #update timetable
         self.clear_for_week()
-        self.clear_for_month()
-       
+        
         try:
             completed_tasks, uncomplete_tasks = self.get_tasks()
             taken_courses =self.get_courses()
@@ -711,20 +708,7 @@ class MainApp(MDApp):
             color =(52/255,168/255,83/255,1)
         return color
     
-    def dayintensiy(self,month_card):
-        hours=float(month_card.evnt_hours)
-        shade = (30/255,47/255,151/255,.4)
-        if hours<5.0:
-           shade =(30/255,47/255,151/255,.4)
-        if hours<8.0 and hours>4.0:
-            shade =(30/255,47/255,151/255,.6)
-        if hours<10.0 and hours>8.0:
-            shade =(30/255,47/255,151/255,.8)
-        if hours>10.0:
-            shade =(30/255,47/255,151/255,.9)
-        return shade
-
-
+   
     def asmark_color(self,mark,weight):
         """_summary_
 
@@ -784,7 +768,7 @@ class MainApp(MDApp):
         Database.cursor.execute("DELETE FROM EVENT WHERE TITTLE=?", (tittle,))
         Database.con.commit()
         self.update_home_sche()
-        self.update_month()
+       
 
     def pendingupdate(self):
         Snackbar(text="Calendar functionality pending update",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
@@ -862,179 +846,6 @@ class MainApp(MDApp):
         screen_manager.get_screen("addAssesment").ass_mark.text=""
         screen_manager.get_screen("addAssesment").ass_name.text=""
         pass
-# view month day tasks
-    def view_monthtask(self,dayname,evtdate):
-        evtdate=float(evtdate)
-        screen_manager.transition = FadeTransition()
-        screen_manager.current = "Calendarscreen"
-
-        screen_manager.get_screen("Calendarscreen").days_of_week.clear_widgets()
-        screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
-        screen_manager.get_screen("Calendarscreen").days_of_week.size_hint_x=1
-    
-        Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_DATE,ED_DATE,ST_TIME,ED_TIME,DURATION FROM EVENT")
-        event_arr=Database.cursor.fetchall()
-        if event_arr!=[]:
-            try:
-                if dayname=="Mon":
-                    view_day=DaySelectionCard(selected_day="Monday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day) 
-                    for evt in event_arr:
-                        live_date =str(datetime.now())
-                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
-                        live_month=live_date.strftime("%m")
-
-                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
-                        ed_date=(datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S"))+timedelta(days=1)  
-                        day_dt=st_date.strftime("%d")
-                        day_de=ed_date.strftime("%d")
-                        evtmonth=st_date.strftime("%m")
-                        day_de=float(day_de)
-                        if evt[3] == "Mon" and evtmonth == live_month and evtdate != day_de:
-                            dur=str(evt[8])+" mins"
-                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
-                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-                if dayname=="Tue":
-                    view_day=DaySelectionCard(selected_day="Tuesday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                    for evt in event_arr:
-                        live_date =str(datetime.now())
-                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
-                        live_month=live_date.strftime("%m")
-
-                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
-                        ed_date=(datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S"))+timedelta(days=1)
-                        day_dt=st_date.strftime("%d")
-                        day_de=ed_date.strftime("%d")
-                        evtmonth=st_date.strftime("%m")
-                        day_de=float(day_de)
-                        if evt[3]=="Tue" and evtmonth==live_month and evtdate!=day_de:
-                            dur=str(evt[8])+" mins"
-                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
-                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-                if dayname=="Wed":
-                    view_day=DaySelectionCard(selected_day="Wednesday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                    for evt in event_arr:
-                        live_date =str(datetime.now())
-                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
-                        live_month=live_date.strftime("%m")
-
-                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
-                        ed_date=(datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S"))+timedelta(days=1)
-                        day_dt=st_date.strftime("%d")
-                        day_de=ed_date.strftime("%d")
-                        evtmonth=st_date.strftime("%m")
-                        day_de=float(day_de)
-                        if evt[3]=="Wed" and evtmonth==live_month and evtdate!=day_de:
-                            dur=str(evt[8])+" mins"
-                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
-                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-                if dayname=="Thu":
-                    view_day=DaySelectionCard(selected_day="Thursday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                    for evt in event_arr:
-                        live_date =str(datetime.now())
-                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
-                        live_month=live_date.strftime("%m")
-
-                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
-                        ed_date=(datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S"))+timedelta(days=1)
-                        day_dt=st_date.strftime("%d")
-                        day_de=ed_date.strftime("%d")
-                        evtmonth=st_date.strftime("%m")
-                        day_de=float(day_de)
-                        if evt[3]=="Thu" and evtmonth==live_month and evtdate!=day_de:
-                            dur=str(evt[8])+" mins"
-                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
-                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-                if dayname=="Fri":
-                    view_day=DaySelectionCard(selected_day="Friday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                    for evt in event_arr:
-                        live_date =str(datetime.now())
-                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
-                        live_month=live_date.strftime("%m")
-
-                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
-                        ed_date=(datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S"))+timedelta(days=1)
-                        day_dt=st_date.strftime("%d")
-                        day_de=ed_date.strftime("%d")
-                        evtmonth=st_date.strftime("%m")
-                        day_de=float(day_de)
-                        if evt[3]=="Fri" and evtmonth==live_month and evtdate!=day_de:
-                            dur=str(evt[8])+" mins"
-                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
-                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-                if dayname=="Sat":
-                    view_day=DaySelectionCard(selected_day="Saturday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                    for evt in event_arr:
-                        live_date =str(datetime.now())
-                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
-                        live_month=live_date.strftime("%m")
-
-                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
-                        ed_date=(datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S"))+timedelta(days=1)
-                        day_dt=st_date.strftime("%d")
-                        day_de=ed_date.strftime("%d")
-                        evtmonth=st_date.strftime("%m")
-                        day_de=float(day_de)
-                        if evt[3]=="Sat" and evtmonth==live_month and evtdate!=day_de:
-                            dur=str(evt[8])+" mins"
-                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
-                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-                if dayname=="Sun":
-                    view_day=DaySelectionCard(selected_day="Sunday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                    for evt in event_arr:
-                        live_date =str(datetime.now())
-                        live_date=datetime.strptime(live_date,"%Y-%m-%d %H:%M:%S.%f" )
-                        live_month=live_date.strftime("%m")
-                        
-                        st_date=datetime.strptime(evt[4],"%Y-%m-%d %H:%M:%S")
-                        ed_date=(datetime.strptime(evt[5],"%Y-%m-%d %H:%M:%S"))+timedelta(days=1)
-                        day_dt=st_date.strftime("%d")
-                        day_de=ed_date.strftime("%d")
-                        evtmonth=st_date.strftime("%m")
-                        day_de=float(day_de)
-                        if evt[3]=="Sun" and evtmonth==live_month and evtdate!=day_de:
-                            dur=str(evt[8])+" mins"
-                            day_sch =TableCard(key=evt[0],event_Name=evt[1],start_time=evt[6],end_time=evt[7],event_venue=evt[2],evnt_date=day_dt,evnt_day=evt[3],duratn=dur)
-                            screen_manager.get_screen("Calendarscreen").table_list.add_widget(day_sch)
-            except Exception:
-                Snackbar(text="Weekday load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open() # type: ignore
-        elif event_arr==[]:
-            try:
-                if dayname=="Mon":
-                    view_day=DaySelectionCard(selected_day="Monday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                    #add card for empty events in month
-                elif dayname=="Tue":
-                    view_day=DaySelectionCard(selected_day="Tuesday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                elif dayname=="Wed":
-                    view_day=DaySelectionCard(selected_day="Wednesday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                elif dayname=="Thu":
-                    view_day=DaySelectionCard(selected_day="Thursday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                elif dayname=="Fri":
-                    view_day=DaySelectionCard(selected_day="Friday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                elif dayname=="Sat":
-                    view_day=DaySelectionCard(selected_day="Saturday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-                elif dayname=="Sun":
-                    view_day=DaySelectionCard(selected_day="Sunday")
-                    screen_manager.get_screen("Calendarscreen").days_of_week.add_widget(view_day)
-            except Exception:
-                Snackbar(text="INDE:2: Empty week load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                        font_size ="15dp").open() # type: ignore
-
 
 #view selected day events
     def selected_weekday(self,dayname):
@@ -1200,158 +1011,7 @@ class MainApp(MDApp):
             Snackbar(text="Select day load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                     font_size ="15dp").open() # type: ignore
-#add days of current month to database
-    def create_month(self):
-
-        Database.cursor.execute("SELECT COUNT(*) FROM ( SELECT 0 FROM MONTH LIMIT 1)")
-        count = Database.cursor.fetchone()
-        for icount in count:
-            if icount!=0:
-                for it in range(0,32,1):
-                    Database.cursor.execute("DELETE FROM MONTH WHERE DATE IS NOT NULL")
-                    Database.con.commit()
-                now_year = datetime.now().year
-                now_month = datetime.now().month
-                first_day=datetime(year=now_year,month=now_month,day=1) 
-                last_day=datetime(year=now_year,month=now_month+1,day=1)+timedelta(days=-1) 
-                first_dy=int(first_day.strftime("%d"))
-                last_dy=int(last_day.strftime("%d"))
-                for dayof_mnth in range(first_dy,last_dy+1,1):
-                    full_dt=datetime(year=now_year,month=now_month,day=dayof_mnth)
-                    day_name=str(full_dt.strftime("%a"))
-                    evnt_date=str(dayof_mnth)
-                    task_count=0
-                    task_duratn="0"
-                    data= day_name,evnt_date,task_count,task_duratn
-                    Database.cursor.execute("INSERT INTO MONTH(DAY,DATE,TASK,HOURS) VALUES(?,?,?,?)",data)
-                    Database.con.commit()
-                else:pass
-            elif icount==0:
-                now_year = datetime.now().year
-                now_month = datetime.now().month
-                first_day=datetime(year=now_year,month=now_month,day=1) 
-                last_day=datetime(year=now_year,month=now_month+1,day=1)+timedelta(days=-1) 
-                first_dy=int(first_day.strftime("%d"))
-                last_dy=int(last_day.strftime("%d"))
-                for dayof_mnth in range(first_dy,last_dy+1,1):
-                    full_dt=datetime(year=now_year,month=now_month,day=dayof_mnth)
-                    day_name=str(full_dt.strftime("%a"))
-                    evnt_date=str(dayof_mnth)
-                    task_count=0
-                    task_duratn="0"
-                    data= day_name,evnt_date,task_count,task_duratn
-                    Database.cursor.execute("INSERT INTO MONTH(DAY,DATE,TASK,HOURS) VALUES(?,?,?,?)",data)
-                    Database.con.commit()
-
-        self.update_month()
-
-#calculate total booked hours for esch day of the month
-    def update_month(self):
-        Database.cursor.execute("SELECT TITTLE,ST_DATE,ED_DATE FROM EVENT WHERE ID IS NOT NULL") 
-        sted_date = Database.cursor.fetchall()    
-
-        if sted_date !=[]:
-            for evt_date in sted_date:
-                ed_day=datetime.strptime(evt_date[2],"%Y-%m-%d %H:%M:%S")
-                st_day=datetime.strptime(evt_date[1],"%Y-%m-%d %H:%M:%S")
-                dof_evt=st_day.strftime("%a")
-                stdof=int(st_day.strftime("%d"))
-                dofed_evt=int(ed_day.strftime("%d"))
-                
-                if ed_day!=st_day:
-                    repeat_days= ed_day-st_day
-                    rpt_days=repeat_days.days
-                    print(rpt_days)
-                    Database.cursor.execute("SELECT TASK,HOURS FROM MONTH WHERE DAY=?",(dof_evt,))
-                    occpd_hr=Database.cursor.fetchall()
-                    
-                    """ if rpt_days==0:
-                        Database.cursor.execute("SELECT SUM(DURATION) FROM EVENT WHERE TITTLE=?",(evt_date[0],))
-                        hourarry=Database.cursor.fetchone()
-                        Database.cursor.execute("SELECT COUNT(TITTLE) FROM EVENT WHERE TITTLE=?",(evt_date[0],))
-                        countarry=Database.cursor.fetchone()
-                        Database.cursor.execute("SELECT HOURS FROM MONTH WHERE DAY=?",(dof_evt,))
-                        occpd_hr=Database.cursor.fetchone()
-                        
-                        for dur in hourarry:
-                                dur=float(dur)/60.0
-                                if dur!=0.0:
-                                    for count in countarry:
-                                        for oc_hours in occpd_hr:
-                                            dur_hours=float(oc_hours)
-                                            dur=float(dur)
-                                            hour_diff = abs( dur - dur_hours)
-                                            hours_ = hour_diff+dur_hours
-                                            hrfmt = "{:.0f}".format(hours_)
-                                            Database.cursor.execute(f"UPDATE MONTH SET HOURS={hrfmt} WHERE DAY={stdof}")
-                                            Database.con.commit()
-                                            Database.cursor.execute(f"UPDATE MONTH SET TASK={count} WHERE DAY={stdof}")
-                                            Database.con.commit() """
-                    
-                    if rpt_days!=0:
-                        for ind in range(stdof,stdof+rpt_days,7):
-                            Database.cursor.execute("SELECT DURATION FROM EVENT WHERE TITTLE=?",(evt_date[0],))
-                            hourarry=Database.cursor.fetchone()
-                            Database.cursor.execute("SELECT COUNT(TITTLE) FROM EVENT WHERE TITTLE=?",(evt_date[0],))
-                            countarry=Database.cursor.fetchone()
-                            
-                            for dur in hourarry:
-                                dur=float(dur)/60.0
-                                if dur!=0.0:
-                                    for count in countarry:
-                                        for oc_hours in occpd_hr:
-                                            dur_hours=float(oc_hours[1])
-                                            
-                                            if dur_hours==0.0 :
-                                                hour_diff = abs(dur - dur_hours)
-                                                hours_ = hour_diff+dur_hours
-                                                hrfmt="{:.0f}".format(hours_)
-                                                print("one")
-                                                Database.cursor.execute(f"UPDATE MONTH SET HOURS={hrfmt} WHERE DATE=?",(ind,))
-                                                Database.con.commit()
-                                                Database.cursor.execute(f"UPDATE MONTH SET TASK={count} WHERE DATE=?",(ind,))
-                                                Database.con.commit()
-                                            
-                                            if dur!= dur_hours or dur_hours!=0.0 :
-                                                print("Two")
-                                                hour_diff = abs(dur - dur_hours)
-                                                hours_ = hour_diff+dur_hours
-                                                hrfmt="{:.0f}".format(hours_)
-                                                Database.cursor.execute(f"UPDATE MONTH SET HOURS={hrfmt} WHERE DATE=?",(ind,))
-                                                Database.con.commit()
-                                                Database.cursor.execute(f"UPDATE MONTH SET TASK={count} WHERE DATE=?", (ind,))
-                                                Database.con.commit()
-                                else:
-                                    pass
-                    
-                if ed_day==st_day:
-                    pass
-                
-                
-                
-                                
-                                    
-               
-        elif sted_date ==[]:
-            pass
-                        
-    def clear_for_month(self):
-        try:
-           
-            screen_manager.get_screen("monthscreen").table_list.clear_widgets()
-            Database.cursor.execute("SELECT DATE,DAY,TASK,HOURS FROM MONTH WHERE DATE IS NOT NULL")
-            month_arr=Database.cursor.fetchall()
-            for i in month_arr:
-                dt=str(i[0])
-                num=str(i[2])
-                hr=str(i[3])
-                month_sch =MonthCard(key=i[0],evnt_day=i[1],evnt_date=dt,task_number=num,evnt_hours=hr)
-                screen_manager.get_screen("monthscreen").table_list.add_widget(month_sch)
-        except Exception:
-            Snackbar(text="Month load Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
-                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
-                    font_size ="15dp").open() # type: ignore
-             
+            
     def clear_for_week(self):
         """_summary_
         """        
