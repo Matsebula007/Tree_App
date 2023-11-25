@@ -1,6 +1,7 @@
 import random
 import sqlite3
 from datetime import date, datetime, timedelta
+from email import message
 
 from kivy.animation import Animation
 from kivy.clock import Clock
@@ -18,6 +19,7 @@ from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.pickers import MDDatePicker, MDTimePicker
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.snackbar import Snackbar
+from plyer import notification
 
 Window.softinput_mode ="below_target"
 
@@ -42,6 +44,23 @@ class HoverButton(Button,HoverBehavior):
     def on_leave(self):
         self.background = ((30/255,47/255,151/255,.4))
         Animation(size_hint =(.2,.046),d=0.1).start(self)
+        
+class LargeHoverButton(Button,HoverBehavior):
+    """_summary_
+
+    Args:
+        Button (_type_): _description_
+        HoverBehavior (_type_): _description_
+    """    
+    background =ListProperty((30/255,47/255,151/255,.4))
+                             
+    def on_enter(self):
+        
+        self.background = ((30/255,47/255,151/255,.6))
+        Animation(size_hint =(.96,.08),d=0.3).start(self)
+    def on_leave(self):
+        self.background = ((30/255,47/255,151/255,.4))
+        Animation(size_hint =(.94,.07),d=0.1).start(self)
 
 class CircularProgressBar(AnchorLayout):
     """_summary_
@@ -294,6 +313,7 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
     Basis=StringProperty()
     CA_ratio=StringProperty()
     Ex_ratio=StringProperty()
+    
 
 class CourseDisplayCard(CommonElevationBehavior,MDFloatLayout):
     def navigate(self):
@@ -381,6 +401,7 @@ class MainApp(MDApp):
         screen_manager.add_widget(Builder.load_file('screens/addTask.kv'))
         screen_manager.add_widget(Builder.load_file('screens/coursesView.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addcourse.kv'))
+        screen_manager.add_widget(Builder.load_file('screens/editCourse.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addAssessment.kv'))
         screen_manager.add_widget(Builder.load_file('screens/calendarscreen.kv'))
         screen_manager.add_widget(Builder.load_file('screens/addEvent.kv'))
@@ -425,6 +446,8 @@ class MainApp(MDApp):
         """        
         schedule = Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_TIME,ED_TIME FROM EVENT  WHERE ID IS NOT NULL").fetchall()
         return schedule
+    
+   
                                                           
 
     def on_start(self):
@@ -527,7 +550,11 @@ class MainApp(MDApp):
                 total_cre =total_cre + i
         cred_format ="{:.1f}".format(total_cre)
         return str(cred_format)
-
+#notification
+    def notif(self,tittle,text):
+        tittle=str(tittle)
+        text=str(text)
+        notification.notify(title=tittle,message=text,app_name="Unitree",ticker="Unitree reminder") #type: ignore
 #checkbox seetings
     def on_complete(self,task_card,value,description):
         if value.active == True:
@@ -1098,8 +1125,10 @@ class MainApp(MDApp):
             Snackbar(text="IDE2:Ovev:2:Hot Overview ",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
                     font_size ="15dp").open() # type: ignore
-
+#Updates/refreshes courses screen
     def update_coursescreen(self):
+        """_summary_
+        """        
         screen_manager.get_screen("CoursesScreen").course_list.clear_widgets()
         screen_manager.get_screen("Home").course_home.clear_widgets()
         taken_courses =self.get_courses()
@@ -1130,7 +1159,6 @@ class MainApp(MDApp):
         if taken_courses==[] and emty_crse==[]:
             crse_hom = CourseDisplayCard(Courseid="PHY101",average="0 %")
             screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
-
 
 #Add event to user_database table EVENT 
     def add_event(self,tittle,venue,st_date,ed_date,st_time,ed_time):
@@ -1661,6 +1689,7 @@ class MainApp(MDApp):
                             cursor = con.cursor()
                             ass_contrib = ass_mark*(ass_contr/100.0)  
                             contrib_formt = "{:.1f}".format(ass_contrib)
+                            ass_mark = "{:.1f}".format(ass_mark)
                             data=ass_name,ass_contr,ass_mark,contrib_formt
 
                             cursor.execute(f"INSERT INTO {ass_category}(TITTLE,WEIGHT,MARK,CONTRIB) VALUES(?,?,?,?)",data)
@@ -1695,8 +1724,8 @@ class MainApp(MDApp):
                         ass_contr=float(ass_contr)
                         ass_contrib = ass_mark*(ass_contr/100.0)
                         ass_contrib ="{:.1f}".format(ass_contrib)
+                        ass_mark = "{:.1f}".format(ass_mark)
                         ass_contr=str(ass_contr)
-                        ass_mark=str(ass_mark)
                         ass_contr=str(ass_contr)
                         ass_contrib=str(ass_contrib)
                         add_test =(AssessmentCard(testpk=0,testName=ass_name,testWeight= ass_contr,testMark = ass_mark,testContrib=ass_contrib))

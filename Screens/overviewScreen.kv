@@ -97,6 +97,8 @@
             padding:10,1
             pos_hint:{"center_x":.5,"center_y": .16}
 
+
+
 <OverviewScreen>
     name:"overviewscreen"
     category_list:category_list
@@ -136,26 +138,26 @@
             font_name: 'assets/fonts/CroissantOne-Regular.ttf'
             font_size: "18dp"
 
-    MDFloatLayout:
-        size_hint:.98,.08
-        pos_hint: {"center_x": .5,"center_y": .86}
-        canvas:
+
+    #edit Course button
+    LargeHoverButton:
+        size_hint:.94,.07
+        text:"Course Overview"
+        font_name:'assets/fonts/Poppins-Bold.ttf'
+        font_size: "22dp"
+        background_color:0,0,0,0
+        pos_hint: {"center_x": .5,"center_y": .88}
+        color: 1,1,1,1     
+        canvas.before:
             Color:
-                rgba:(238/255,238/255,238/255,.2)
+                rgba:self.background
             RoundedRectangle:
                 size:self.size
                 pos:self.pos
                 radius:[10]
-        MDLabel:
-            id: overview
-            text:"Course Overview"
-            size_hint:.8,1
-            pos_hint: {"center_x": .55,"center_y": .5}
-            foreground_color: 1/255,1/255,1/255,.8
-            background_color: 0,0,0,0
-            padding:10
-            font_name:'assets/fonts/Poppins-Bold.ttf'
-            font_size:"22dp"
+        on_release:
+            root.manager.transition = FadeTransition()
+            root.manager.current = "course_edit"
 
     #Category summary scroll
     MDFloatLayout:
@@ -182,7 +184,7 @@
                 height:self.minimum_height
                 row_default_height:80
                 size_hint_y:None
-                padding:10,20
+                padding:10,15
                 spacing:10,10
     
     
