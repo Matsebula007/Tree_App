@@ -35,20 +35,10 @@ MDScreen:
     labW:labW
     lpercentbar:lpercentbar
 
-    groupCat:groupCat
-    gcheck:gcheck
-    groupW:groupW
-    gpercentbar:gpercentbar
-
     otherCat:otherCat
     ocheck:ocheck
     otherW:otherW
     opercentbar:opercentbar
-
-    classworkCat:classworkCat
-    ccheck:ccheck
-    clswrkW:clswrkW
-    cpercentbar:cpercentbar
 
   
   #Screen settings
@@ -416,66 +406,12 @@ MDScreen:
                         font_name:'assets/fonts/JosefinSans-Regular.ttf'
                         font_size:"18dp"   
 
-
-            
-
-            #category Groupwork
-            MDFloatLayout:
-                size_hint:1,.08
-                pos_hint: {"center_x": .5,"center_y": .46}
-                canvas:
-                    Color:
-                        rgba:(244/255,249/255,253/255,1)
-                    Rectangle:
-                        size:self.size
-                        pos:self.pos
-                
-                #category label
-                MDFloatLayout: 
-                    size_hint:.8,1
-                    pos_hint: {"center_x": .4,"center_y": .5}
-                    MDLabel:
-                        id:groupCat
-                        text:"GROUPWORK"
-                        size_hint:.8,1
-                        pos_hint: {"center_x": .5,"center_y": .5}
-                        foreground_color: 12/255,12/255,13/255,1
-                        background_color: 0,0,0,0
-                        padding:15
-                        font_name:'assets/fonts/JosefinSans-Regular.ttf'
-                        font_size:"16dp"
-                    MDCheckbox:
-                        id:gcheck
-                        size_hint:None,None
-                        size:"50dp","50dp"
-                        pos_hint:{"center_x":.08,"center_y": .5}
-                        #mofify to change percent sign color
-                        on_active: app.cat_select(gcheck,groupW,gpercentbar)
-                
-                # %input
-                MDFloatLayout:
-                    id:gpercentbar
-                    size_hint:.2,1
-                    pos_hint: {"center_x": .9,"center_y": .5}
-                    md_bg_color:(0/255,255/255,125/255,.2)
-                    TextInput:
-                        id:groupW
-                        text:"0"
-                        size_hint: .8,.8
-                        pos_hint: {"center_x": .6,"center_y": .4}
-                        height: self.minimum_height
-                        multiline:False
-                        cursor_width: "2dp"
-                        foreground_color: 12/255,12/255,13/255,1
-                        background_color: 0,0,0,0
-                        padding:1
-                        font_name:'assets/fonts/JosefinSans-Regular.ttf'
-                        font_size:"18dp" 
+             
 
             #category lab
             MDFloatLayout:
                 size_hint:1,.08
-                pos_hint: {"center_x": .5,"center_y": .34}
+                pos_hint: {"center_x": .5,"center_y": .46}
                 canvas:
                     Color:
                         rgba:(244/255,249/255,253/255,1)
@@ -529,7 +465,7 @@ MDScreen:
             #category other
             MDFloatLayout:
                 size_hint:1,.08
-                pos_hint: {"center_x": .5,"center_y": .22}
+                pos_hint: {"center_x": .5,"center_y": .34}
                 canvas:
                     Color:
                         rgba:(244/255,249/255,253/255,1)
@@ -579,70 +515,17 @@ MDScreen:
                         font_name:'assets/fonts/JosefinSans-Regular.ttf'
                         font_size:"18dp" 
 
-            #category classwork
-            MDFloatLayout:
-                size_hint:1,.08
-                pos_hint: {"center_x": .5,"center_y": .1}
-                canvas:
-                    Color:
-                        rgba:(244/255,249/255,253/255,1)
-                    Rectangle:
-                        size:self.size
-                        pos:self.pos
-                
-                #category label
-                MDFloatLayout: 
-                    size_hint:.8,1
-                    pos_hint: {"center_x": .4,"center_y": .5}
-                    MDLabel:
-                        id:classworkCat
-                        text:"CLASSWORK"
-                        size_hint:.8,1
-                        pos_hint: {"center_x": .5,"center_y": .5}
-                        foreground_color: 12/255,12/255,13/255,1
-                        background_color: 0,0,0,0
-                        padding:15
-                        font_name:'assets/fonts/JosefinSans-Regular.ttf'
-                        font_size:"16dp"
-                    MDCheckbox:
-                        id:ccheck
-                        size_hint:None,None
-                        size:"50dp","50dp"
-                        pos_hint:{"center_x":.08,"center_y": .5}
-                        #mofify to change percent sign color
-                        on_active: app.cat_select(ccheck,clswrkW,cpercentbar)
-                
-                # %input
-                MDFloatLayout:
-                    id:cpercentbar
-                    size_hint:.2,1
-                    pos_hint: {"center_x": .9,"center_y": .5}
-                    md_bg_color:(0/255,255/255,125/255,.2)
-                    TextInput:
-                        id:clswrkW
-                        text:"0"
-                        size_hint: .8,.8
-                        pos_hint: {"center_x": .6,"center_y": .4}
-                        height: self.minimum_height
-                        multiline:False
-                        cursor_width: "2dp"
-                        foreground_color: 12/255,12/255,13/255,1
-                        background_color: 0,0,0,0
-                        padding:1
-                        font_name:'assets/fonts/JosefinSans-Regular.ttf'
-                        font_size:"18dp" 
-
         #add course button
         Button:
             text: "Add Course"
             size_hint: .82,.08
-            pos_hint: {"center_x": .5,"center_y": .06}
+            pos_hint: {"center_x": .5,"center_y": .18}
             background_color:0,0,0,0
             font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size: "18dp"
             color: 1,1,1,1
             on_release:
-                app.add_course(tcheck,testW.text,acheck,assW.text,pcheck,preseW.text,qcheck,quizW.text,lcheck,labW.text,gcheck,groupW.text,ccheck,clswrkW.text,ocheck,otherW.text,courseID.text,c_credit.text,ca_ratio.text,ex_ratio.text)
+                app.add_course(tcheck,testW.text,acheck,assW.text,pcheck,preseW.text,qcheck,quizW.text,lcheck,labW.text,ocheck,otherW.text,courseID.text,c_credit.text,ca_ratio.text,ex_ratio.text)
                 app.update_course(courseID.text)
             canvas.before:
                 Color:
@@ -651,3 +534,70 @@ MDScreen:
                     size:self.size
                     pos:self.pos
                     radius:[15]
+
+
+#navigation menu                    
+    MDFloatLayout:
+        size_hint:1,.1
+        pos_hint: {"center_x": .5,"center_y": .05}
+        canvas:
+            Color:
+                rgba:(0/255,0/255,0/255,1)
+            Rectangle:
+                size:self.size
+                pos:self.pos
+                
+        MDIconButton:
+            icon: "home"
+            icon_size:dp(30)
+            pos_hint: {"center_x":.14 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                app.update_coursescreen()
+                app.update_home_sche()
+                root.manager.transition = FadeTransition()
+                root.manager.current = "Home"
+
+        MDIconButton:
+            icon: "view-agenda"
+            icon_size:dp(30)
+            pos_hint: {"center_x":.38 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                root.manager.transition = FadeTransition()
+                root.manager.current = "todoScreen" 
+        
+        MDFloatLayout:
+            size_hint:.2,.8
+            pos_hint: {"center_x": .62,"center_y": .5}
+            canvas:
+                Color:
+                    rgba:(30/255,47/255,151/255,.2)
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos
+                    radius:[20]
+            MDIconButton:
+                icon: "library"
+                icon_size:dp(30)
+                pos_hint: {"center_x":.5 ,"center_y":.5}
+                theme_text_color:"Custom"
+                color:(30/255,47/255,151/255,.6)
+                on_press:
+                    app.update_coursescreen()
+                    root.manager.transition = FadeTransition()
+                    root.manager.current = "CoursesScreen"
+                    
+        
+        MDIconButton:
+            icon: "calendar"
+            icon_size:dp(30)
+            pos_hint: {"center_x":.86 ,"center_y":.5}
+            theme_text_color:"Custom"
+            text_color: 1,1,1,1
+            on_press:
+                app.clear_for_week()
+                root.manager.transition = FadeTransition()
+                root.manager.current = "Calendarscreen"

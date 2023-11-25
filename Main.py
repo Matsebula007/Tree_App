@@ -763,7 +763,53 @@ class MainApp(MDApp):
             color=(52/255,168/255,83/255,1)
             return color
 
-
+# add edit course details 
+    def get_edit_course(self,crseid,crsecr):
+        
+        screen_manager.get_screen("course_edit").courseID.text=crseid
+        screen_manager.get_screen("course_edit").c_credit.text=crsecr
+        
+        pass
+#navigate  back to course overview
+    def over_nav(self,course_id):
+        
+        con = sqlite3.connect(f"{course_id}.db")
+        cursor = con.cursor()
+        try:
+            cursor.execute("SELECT ID,CATEGORY,MARK,CAT_CONTRIB,TUG_COUNT FROM SUMMARY")
+            live_categ = cursor.fetchall()
+            for cat in live_categ:
+                grade = str(cat[2])
+                contrib= str(cat[3])
+                tugcount = str(cat[4])+" Tug"
+                add_categ =(OverviewCard(categ_key=cat[0],Category=cat[1],Grade=grade,Contribution=contrib,TUG_count=tugcount))
+                screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
+        except Exception:
+            Snackbar(text="IDE2:Ovev:1:Hot Overview ",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                    font_size ="15dp").open() # type: ignore
+        #add categories with zero assessments
+        try:
+            cursor.execute("SELECT CATEGORY FROM SUMMARY")
+            live_categ = cursor.fetchall()
+            live_cat=[]
+            for categ in live_categ:
+                for cat in categ:
+                    live_cat.append(cat)    
+            cursor.execute("SELECT TITTLE FROM CATEGORY")
+            dead_cat = cursor.fetchall()
+            for dcateg in dead_cat:
+                for deadcat in dcateg:
+                    if deadcat not in live_cat:
+                        grade = str(0)
+                        contrib= str(0)
+                        tugcount = str(0)+" Tug"
+                        add_categ =(OverviewCard(categ_key=0,Category=deadcat,Grade=grade,Contribution=contrib,TUG_count=tugcount))
+                        screen_manager.get_screen("overviewscreen").category_list.add_widget(add_categ)
+        except Exception:
+            Snackbar(text="IDE2:Ovev:2:Hot Overview ",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                    font_size ="15dp").open() # type: ignore
 # add course ID to next screen
     def get_id(self,crseid,crs_cr):
         """_summary_
@@ -1377,7 +1423,7 @@ class MainApp(MDApp):
             screen_manager.get_screen("CoursesScreen").crtot.text= self.creditscal()
                  
 # add course settings
-    def add_course(self,tcheck,test_w,acheck,ass_w,pcheck,prese_w,qcheck,quiz_w,lcheck,lab_w,gcheck,group_w,ccheck,clswrk_w,ocheck,other_w,course_id,credits,ca_rt,ex_rt):
+    def add_course(self,tcheck,test_w,acheck,ass_w,pcheck,prese_w,qcheck,quiz_w,lcheck,lab_w,ocheck,other_w,course_id,credits,ca_rt,ex_rt):
         """_summary_
 
         Args:
@@ -1391,10 +1437,6 @@ class MainApp(MDApp):
             quiz_w (_type_): _description_
             lcheck (_type_): _description_
             lab_w (_type_): _description_
-            gcheck (_type_): _description_
-            group_w (_type_): _description_
-            ccheck (_type_): _description_
-            clswrk_w (_type_): _description_
             ocheck (_type_): _description_
             other_w (_type_): _description_
             course_id (_type_): _description_
@@ -1423,11 +1465,9 @@ class MainApp(MDApp):
                     prese_w=float(prese_w)
                     quiz_w=float(quiz_w)
                     lab_w=float(lab_w)
-                    group_w=float(group_w)
-                    clswrk_w=float(clswrk_w)
                     other_w=float(other_w)
 
-                    totl_weight=test_w+ass_w+prese_w+quiz_w+lab_w+group_w+clswrk_w+other_w
+                    totl_weight=test_w+ass_w+prese_w+quiz_w+lab_w+other_w
                     if  credits !=""and ca_rt !=""  and ex_rt !="":
                         credits=float(credits)                        
                         ca_rt=float(ca_rt)
@@ -1476,20 +1516,6 @@ class MainApp(MDApp):
                                         ldata = "LAB",lab_w
                                         cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
                                         con.commit()                                 
-                                    else:pass
-                                    if  gcheck.active is True and group_w !="":     
-                                        cursor.execute("CREATE TABLE GROUPWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
-                                        con.commit()
-                                        gdata = "GROUPWORK",group_w
-                                        cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",gdata)
-                                        con.commit()
-                                    else:pass
-                                    if ccheck.active is True and clswrk_w !="":     
-                                        cursor.execute("CREATE TABLE CLASSWORK(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
-                                        con.commit()
-                                        cdata = "CLASSWORK",clswrk_w
-                                        cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",cdata)
-                                        con.commit()
                                     else:pass
                                     if ocheck.active is True and other_w !="":     
                                         cursor.execute("CREATE TABLE OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")

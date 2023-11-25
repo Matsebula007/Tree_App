@@ -156,6 +156,8 @@
                 pos:self.pos
                 radius:[10]
         on_release:
+            app.clear_overview()
+            app.get_edit_course(crseid.text,crsecr.text)
             root.manager.transition = FadeTransition()
             root.manager.current = "course_edit"
 
