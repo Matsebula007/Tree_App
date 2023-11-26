@@ -3,13 +3,15 @@ MDScreen:
     name:"main"
     md_bg_color: 244/255,249/255,253/255,1
     MDFloatLayout:
-        Image: 
+        FitImage: 
             source: "assets/logo.jpg"
-            pos_hint: {"center_x": .5, "center_y": .8}
+            pos_hint: {"center_x": .5, "center_y": .7}
+            radius:100,100,100,100
+            size_hint:.7,.5
         MDLabel:
             text: "Unitree"
             font_name: "assets/fonts/CroissantOne-Regular.ttf"
-            font_size: "23dp"
+            font_size: "28dp"
             halign: "center"
             pos_hint: {"center_y": .50}
             color: rgba(0,0,59,255)

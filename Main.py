@@ -1,7 +1,6 @@
 import random
 import sqlite3
 from datetime import date, datetime, timedelta
-from email import message
 
 from kivy.animation import Animation
 from kivy.clock import Clock
@@ -14,12 +13,13 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 from kivymd.app import MDApp
 from kivymd.uix.behaviors import CommonElevationBehavior, HoverBehavior
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.pickers import MDDatePicker, MDTimePicker
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.snackbar import Snackbar
-from plyer import notification
 
 Window.softinput_mode ="below_target"
 
@@ -292,7 +292,7 @@ class CourseCard(CommonElevationBehavior,MDFloatLayout):
             for categ in live_categ:
                 for cat in categ:
                     live_cat.append(cat)    
-            cursor.execute("SELECT TITTLE FROM CATEGORY")
+            cursor.execute("SELECT TITTLE FROM CATEGORY WHERE WEIGHT>-1")
             dead_cat = cursor.fetchall()
             for dcateg in dead_cat:
                 for deadcat in dcateg:
@@ -444,7 +444,8 @@ class MainApp(MDApp):
         Returns:
             _type_: _description_
         """        
-        schedule = Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_TIME,ED_TIME FROM EVENT  WHERE ID IS NOT NULL").fetchall()
+        schedule = Database.cursor.execute(
+            "SELECT ID,TITTLE,VENUE,DAY,ST_TIME,ED_TIME FROM EVENT ORDER BY ST_TIME DESC").fetchall()
         return schedule
     
    
@@ -519,8 +520,8 @@ class MainApp(MDApp):
                     bas = "0"
                     add_course = CourseCard(course_key = empty_crs[0],CourseID=empty_crs[1], C_Credit=cr,CA_ratio=ca,Ex_ratio=ex,crsavg=avg,Basis=bas)
                     screen_manager.get_screen("CoursesScreen").course_list.add_widget(add_course)
-                    crse_hom = CourseDisplayCard(Courseid=empty_crs[1], average="0 %")
-                    screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
+                    crse_homE = CourseDisplayCard(Courseid=empty_crs[1], average="0 %")
+                    screen_manager.get_screen("Home").course_home.add_widget(crse_homE)
 
             elif taken_courses ==[] and empty_course ==[]:
                 crse_hom = CourseDisplayCard(Courseid="Courses", average="show here")
@@ -550,11 +551,7 @@ class MainApp(MDApp):
                 total_cre =total_cre + i
         cred_format ="{:.1f}".format(total_cre)
         return str(cred_format)
-#notification
-    def notif(self,tittle,text):
-        tittle=str(tittle)
-        text=str(text)
-        notification.notify(title=tittle,message=text,app_name="Unitree",ticker="Unitree reminder") #type: ignore
+    
 #checkbox seetings
     def on_complete(self,task_card,value,description):
         if value.active == True:
@@ -769,6 +766,51 @@ class MainApp(MDApp):
         screen_manager.get_screen("course_edit").courseID.text=crseid
         screen_manager.get_screen("course_edit").c_credit.text=crsecr
         
+        
+        testcat=screen_manager.get_screen("course_edit").testCat.text
+        assgncat=screen_manager.get_screen("course_edit").assignmentCat.text
+        prestcat=screen_manager.get_screen("course_edit").presentationCat.text
+        quizcat=screen_manager.get_screen("course_edit").quizCat.text
+        labcat=screen_manager.get_screen("course_edit").labCat.text
+        othercat=screen_manager.get_screen("course_edit").otherCat.text
+        
+        con = sqlite3.connect(f"{crseid}.db")
+        cursor = con.cursor()
+        try:
+            cursor.execute("SELECT TITTLE,WEIGHT FROM CATEGORY WHERE WEIGHT>-1")
+            assarray = cursor.fetchall()
+            Database.cursor.execute("SELECT CA_R,EX_R FROM COURSES WHERE COURSE_ID=?",(crseid,))
+            ratiarray = Database.cursor.fetchall()
+            
+            for ratio in ratiarray:
+                screen_manager.get_screen("course_edit").ca_ratio.text=str(ratio[0])
+                screen_manager.get_screen("course_edit").ex_ratio.text=str(ratio[1])
+            
+            for categ in assarray:
+                if categ[0]==testcat:
+                    screen_manager.get_screen("course_edit").tcheck.active=True
+                    screen_manager.get_screen("course_edit").testW.text=str(categ[1])
+                if categ[0]==assgncat:
+                    screen_manager.get_screen("course_edit").acheck.active=True
+                    screen_manager.get_screen("course_edit").assW.text=str(categ[1])
+                if categ[0]==prestcat:
+                    screen_manager.get_screen("course_edit").pcheck.active=True
+                    screen_manager.get_screen("course_edit").preseW.text=str(categ[1])
+                if categ[0]==quizcat:
+                    screen_manager.get_screen("course_edit").qcheck.active=True
+                    screen_manager.get_screen("course_edit").quizW.text=str(categ[1])
+                if categ[0]==labcat:
+                    screen_manager.get_screen("course_edit").lcheck.active=True
+                    screen_manager.get_screen("course_edit").labW.text=str(categ[1])
+                if categ[0]==othercat:
+                    screen_manager.get_screen("course_edit").ocheck.active=True
+                    screen_manager.get_screen("course_edit").otherW.text=str(categ[1])
+                    
+           
+        except Exception:
+            Snackbar(text="IDE1: Hot course edit ",snackbar_x ="4dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                    font_size ="15dp").open() # type: ignore
         pass
 #navigate  back to course overview
     def over_nav(self,course_id):
@@ -796,7 +838,7 @@ class MainApp(MDApp):
             for categ in live_categ:
                 for cat in categ:
                     live_cat.append(cat)    
-            cursor.execute("SELECT TITTLE FROM CATEGORY")
+            cursor.execute("SELECT TITTLE FROM CATEGORY WHERE WEIGHT>-1")
             dead_cat = cursor.fetchall()
             for dcateg in dead_cat:
                 for deadcat in dcateg:
@@ -932,7 +974,7 @@ class MainApp(MDApp):
         screen_manager.get_screen("Calendarscreen").table_list.clear_widgets()
         screen_manager.get_screen("Calendarscreen").days_of_week.size_hint_x=1
 
-        Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_DATE,ED_DATE,ST_TIME,ED_TIME,DURATION FROM EVENT")
+        Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_DATE,ED_DATE,ST_TIME,ED_TIME,DURATION FROM EVENT ORDER BY ST_TIME DESC")
         event_arr=Database.cursor.fetchall()
         if event_arr!=[]:
             try:
@@ -1070,7 +1112,7 @@ class MainApp(MDApp):
         screen_manager.get_screen("Calendarscreen").days_of_week.size_hint_x=1
         #day_sch must only be Monday events form databse if end_date not datetime now 
 
-        Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_DATE,ED_DATE,ST_TIME,ED_TIME,DURATION FROM EVENT")
+        Database.cursor.execute("SELECT ID,TITTLE,VENUE,DAY,ST_DATE,ED_DATE,ST_TIME,ED_TIME,DURATION FROM EVENT ORDER BY ST_TIME DESC")
         event_arr=Database.cursor.fetchall()
         try:
             
@@ -1157,7 +1199,7 @@ class MainApp(MDApp):
             for categ in live_categ:
                 for cat in categ:
                     live_cat.append(cat)    
-            cursor.execute("SELECT TITTLE FROM CATEGORY")
+            cursor.execute("SELECT TITTLE FROM CATEGORY WHERE WEIGHT>-1")
             dead_cat = cursor.fetchall()
             for dcateg in dead_cat:
                 for deadcat in dcateg:
@@ -1206,6 +1248,25 @@ class MainApp(MDApp):
             crse_hom = CourseDisplayCard(Courseid="PHY101",average="0 %")
             screen_manager.get_screen("Home").course_home.add_widget(crse_hom)
 
+
+#delete course
+    def delete_course(self,courseid):
+        
+        try:
+            #cursor.execute(f"DETACH DATABASE {courseid}.db")
+            Database.cursor.execute("DELETE FROM COURSES WHERE COURSE_ID=?",(courseid,))
+            Database.con.commit()
+            screen_manager.get_screen("CoursesScreen").crtot.text= self.creditscal()
+            Snackbar(text="Course has been deleted",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore
+            self.update_coursescreen()
+            screen_manager.transition = FadeTransition()
+            screen_manager.current = "CoursesScreen"
+        except Exception:
+            pass
+    
+        
 #Add event to user_database table EVENT 
     def add_event(self,tittle,venue,st_date,ed_date,st_time,ed_time):
 
@@ -1478,55 +1539,55 @@ class MainApp(MDApp):
                                 try:
                                     con = sqlite3.connect(f'{courseid}.db')
                                     cursor = con.cursor() # type: ignore
-                                    cursor.execute("CREATE TABLE CATEGORY(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL UNIQUE,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0)")
+                                    cursor.execute("CREATE TABLE IF NOT EXISTS CATEGORY(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL UNIQUE,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0)")
                                     con.commit()
-                                    cursor.execute("CREATE TABLE SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT NOT NULL UNIQUE,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTRIB DECIMAL,TUG_COUNT DECIMAL, FOREIGN KEY(CATEGORY) REFERENCES CATEGORY(TITTLE))")
+                                    cursor.execute("CREATE TABLE IF NOT EXISTS SUMMARY(ID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORY TEXT NOT NULL UNIQUE,MARK DECIMAL NOT NULL  DEFAULT 100.0,CAT_CONTRIB DECIMAL,TUG_COUNT DECIMAL, FOREIGN KEY(CATEGORY) REFERENCES CATEGORY(TITTLE))")
                                     con.commit()
                                     if tcheck.active is True and test_w !="":     
-                                        cursor.execute("CREATE TABLE TEST(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                        cursor.execute("CREATE TABLE IF NOT EXISTS TEST(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                                         con.commit()
                                         tdata ="TEST",test_w
-                                        cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",tdata)
+                                        cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",tdata)
                                         con.commit()
                                     else:pass
                                     if acheck.active is True and ass_w !="":     
-                                        cursor.execute("CREATE TABLE ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                        cursor.execute("CREATE TABLE IF NOT EXISTS ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                                         con.commit()
                                         adata = "ASSIGNMENT",ass_w
-                                        cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",adata)
+                                        cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",adata)
                                         con.commit()
                                     else:pass
                                     if pcheck.active is True and prese_w !="":     
-                                        cursor.execute("CREATE TABLE PRESENTATION(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                        cursor.execute("CREATE TABLE IF NOT EXISTS PRESENTATION(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                                         con.commit()
                                         pdata = "PRESENTATION",prese_w
-                                        cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",pdata)
+                                        cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",pdata)
                                         con.commit()
                                     else:pass
                                     if qcheck.active is True and quiz_w !="":    
-                                        cursor.execute("CREATE TABLE QUIZ(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                        cursor.execute("CREATE TABLE IF NOT EXISTS QUIZ(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                                         con.commit()
                                         qdata = "QUIZ",quiz_w
-                                        cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",qdata)
+                                        cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",qdata)
                                         con.commit()
                                     else:pass
                                     if lcheck.active is True and lab_w !="":     
-                                        cursor.execute("CREATE TABLE LAB(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                        cursor.execute("CREATE TABLE IF NOT EXISTS LAB(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                                         con.commit()
                                         ldata = "LAB",lab_w
-                                        cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
+                                        cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
                                         con.commit()                                 
                                     else:pass
                                     if ocheck.active is True and other_w !="":     
-                                        cursor.execute("CREATE TABLE OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                        cursor.execute("CREATE TABLE IF NOT EXISTS OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
                                         con.commit()
                                         odata = "OTHER",other_w
-                                        cursor.execute("INSERT INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata) 
+                                        cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata) 
                                         con.commit()
                                     else:pass
                                      
                                     data= courseid,credits,ca_rt,ex_rt
-                                    Database.cursor.execute("INSERT INTO COURSES(COURSE_ID,CREDIT,CA_R,EX_R) VALUES(?,?,?,?)",data)
+                                    Database.cursor.execute("INSERT OR REPLACE INTO COURSES(COURSE_ID,CREDIT,CA_R,EX_R) VALUES(?,?,?,?)",data)
                                     Database.con.commit()
                                     screen_manager.transition = FadeTransition()
                                     screen_manager.current = "CoursesScreen"       
@@ -1568,6 +1629,169 @@ class MainApp(MDApp):
             Snackbar(text="INDE:1: Uncheck empty fields",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
                     size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
                     font_size ="15dp").open() # type: ignore
+            
+#save course changes
+    def save_course(self,tcheck,test_w,acheck,ass_w,pcheck,prese_w,qcheck,quiz_w,lcheck,lab_w,ocheck,other_w,course_id,credits,ca_rt,ex_rt):
+        """_summary_
+
+        Args:
+            tcheck (bool): check test selection
+            test_w (int): test weight
+            acheck (bool): _description_
+            ass_w (int): assingment weight
+            pcheck (_type_): _description_
+            prese_w (_type_): _description_
+            qcheck (_type_): _description_
+            quiz_w (_type_): _description_
+            lcheck (_type_): _description_
+            lab_w (_type_): _description_
+            ocheck (_type_): _description_
+            other_w (_type_): _description_
+            course_id (_type_): _description_
+            credits (_type_): _description_
+            ca_rt (_type_): _description_
+            ex_rt (_type_): _description_
+        """        
+        try:
+            if course_id!="":
+                course_id = str(course_id)
+                course_id =course_id.replace(" ","")
+                courseid = course_id.upper()
+              
+                   
+                test_w=float(test_w)
+                ass_w=float(ass_w)
+                prese_w=float(prese_w)
+                quiz_w=float(quiz_w)
+                lab_w=float(lab_w)
+                other_w=float(other_w)
+
+                totl_weight=test_w+ass_w+prese_w+quiz_w+lab_w+other_w
+                if ca_rt !=""  and ex_rt !="":                      
+                    ca_rt=float(ca_rt)
+                    ex_rt=float(ex_rt)
+                    total_ratio=(ca_rt+ex_rt)
+                    try:
+                        if total_ratio ==100.0 and totl_weight==100.0:
+                            try:
+                                con = sqlite3.connect(f'{courseid}.db')
+                                cursor = con.cursor() # type: ignore
+                                if tcheck.active is True and test_w !="":     
+                                    cursor.execute("CREATE TABLE IF NOT EXISTS TEST(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                    con.commit()
+                                    tdata ="TEST",test_w
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",tdata)
+                                    con.commit()
+                                elif tcheck.active is False:
+                                    cursor.execute("DROP TABLE IF EXISTS TEST")
+                                    con.commit()
+                                    tdata ="TEST",-2
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",tdata)
+                                    con.commit()
+                                if acheck.active is True and ass_w !="":     
+                                    cursor.execute("CREATE TABLE IF NOT EXISTS ASSIGNMENT(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                    con.commit()
+                                    adata = "ASSIGNMENT",ass_w
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",adata)
+                                    con.commit()
+                                elif acheck.active is False:
+                                    cursor.execute("DROP TABLE IF EXISTS ASSIGNMENT")
+                                    con.commit()
+                                    adata = "ASSIGNMENT",-2
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",adata)
+                                    con.commit()
+                                if pcheck.active is True and prese_w !="":     
+                                    cursor.execute("CREATE TABLE IF NOT EXISTS PRESENTATION(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                    con.commit()
+                                    pdata = "PRESENTATION",prese_w
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",pdata)
+                                    con.commit()
+                                elif pcheck.active is False:
+                                    cursor.execute("DROP TABLE IF EXISTS PRESENTATION")
+                                    con.commit()
+                                    pdata = "PRESENTATION",-2
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",pdata)
+                                    con.commit()
+                                if qcheck.active is True and quiz_w !="":    
+                                    cursor.execute("CREATE TABLE IF NOT EXISTS QUIZ(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                    con.commit()
+                                    qdata = "QUIZ",quiz_w
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",qdata)
+                                    con.commit()
+                                elif qcheck.active is False:
+                                    cursor.execute("DROP TABLE IF EXISTS QUIZ")
+                                    con.commit()
+                                    qdata = "QUIZ",-2
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",qdata)
+                                    con.commit()
+                                if lcheck.active is True and lab_w !="":     
+                                    cursor.execute("CREATE TABLE IF NOT EXISTS LAB(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                    con.commit()
+                                    ldata = "LAB",lab_w
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
+                                    con.commit()                                 
+                                elif lcheck.active is False:
+                                    cursor.execute("DROP TABLE IF EXISTS LAB")
+                                    con.commit()
+                                    ldata = "LAB",-2
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",ldata)
+                                    con.commit() 
+                                if ocheck.active is True and other_w !="":     
+                                    cursor.execute("CREATE TABLE IF NOT EXISTS OTHER(ID INTEGER PRIMARY KEY AUTOINCREMENT,TITTLE TEXT NOT NULL,WEIGHT DECIMAL NOT NULL  DEFAULT 100.0,MARK DECIMAL NOT NULL,CONTRIB DECIMAL)")
+                                    con.commit()
+                                    odata = "OTHER",other_w
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata) 
+                                    con.commit()
+                                elif ocheck.active is False:
+                                    cursor.execute("DROP TABLE IF EXISTS OTHER")
+                                    con.commit()
+                                    odata = "OTHER",-2
+                                    cursor.execute("INSERT OR REPLACE INTO CATEGORY(TITTLE,WEIGHT) VALUES(?,?)",odata) 
+                                    con.commit()
+                                    
+                                Database.cursor.execute(f"UPDATE COURSES SET CA_R={ca_rt} WHERE COURSE_ID=?",(courseid,))
+                                Database.con.commit()
+                                Database.cursor.execute(f"UPDATE COURSES SET EX_R={ex_rt} WHERE COURSE_ID=?",(courseid,))
+                                Database.con.commit()
+                                screen_manager.transition = FadeTransition()
+                                screen_manager.current = "CoursesScreen"     
+                                
+                                Snackbar(text="Course Changes Saved",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                                        font_size ="15dp").open() # type: ignore  
+                            except Exception:
+                                Snackbar(text="INDE:3: Edit Course Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                        size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                                        font_size ="15dp").open() # type: ignore
+                        elif total_ratio!=100.0:
+                            Snackbar(text="Faulty Course ratio",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                                    font_size ="15dp").open() # type: ignore
+                        elif totl_weight!=100.0:
+                            Snackbar(text="Faulty Assessment weights",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                                    font_size ="15dp").open() # type: ignore
+                    except Exception:
+                        Snackbar(text="INDE:2: Add Course Indigenous error",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                                size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                                font_size ="15dp").open() # type: ignore
+                elif ca_rt =="":
+                    Snackbar(text="CA Weight  empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore
+                elif ex_rt =="":
+                    Snackbar(text="Exam Weight empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore
+        
+            elif course_id =="":
+                    Snackbar(text="Course ID empty",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                            size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8), # type: ignore
+                            font_size ="15dp").open() # type: ignore
+        except Exception:
+            Snackbar(text="INDE:1: Uncheck empty fields",snackbar_x ="10dp",snackbar_y ="10dp", # type: ignore
+                    size_hint_x =(Window.width -(dp(10)*2))/Window.width, bg_color=(30/255,47/255,151/255,.8),
+                    font_size ="15dp").open() # type: ignore
 
 #course summary calculations
     def summariseCourse(self):
@@ -1583,7 +1807,7 @@ class MainApp(MDApp):
             for CourseID in takenC:
                 con = sqlite3.connect(f"{CourseID}.db")
                 cursor = con.cursor()
-                cursor.execute("SELECT TITTLE FROM CATEGORY")
+                cursor.execute("SELECT TITTLE FROM CATEGORY WHERE WEIGHT>0.0")
                 array = cursor.fetchall()
                 
                 for i in array:
@@ -1887,6 +2111,8 @@ class MainApp(MDApp):
         Window.close()  
 
 if __name__ == "__main__":
+    #Database.cursor.execute("DELETE FROM COURSES WHERE ID=93")
+    #Database.con.commit()
     
     MainApp().run()
   

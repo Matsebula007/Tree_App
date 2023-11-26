@@ -111,9 +111,9 @@ MDScreen:
                     radius:[15]
             TextInput:
                 id:ca_ratio
-                hint_text:"CA Weight"
-                size_hint: 1,None
-                pos_hint: {"center_x": .5,"center_y": .5}
+                text:""
+                size_hint:.4,None
+                pos_hint: {"center_x": .6,"center_y": .5}
                 height: self.minimum_height
                 multiline:False
                 cursor_width: "2dp"
@@ -122,6 +122,13 @@ MDScreen:
                 padding:15
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
                 font_size:"18dp"
+            MDLabel:
+                size_hint:.5,None
+                pos_hint: {"center_x": .4,"center_y": .5}
+                text:"CA :"
+                font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
+                font_size:"18dp"
+
             
         #Exam contribution
         MDFloatLayout:
@@ -136,9 +143,9 @@ MDScreen:
                     radius:[15]
             TextInput:
                 id:ex_ratio
-                hint_text:"Exam Weight"
-                size_hint: 1,None
-                pos_hint: {"center_x": .5,"center_y": .5}
+                text:""
+                size_hint:.4,None
+                pos_hint: {"center_x": .78,"center_y": .5}
                 height: self.minimum_height
                 multiline:False
                 cursor_width: "2dp"
@@ -146,6 +153,12 @@ MDScreen:
                 background_color: 0,0,0,0
                 padding:15
                 font_name:'assets/fonts/JosefinSans-Light.ttf'
+                font_size:"18dp"
+            MDLabel:
+                size_hint:.5,None
+                pos_hint: {"center_x": .4,"center_y": .5}
+                text:"Exam :"
+                font_name:'assets/fonts/JosefinSans-SemiBold.ttf'
                 font_size:"18dp"
 
         # Contribution Header
@@ -510,36 +523,35 @@ MDScreen:
         #add course button
         Button:
             text: "Delete Course"
-            size_hint: .44,.07
-            pos_hint: {"center_x": .26,"center_y": .18}
+            size_hint: .33,.06
+            pos_hint: {"center_x": .22,"center_y": .18}
             background_color:0,0,0,0
             font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
-            font_size: "18dp"
+            font_size: "12dp"
             color: 1,1,1,1
             on_release:
-                app.add_course(tcheck,testW.text,acheck,assW.text,pcheck,preseW.text,qcheck,quizW.text,lcheck,labW.text,ocheck,otherW.text,courseID.text,c_credit.text,ca_ratio.text,ex_ratio.text)
-                app.update_course(courseID.text)
+                app.delete_course(courseID.text)
             canvas.before:
                 Color:
-                    rgba:(30/255,47/255,151/255,.6)
+                    rgba:(36/255,47/255,151/255,.4)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos
                     radius:[15]
         Button:
             text: " Save changes"
-            size_hint: .44,.07
-            pos_hint: {"center_x": .74,"center_y": .18}
+            size_hint: .55,.07
+            pos_hint: {"center_x": .68,"center_y": .18}
             background_color:0,0,0,0
             font_name: 'assets/fonts/JosefinSans-SemiBold.ttf'
             font_size: "18dp"
             color: 1,1,1,1
             on_release:
-                app.add_course(tcheck,testW.text,acheck,assW.text,pcheck,preseW.text,qcheck,quizW.text,lcheck,labW.text,ocheck,otherW.text,courseID.text,c_credit.text,ca_ratio.text,ex_ratio.text)
-                app.update_course(courseID.text)
+                app.save_course(tcheck,testW.text,acheck,assW.text,pcheck,preseW.text,qcheck,quizW.text,lcheck,labW.text,ocheck,otherW.text,courseID.text,c_credit.text,ca_ratio.text,ex_ratio.text)
+                app.summariseCourse()
             canvas.before:
                 Color:
-                    rgba:(30/255,47/255,151/255,.8)
+                    rgba:(30/255,47/255,151/255,.88)
                 RoundedRectangle:
                     size:self.size
                     pos:self.pos

@@ -146,7 +146,7 @@
         font_name:'assets/fonts/Poppins-Bold.ttf'
         font_size: "22dp"
         background_color:0,0,0,0
-        pos_hint: {"center_x": .5,"center_y": .88}
+        pos_hint: {"center_x": .5,"center_y": .86}
         color: 1,1,1,1     
         canvas.before:
             Color:
@@ -157,7 +157,7 @@
                 radius:[10]
         on_release:
             app.clear_overview()
-            app.get_edit_course(crseid.text,crsecr.text)
+            app.get_edit_course(crseid.text,crsecr.text,)
             root.manager.transition = FadeTransition()
             root.manager.current = "course_edit"
 
@@ -186,7 +186,7 @@
                 height:self.minimum_height
                 row_default_height:80
                 size_hint_y:None
-                padding:10,15
+                padding:10,10
                 spacing:10,10
     
     
