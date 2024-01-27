@@ -762,6 +762,12 @@ class MainApp(MDApp):
 
 # add edit course details 
     def get_edit_course(self,crseid,crsecr):
+        """_summary_
+
+        Args:
+            crseid (_type_): _description_
+            crsecr (_type_): _description_
+        """        
         
         screen_manager.get_screen("course_edit").courseID.text=crseid
         screen_manager.get_screen("course_edit").c_credit.text=crsecr
@@ -881,6 +887,12 @@ class MainApp(MDApp):
 
 #Delete event from view and from database 
     def delete_event(self,table_card,tittle): 
+        """_summary_
+
+        Args:
+            table_card (_type_): _description_
+            tittle (_type_): _description_
+        """        
         screen_manager.get_screen("Calendarscreen").table_list.remove_widget(table_card)
         Database.cursor.execute("DELETE FROM EVENT WHERE TITTLE=?", (tittle,))
         Database.con.commit()
@@ -923,6 +935,12 @@ class MainApp(MDApp):
 
 #delete assessment form database
     def delete_assmt(self,card,tittle):
+        """_summary_
+
+        Args:
+            card (_type_): _description_
+            tittle (_type_): _description_
+        """        
         screen_manager.get_screen("AssessmentSummary").assessmnt_list.remove_widget(card)
         courseID=screen_manager.get_screen("AssessmentSummary").crseid.text
         category=screen_manager.get_screen("AssessmentSummary").categName.text
@@ -1168,14 +1186,15 @@ class MainApp(MDApp):
         pass
 
     def update_overviwscreen(self):
-        screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
-        course_id =screen_manager.get_screen("overviewscreen").crseid.text
         
         """_summary_
 
         Args:
             course_id (_type_): _description_
         """        
+        screen_manager.get_screen("overviewscreen").category_list.clear_widgets()
+        course_id =screen_manager.get_screen("overviewscreen").crseid.text
+        
         con = sqlite3.connect(f"{course_id}.db")
         cursor = con.cursor()
         try:
@@ -1251,6 +1270,11 @@ class MainApp(MDApp):
 
 #delete course
     def delete_course(self,courseid):
+        """_summary_
+
+        Args:
+            courseid (_type_): _description_
+        """        
         
         try:
             #cursor.execute(f"DETACH DATABASE {courseid}.db")
@@ -1269,6 +1293,16 @@ class MainApp(MDApp):
         
 #Add event to user_database table EVENT 
     def add_event(self,tittle,venue,st_date,ed_date,st_time,ed_time):
+        """_summary_
+
+        Args:
+            tittle (_type_): _description_
+            venue (_type_): _description_
+            st_date (_type_): _description_
+            ed_date (_type_): _description_
+            st_time (_type_): _description_
+            ed_time (_type_): _description_
+        """        
 
         try:
             if tittle!="" and len(tittle)<16 and venue!="" and len(venue)<13 and st_date!="" and ed_date!="" and st_time!="" and ed_time!="":
@@ -1413,14 +1447,14 @@ class MainApp(MDApp):
 
 # add task settings
     def add_todo(self,tittle,description,date_time):
-        """_summary_
+        """Adds notes to datbase
 
         Args:
-            tittle (_type_): _description_
-            description (_type_): _description_
-            date_time (_type_): _description_
-            task_time (_type_): _description_
-            task_time2 (_type_): _description_
+            tittle (string): _description_
+            description (string): _description_
+            date_time (string): _description_
+            task_time (string): _description_
+            task_time2 (string): _description_
         """        
         try:
             if tittle !="" and description !="" and len(tittle)<21 and len(description)<81 and date_time!="":
@@ -1463,7 +1497,7 @@ class MainApp(MDApp):
             
 #adding new course to course view
     def update_course(self,course_id):
-        """_summary_
+        """utility function
 
         Args:
             course_ID (str): grants access to database -updates CoursesScreen
@@ -1485,25 +1519,25 @@ class MainApp(MDApp):
                  
 # add course settings
     def add_course(self,tcheck,test_w,acheck,ass_w,pcheck,prese_w,qcheck,quiz_w,lcheck,lab_w,ocheck,other_w,course_id,credits,ca_rt,ex_rt):
-        """_summary_
-
+        """ This function takes in course data and creates a Course database as well as add the course to courses table
+        each Assessment in the course is initialized as a table in the course
         Args:
             tcheck (bool): check test selection
-            test_w (int): test weight
+            test_w (float): test weight
             acheck (bool): _description_
-            ass_w (int): assingment weight
-            pcheck (_type_): _description_
-            prese_w (_type_): _description_
-            qcheck (_type_): _description_
-            quiz_w (_type_): _description_
-            lcheck (_type_): _description_
-            lab_w (_type_): _description_
-            ocheck (_type_): _description_
-            other_w (_type_): _description_
-            course_id (_type_): _description_
-            credits (_type_): _description_
-            ca_rt (_type_): _description_
-            ex_rt (_type_): _description_
+            ass_w (float): assingment weight
+            pcheck (bool): presentation selection check
+            prese_w (float): presentation weight
+            qcheck (bool): quiz selection check
+            quiz_w (float): quiz weight
+            lcheck (bool): lab selection check
+            lab_w (float): lab weight
+            ocheck (bool): other selection check
+            other_w (float): other selection weight
+            course_id (string): course identification key
+            credits (string-float): course credit hours
+            ca_rt (float): CA weight contribution
+            ex_rt (float): Exam weight contribution
         """        
         try:
             if course_id!="":
@@ -1632,25 +1666,25 @@ class MainApp(MDApp):
             
 #save course changes
     def save_course(self,tcheck,test_w,acheck,ass_w,pcheck,prese_w,qcheck,quiz_w,lcheck,lab_w,ocheck,other_w,course_id,credits,ca_rt,ex_rt):
-        """_summary_
-
+        """ This function takes in course data and updates the  Course database as well as add the course to courses table
+        each Assessment in the course is initialized as a table in the course
         Args:
             tcheck (bool): check test selection
-            test_w (int): test weight
+            test_w (float): test weight
             acheck (bool): _description_
-            ass_w (int): assingment weight
-            pcheck (_type_): _description_
-            prese_w (_type_): _description_
-            qcheck (_type_): _description_
-            quiz_w (_type_): _description_
-            lcheck (_type_): _description_
-            lab_w (_type_): _description_
-            ocheck (_type_): _description_
-            other_w (_type_): _description_
-            course_id (_type_): _description_
-            credits (_type_): _description_
-            ca_rt (_type_): _description_
-            ex_rt (_type_): _description_
+            ass_w (float): assingment weight
+            pcheck (bool): presentation selection check
+            prese_w (float): presentation weight
+            qcheck (bool): quiz selection check
+            quiz_w (float): quiz weight
+            lcheck (bool): lab selection check
+            lab_w (float): lab weight
+            ocheck (bool): other selection check
+            other_w (float): other selection weight
+            course_id (string): course identification key
+            credits (string-float): course credit hours
+            ca_rt (float): CA weight contribution
+            ex_rt (float): Exam weight contribution
         """        
         try:
             if course_id!="":
@@ -1795,7 +1829,7 @@ class MainApp(MDApp):
 
 #course summary calculations
     def summariseCourse(self):
-        """_summary_
+        """ A utility function that updates a course tables by computing totals  
         """            
         try:
             Database.cursor.execute("SELECT COURSE_ID FROM COURSES")
@@ -1904,14 +1938,14 @@ class MainApp(MDApp):
 
 #add assessment
     def add_assessment(self, ass_courseid,ass_mark,ass_contr,ass_category,ass_name):
-        """_summary_
+        """Add assessment in the course database
 
         Args:
-            ass_courseid (_type_): _description_
-            ass_mark (_type_): _description_
-            ass_contr (_type_): _description_
-            ass_category (_type_): _description_
-            ass_name (_type_): _description_
+            ass_courseid (string): course id to which assessment belongs
+            ass_mark (float): the mark of the assessment
+            ass_contr (float): the contribution of the assessment toward average of all assessments
+            ass_category (string): the type of assessment
+            ass_name (string): uniques name of assessment
         """        
         try: 
             if  ass_name !=""and ass_mark!="" and ass_contr!="":
@@ -2006,10 +2040,11 @@ class MainApp(MDApp):
 
 # Update assessment 
     def update_assessment(self,course_id,categ_name):
-        """_summary_
+        """Udates the Category table in course - utility function
 
         Args:
-            course_id (_type_): _description_
+            course_id (string): course identifier
+            categ_name (string): Category of assessment
         """
         try: 
             if course_id !="":
